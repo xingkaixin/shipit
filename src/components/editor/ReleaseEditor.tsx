@@ -4,6 +4,7 @@ import { ReleaseSidebar } from "@/components/editor/ReleaseSidebar"
 import { VideoPreview } from "@/components/editor/VideoPreview"
 import { isLogoStateExportable, useLogoImage } from "@/hooks/use-logo-image"
 import { useOutputCapability } from "@/hooks/use-output-capability"
+import { useI18n } from "@/i18n/i18n"
 import {
   INITIAL_RELEASE_DRAFT,
   releaseDraftReducer,
@@ -11,6 +12,7 @@ import {
 import type { ReleaseComposition } from "@/video/release-video"
 
 export function ReleaseEditor() {
+  const { locale } = useI18n()
   const [draft, dispatch] = React.useReducer(
     releaseDraftReducer,
     INITIAL_RELEASE_DRAFT
@@ -20,6 +22,7 @@ export function ReleaseEditor() {
 
   const composition = React.useMemo<ReleaseComposition>(
     () => ({
+      locale,
       content: {
         productName: draft.content.productName,
         version: draft.content.version,
@@ -35,6 +38,7 @@ export function ReleaseEditor() {
       draft.content.version,
       draft.output,
       draft.style,
+      locale,
       logoState.image,
     ]
   )

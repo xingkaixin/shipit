@@ -4,6 +4,7 @@ import type { ReleaseComposition } from "@/video/release-video"
 import { releaseVideoFileName } from "@/video/release-video-file-name"
 
 const BASE_COMPOSITION: ReleaseComposition = {
+  locale: "en",
   content: {
     productName: "Shipit Studio",
     version: "v1.0.0",

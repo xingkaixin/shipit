@@ -1,4 +1,5 @@
 import type { FontId } from "@/video/font-registry"
+import type { AppLocale } from "@/i18n/i18n"
 import type {
   AspectRatio,
   FrameRate,
@@ -55,6 +56,7 @@ export type ReleaseLogoImage = {
 }
 
 export type ReleaseComposition = {
+  locale: AppLocale
   content: Omit<ReleaseContentDraft, "logoFile"> & {
     logoImage: ReleaseLogoImage | null
   }

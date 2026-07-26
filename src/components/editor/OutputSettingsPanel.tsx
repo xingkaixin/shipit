@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import type { OutputCapabilityState } from "@/hooks/use-output-capability"
+import { useI18n } from "@/i18n/i18n"
 import { cn } from "@/lib/utils"
 import type { ReleaseDraftAction } from "@/state/release-draft-reducer"
 import {
@@ -26,11 +27,13 @@ import {
   isFrameRate,
   isResolution,
   outputDimensions,
-  outputSummary,
   type AspectRatio,
   type FrameRate,
 } from "@/video/output-settings"
-import type { ReleaseDraft } from "@/video/release-video"
+import {
+  VIDEO_DURATION_SECONDS,
+  type ReleaseDraft,
+} from "@/video/release-video"
 
 type OutputSettingsPanelProps = {
   draft: ReleaseDraft
@@ -43,6 +46,7 @@ export function OutputSettingsPanel({
   outputCapability,
   dispatch,
 }: OutputSettingsPanelProps) {
+  const { t } = useI18n()
   const { output } = draft
   const dimensions = outputDimensions(output.aspectRatio, output.resolution)
   const isMaximumLoad = output.resolution === "4k" && output.frameRate === 60
@@ -54,8 +58,8 @@ export function OutputSettingsPanel({
   return (
     <div className="space-y-7">
       <SettingsSection
-        title="画面方向"
-        description="竖屏采用独立构图，不会裁切横屏画面。"
+        title={t("output.aspect.title")}
+        description={t("output.aspect.description")}
       >
         <div className="grid grid-cols-2 gap-2">
           <AspectButton
@@ -75,8 +79,8 @@ export function OutputSettingsPanel({
         </div>
       </SettingsSection>
 
-      <SettingsSection title="清晰度">
-        <Label htmlFor="resolution">导出分辨率</Label>
+      <SettingsSection title={t("output.resolution.title")}>
+        <Label htmlFor="resolution">{t("output.resolution.label")}</Label>
         <Select
           value={output.resolution}
           onValueChange={(value) => {
@@ -91,8 +95,10 @@ export function OutputSettingsPanel({
             </SelectValue>
           </SelectTrigger>
           <SelectContent alignItemWithTrigger={false}>
-            <SelectItem value="1080p">1080p · 推荐</SelectItem>
-            <SelectItem value="4k">4K · 更慢且占用更多内存</SelectItem>
+            <SelectItem value="1080p">
+              {t("output.resolution.recommended")}
+            </SelectItem>
+            <SelectItem value="4k">{t("output.resolution.4k")}</SelectItem>
           </SelectContent>
         </Select>
         <p className="font-mono text-xs text-muted-foreground">
@@ -100,7 +106,7 @@ export function OutputSettingsPanel({
         </p>
       </SettingsSection>
 
-      <SettingsSection title="帧率">
+      <SettingsSection title={t("output.frameRate.title")}>
         <div className="grid grid-cols-2 gap-2">
           {FRAME_RATES.map((frameRate) => (
             <FrameRateButton
@@ -118,24 +124,23 @@ export function OutputSettingsPanel({
       </SettingsSection>
 
       <SettingsSection
-        title="浏览器能力"
-        description={outputSummary(
-          output.aspectRatio,
-          output.resolution,
-          output.frameRate
-        )}
+        title={t("output.capability.title")}
+        description={t("output.summary", {
+          seconds: VIDEO_DURATION_SECONDS,
+          width: dimensions.width,
+          height: dimensions.height,
+          frameRate: output.frameRate,
+        })}
       >
         <CapabilityMessage state={outputCapability} />
         {usesMemoryFallback ? (
           <div className="rounded-[10px] border border-amber-500/30 bg-amber-500/10 p-3 text-xs leading-5 text-amber-800 dark:text-amber-300">
-            当前浏览器不支持本地临时文件，4K
-            将回退到内存导出；低内存设备建议改用 1080p。
+            {t("output.warning.memory")}
           </div>
         ) : null}
         {isMaximumLoad ? (
           <div className="rounded-[10px] border border-amber-500/30 bg-amber-500/10 p-3 text-xs leading-5 text-amber-800 dark:text-amber-300">
-            4K 60 FPS 的像素处理量约为 1080p 30 FPS 的 8
-            倍，导出时间与内存占用会明显增加。
+            {t("output.warning.maximum")}
           </div>
         ) : null}
       </SettingsSection>
@@ -154,9 +159,13 @@ function AspectButton({
   isSelected,
   onSelect,
 }: AspectButtonProps) {
+  const { t } = useI18n()
   const icon =
     aspectRatio === "landscape" ? RectangleHorizontal : RectangleVertical
-  const label = aspectRatio === "landscape" ? "横屏 16:9" : "竖屏 9:16"
+  const label =
+    aspectRatio === "landscape"
+      ? t("output.aspect.landscape")
+      : t("output.aspect.portrait")
 
   return (
     <button
@@ -206,6 +215,8 @@ function FrameRateButton({
 }
 
 function CapabilityMessage({ state }: { state: OutputCapabilityState }) {
+  const { t } = useI18n()
+
   switch (state.status) {
     case "checking":
       return (
@@ -214,7 +225,7 @@ function CapabilityMessage({ state }: { state: OutputCapabilityState }) {
           aria-live="polite"
         >
           <Icon icon={Loading03Icon} className="size-4 animate-spin" />
-          正在检查当前规格…
+          {t("output.capability.checking")}
         </div>
       )
     case "supported":
@@ -225,8 +236,8 @@ function CapabilityMessage({ state }: { state: OutputCapabilityState }) {
         >
           <Icon icon={CheckmarkCircle02Icon} className="size-4" />
           {state.storage === "file"
-            ? "支持此规格，导出将使用浏览器本地临时文件"
-            : "当前浏览器支持此输出规格"}
+            ? t("output.capability.file")
+            : t("output.capability.memory")}
         </div>
       )
     case "unsupported":
@@ -236,7 +247,7 @@ function CapabilityMessage({ state }: { state: OutputCapabilityState }) {
           aria-live="polite"
         >
           <Icon icon={Alert02Icon} className="size-4" />
-          当前浏览器不支持此规格，请降低分辨率
+          {t("output.capability.unsupported")}
         </div>
       )
     case "failed":
@@ -246,7 +257,7 @@ function CapabilityMessage({ state }: { state: OutputCapabilityState }) {
           aria-live="polite"
         >
           <Icon icon={Alert02Icon} className="mt-0.5 size-4 shrink-0" />
-          {state.message}
+          {t("output.capability.failed")}
         </div>
       )
   }

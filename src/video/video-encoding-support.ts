@@ -1,6 +1,7 @@
 import { canEncodeVideo } from "mediabunny"
 
 import { outputBitrate, outputDimensions } from "@/video/output-settings"
+import { ReleaseExportError } from "@/video/release-export-error"
 import type { OutputSettings } from "@/video/release-video"
 
 export async function canEncodeOutput(
@@ -22,6 +23,6 @@ export async function assertOutputEncodingSupport(
   const isSupported = await canEncodeOutput(output)
 
   if (!isSupported) {
-    throw new Error("当前浏览器不支持所选 H.264 输出规格，请降低分辨率")
+    throw new ReleaseExportError("unsupported")
   }
 }

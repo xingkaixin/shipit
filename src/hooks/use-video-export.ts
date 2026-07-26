@@ -1,5 +1,11 @@
 import * as React from "react"
 
+import { useI18n } from "@/i18n/i18n"
+import type { MessageKey } from "@/i18n/messages"
+import {
+  ReleaseExportError,
+  type ReleaseExportErrorCode,
+} from "@/video/release-export-error"
 import { releaseVideoFileName } from "@/video/release-video-file-name"
 import type { ReleaseComposition } from "@/video/release-video"
 
@@ -12,6 +18,7 @@ export type VideoExportState =
   | { status: "failed"; message: string }
 
 export function useVideoExport(composition: ReleaseComposition) {
+  const { t } = useI18n()
   const [state, setState] = React.useState<VideoExportState>({
     status: "idle",
   })
@@ -30,7 +37,7 @@ export function useVideoExport(composition: ReleaseComposition) {
       exportedCompositionReference.current !== composition
     ) {
       abortControllerReference.current?.abort(
-        new DOMException("配置已更新，当前导出已取消", "AbortError")
+        new DOMException("Configuration changed", "AbortError")
       )
       return
     }
@@ -45,7 +52,7 @@ export function useVideoExport(composition: ReleaseComposition) {
     return () => {
       isMountedReference.current = false
       abortControllerReference.current?.abort(
-        new DOMException("页面已关闭，当前导出已取消", "AbortError")
+        new DOMException("Page closed", "AbortError")
       )
     }
   }, [])
@@ -124,7 +131,9 @@ export function useVideoExport(composition: ReleaseComposition) {
         setState({
           status: "failed",
           message:
-            error instanceof Error ? error.message : "视频导出失败，请重试",
+            error instanceof ReleaseExportError
+              ? t(exportErrorMessageKey(error.code))
+              : t("export.error.generic"),
         })
       }
     } finally {
@@ -134,15 +143,19 @@ export function useVideoExport(composition: ReleaseComposition) {
         isExportingReference.current = false
       }
     }
-  }, [])
+  }, [t])
 
   const cancelExport = React.useCallback(() => {
     abortControllerReference.current?.abort(
-      new DOMException("视频导出已取消", "AbortError")
+      new DOMException("Export cancelled", "AbortError")
     )
   }, [])
 
   return { state, exportVideo, cancelExport }
+}
+
+function exportErrorMessageKey(code: ReleaseExportErrorCode): MessageKey {
+  return `export.error.${code}`
 }
 
 function downloadVideo(

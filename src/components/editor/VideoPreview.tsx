@@ -17,9 +17,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { useVideoExport, type VideoExportState } from "@/hooks/use-video-export"
+import { useI18n } from "@/i18n/i18n"
 import { cn } from "@/lib/utils"
 import { fontById } from "@/video/font-registry"
-import { outputSummary, PREVIEW_DIMENSIONS } from "@/video/output-settings"
+import { outputDimensions, PREVIEW_DIMENSIONS } from "@/video/output-settings"
 import { renderReleaseFrame } from "@/video/render-release-frame"
 import {
   VIDEO_DURATION_SECONDS,
@@ -34,6 +35,7 @@ type VideoPreviewProps = {
 }
 
 export function VideoPreview({ composition, canExport }: VideoPreviewProps) {
+  const { t } = useI18n()
   const canvasReference = React.useRef<HTMLCanvasElement>(null)
   const timelineReference = React.useRef<HTMLInputElement>(null)
   const timeLabelReference = React.useRef<HTMLSpanElement>(null)
@@ -46,11 +48,16 @@ export function VideoPreview({ composition, canExport }: VideoPreviewProps) {
     cancelExport,
   } = useVideoExport(composition)
   const previewDimensions = PREVIEW_DIMENSIONS[composition.output.aspectRatio]
-  const summary = outputSummary(
+  const dimensions = outputDimensions(
     composition.output.aspectRatio,
-    composition.output.resolution,
-    composition.output.frameRate
+    composition.output.resolution
   )
+  const summary = t("output.summary", {
+    seconds: VIDEO_DURATION_SECONDS,
+    width: dimensions.width,
+    height: dimensions.height,
+    frameRate: composition.output.frameRate,
+  })
   const drawFrame = React.useCallback(
     (time: number) => {
       const context = canvasReference.current?.getContext("2d", {
@@ -94,7 +101,7 @@ export function VideoPreview({ composition, canExport }: VideoPreviewProps) {
       document.fonts.load(`760 16px ${titleFont.family}`, title),
       document.fonts.load(
         '650 16px "Geist Variable", "Helvetica Neue", sans-serif',
-        "NEW RELEASE"
+        t("video.badge")
       ),
     ])
       .then(() => {
@@ -113,6 +120,7 @@ export function VideoPreview({ composition, canExport }: VideoPreviewProps) {
     composition.content.productName,
     composition.style.titleFontId,
     drawFrame,
+    t,
   ])
 
   React.useEffect(() => {
@@ -185,10 +193,10 @@ export function VideoPreview({ composition, canExport }: VideoPreviewProps) {
       <div className="flex h-16 shrink-0 items-center justify-between gap-4 border-b bg-background/70 px-4 sm:px-6">
         <div>
           <h2 className="font-heading text-sm font-semibold tracking-[-0.01em]">
-            影片预览
+            {t("preview.title")}
           </h2>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            输入内容会直接更新到画面
+            {t("preview.description")}
           </p>
         </div>
         <span className="shrink-0 rounded-full border bg-card px-3 py-1.5 font-mono text-[10px] text-muted-foreground shadow-[0_1px_2px_color-mix(in_oklch,var(--foreground),transparent_94%)]">
@@ -212,7 +220,10 @@ export function VideoPreview({ composition, canExport }: VideoPreviewProps) {
                 ? "aspect-video w-full"
                 : "aspect-[9/16] h-[min(58vh,640px)] max-h-full max-w-full"
             )}
-            aria-label={`${composition.content.productName || "未命名产品"}的发布影片预览`}
+            aria-label={t("preview.figureLabel", {
+              product:
+                composition.content.productName || t("preview.unnamedProduct"),
+            })}
           >
             <canvas
               ref={canvasReference}
@@ -232,7 +243,9 @@ export function VideoPreview({ composition, canExport }: VideoPreviewProps) {
                       icon={Loading03Icon}
                       className="size-4 animate-spin text-brand"
                     />
-                    <span className="text-sm font-semibold">正在生成 MP4…</span>
+                    <span className="text-sm font-semibold">
+                      {t("preview.generating")}
+                    </span>
                     <span className="ml-auto font-mono text-xs text-stage-foreground/60 tabular-nums">
                       {Math.round(exportState.progress * 100)}%
                     </span>
@@ -252,7 +265,7 @@ export function VideoPreview({ composition, canExport }: VideoPreviewProps) {
                     className="mt-4 w-full border-stage-foreground/15 bg-transparent text-stage-foreground hover:bg-stage-foreground/10 hover:text-stage-foreground"
                     onClick={cancelExport}
                   >
-                    取消导出
+                    {t("preview.cancelExport")}
                   </Button>
                 </div>
               </output>
@@ -269,14 +282,20 @@ export function VideoPreview({ composition, canExport }: VideoPreviewProps) {
                       variant="ghost"
                       size="icon"
                       className="border border-stage-foreground/10 bg-stage-foreground/[0.055] text-stage-foreground hover:bg-stage-foreground/12 hover:text-stage-foreground"
-                      aria-label={isPlaying ? "暂停预览" : "播放预览"}
+                      aria-label={
+                        isPlaying
+                          ? t("preview.pausePreview")
+                          : t("preview.playPreview")
+                      }
                       onClick={togglePlayback}
                     />
                   }
                 >
                   <Icon icon={isPlaying ? PauseIcon : PlayIcon} />
                 </TooltipTrigger>
-                <TooltipContent>{isPlaying ? "暂停" : "播放"}</TooltipContent>
+                <TooltipContent>
+                  {isPlaying ? t("preview.pause") : t("preview.play")}
+                </TooltipContent>
               </Tooltip>
 
               <Tooltip>
@@ -287,21 +306,21 @@ export function VideoPreview({ composition, canExport }: VideoPreviewProps) {
                       variant="ghost"
                       size="icon"
                       className="border border-stage-foreground/10 bg-stage-foreground/[0.055] text-stage-foreground hover:bg-stage-foreground/12 hover:text-stage-foreground"
-                      aria-label="重新播放"
+                      aria-label={t("preview.restart")}
                       onClick={restartPlayback}
                     />
                   }
                 >
                   <Icon icon={CircleArrowReload01Icon} />
                 </TooltipTrigger>
-                <TooltipContent>重新播放</TooltipContent>
+                <TooltipContent>{t("preview.restart")}</TooltipContent>
               </Tooltip>
 
               <input
                 ref={timelineReference}
                 type="range"
                 name="videoTime"
-                aria-label="视频时间"
+                aria-label={t("preview.timeline")}
                 className="h-11 min-w-0 flex-1 cursor-pointer appearance-none rounded-full focus-visible:ring-3 focus-visible:ring-brand/35 focus-visible:ring-offset-2 focus-visible:ring-offset-stage focus-visible:outline-none sm:h-9"
                 min={0}
                 max={VIDEO_DURATION_SECONDS}
@@ -337,7 +356,9 @@ export function VideoPreview({ composition, canExport }: VideoPreviewProps) {
                 ) : (
                   <Icon icon={Download04Icon} data-icon="inline-start" />
                 )}
-                {exportState.status === "exporting" ? "生成中…" : "导出 MP4"}
+                {exportState.status === "exporting"
+                  ? t("preview.exporting")
+                  : t("preview.export")}
               </Button>
             </div>
           </div>
@@ -348,6 +369,8 @@ export function VideoPreview({ composition, canExport }: VideoPreviewProps) {
 }
 
 function ExportFeedback({ state }: { state: VideoExportState }) {
+  const { t } = useI18n()
+
   if (state.status === "completed") {
     return (
       <div
@@ -355,7 +378,7 @@ function ExportFeedback({ state }: { state: VideoExportState }) {
         aria-live="polite"
       >
         <Icon icon={CheckmarkCircle02Icon} className="size-4 shrink-0" />
-        视频已下载，可以直接发布
+        {t("preview.downloaded")}
       </div>
     )
   }
@@ -375,10 +398,10 @@ function ExportFeedback({ state }: { state: VideoExportState }) {
   return (
     <div className="min-w-0">
       <p className="text-sm font-semibold text-stage-foreground/90">
-        所有素材仅在浏览器本地处理
+        {t("preview.localOnly")}
       </p>
       <p className="truncate text-xs text-stage-foreground/45">
-        预览和最终视频使用同一套渲染逻辑
+        {t("preview.sameRenderer")}
       </p>
     </div>
   )

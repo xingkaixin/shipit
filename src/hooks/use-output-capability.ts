@@ -6,7 +6,7 @@ export type OutputCapabilityState =
   | { status: "checking" }
   | { status: "supported"; storage: "memory" | "file" }
   | { status: "unsupported" }
-  | { status: "failed"; message: string }
+  | { status: "failed" }
 
 export function useOutputCapability(
   output: OutputSettings
@@ -53,10 +53,6 @@ async function checkOutputCapability(
     }
   } catch (error) {
     console.error("[video-capability] Check failed", error)
-    return {
-      status: "failed",
-      message:
-        error instanceof Error ? error.message : "无法检查当前浏览器的编码能力",
-    }
+    return { status: "failed" }
   }
 }

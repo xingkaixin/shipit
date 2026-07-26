@@ -1,6 +1,8 @@
 import { Tick02Icon } from "@hugeicons/core-free-icons"
 
 import { Icon } from "@/components/ui/icon"
+import { useI18n } from "@/i18n/i18n"
+import type { MessageKey } from "@/i18n/messages"
 import { cn } from "@/lib/utils"
 import {
   paletteForTemplate,
@@ -20,6 +22,8 @@ export function TemplatePicker({
   themeTone,
   onSelect,
 }: TemplatePickerProps) {
+  const { t } = useI18n()
+
   return (
     <div className="grid grid-cols-2 gap-2">
       {TEMPLATE_REGISTRY.map((template) => {
@@ -73,11 +77,15 @@ export function TemplatePicker({
               {template.name}
             </span>
             <span className="block truncate text-[10px] text-muted-foreground">
-              {template.description}
+              {t(templateDescriptionKey(template.id))}
             </span>
           </button>
         )
       })}
     </div>
   )
+}
+
+function templateDescriptionKey(templateId: TemplateId): MessageKey {
+  return `template.${templateId}`
 }

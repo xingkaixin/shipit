@@ -19,6 +19,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
+import { useI18n } from "@/i18n/i18n"
+import type { MessageKey } from "@/i18n/messages"
 import type { ReleaseDraftAction } from "@/state/release-draft-reducer"
 import { FONT_REGISTRY, fontById, isFontId } from "@/video/font-registry"
 import {
@@ -34,6 +36,7 @@ type StyleSettingsProps = {
 }
 
 export function StyleSettings({ draft, dispatch }: StyleSettingsProps) {
+  const { t } = useI18n()
   const { style } = draft
   const selectedFont = fontById(style.titleFontId)
   const customTitleColor =
@@ -42,8 +45,8 @@ export function StyleSettings({ draft, dispatch }: StyleSettingsProps) {
   return (
     <div className="space-y-7">
       <SettingsSection
-        title="主题明暗"
-        description="模板决定动效，明暗主题只替换配色。"
+        title={t("style.tone.title")}
+        description={t("style.tone.description")}
       >
         <div className="grid grid-cols-2 gap-2">
           <ToneButton
@@ -63,7 +66,7 @@ export function StyleSettings({ draft, dispatch }: StyleSettingsProps) {
         </div>
       </SettingsSection>
 
-      <SettingsSection title="动效模板">
+      <SettingsSection title={t("style.template.title")}>
         <TemplatePicker
           selectedTemplateId={style.templateId}
           themeTone={style.themeTone}
@@ -73,7 +76,7 @@ export function StyleSettings({ draft, dispatch }: StyleSettingsProps) {
         />
       </SettingsSection>
 
-      <SettingsSection title="Logo 外观">
+      <SettingsSection title={t("style.logo.title")}>
         <Select
           value={style.logoTreatment}
           onValueChange={(value) => {
@@ -83,23 +86,27 @@ export function StyleSettings({ draft, dispatch }: StyleSettingsProps) {
           }}
         >
           <SelectTrigger className="w-full">
-            <SelectValue>{logoTreatmentLabel(style.logoTreatment)}</SelectValue>
+            <SelectValue>
+              {logoTreatmentLabel(style.logoTreatment, t)}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent alignItemWithTrigger={false}>
-            <SelectItem value="plain">纯净 · 不加外框</SelectItem>
-            <SelectItem value="card">卡片 · 边框底板</SelectItem>
-            <SelectItem value="card-glow">高光卡片 · 边框与光晕</SelectItem>
+            <SelectItem value="plain">{t("style.logo.plain")}</SelectItem>
+            <SelectItem value="card">{t("style.logo.card")}</SelectItem>
+            <SelectItem value="card-glow">
+              {t("style.logo.cardGlow")}
+            </SelectItem>
           </SelectContent>
         </Select>
       </SettingsSection>
 
       <SettingsSection
-        title="标题字体"
-        description={`${selectedFont.name} · ${selectedFont.category}`}
+        title={t("style.font.title")}
+        description={`${selectedFont.name} · ${t(fontCategoryKey(selectedFont.id))}`}
       >
         <Label htmlFor="title-font">
           <Icon icon={TextFontIcon} className="size-3.5" />
-          字体家族
+          {t("style.font.family")}
         </Label>
         <Select
           value={style.titleFontId}
@@ -122,11 +129,11 @@ export function StyleSettings({ draft, dispatch }: StyleSettingsProps) {
         </Select>
       </SettingsSection>
 
-      <SettingsSection title="品牌与标题颜色">
+      <SettingsSection title={t("style.color.title")}>
         <div className="flex items-center gap-3">
           <ColorInput
             id="accent-color"
-            label="强调色"
+            label={t("style.color.accent")}
             value={style.accentColor}
             onChange={(value) => {
               dispatch({ type: "set-accent-color", value })
@@ -135,7 +142,7 @@ export function StyleSettings({ draft, dispatch }: StyleSettingsProps) {
           <div className="min-w-0 flex-1">
             <Label htmlFor="accent-color" className="mb-1">
               <Icon icon={PaintBoardIcon} className="size-3.5" />
-              强调色
+              {t("style.color.accent")}
             </Label>
             <p className="font-mono text-xs text-muted-foreground uppercase">
               {style.accentColor}
@@ -144,7 +151,9 @@ export function StyleSettings({ draft, dispatch }: StyleSettingsProps) {
         </div>
 
         <div className="space-y-2 pt-1">
-          <Label htmlFor="custom-title-color">标题颜色</Label>
+          <Label htmlFor="custom-title-color">
+            {t("style.color.titleColor")}
+          </Label>
           <div className="grid grid-cols-2 gap-2">
             <Button
               type="button"
@@ -155,7 +164,7 @@ export function StyleSettings({ draft, dispatch }: StyleSettingsProps) {
                 dispatch({ type: "use-template-title-color" })
               }}
             >
-              跟随模板
+              {t("style.color.template")}
             </Button>
             <label
               className={cn(
@@ -169,7 +178,7 @@ export function StyleSettings({ draft, dispatch }: StyleSettingsProps) {
                 className="size-3.5 rounded-full border border-black/10"
                 style={{ backgroundColor: customTitleColor }}
               />
-              自定义
+              {t("style.color.custom")}
               <input
                 id="custom-title-color"
                 name="titleColor"
@@ -191,14 +200,17 @@ export function StyleSettings({ draft, dispatch }: StyleSettingsProps) {
   )
 }
 
-function logoTreatmentLabel(treatment: LogoTreatment): string {
+function logoTreatmentLabel(
+  treatment: LogoTreatment,
+  t: (key: MessageKey) => string
+): string {
   switch (treatment) {
     case "plain":
-      return "纯净 · 不加外框"
+      return t("style.logo.plain")
     case "card":
-      return "卡片 · 边框底板"
+      return t("style.logo.card")
     case "card-glow":
-      return "高光卡片 · 边框与光晕"
+      return t("style.logo.cardGlow")
   }
 }
 
@@ -209,8 +221,9 @@ type ToneButtonProps = {
 }
 
 function ToneButton({ tone, isSelected, onSelect }: ToneButtonProps) {
+  const { t } = useI18n()
   const icon = tone === "dark" ? Moon02Icon : Sun03Icon
-  const label = tone === "dark" ? "暗色主题" : "亮色主题"
+  const label = tone === "dark" ? t("style.tone.dark") : t("style.tone.light")
 
   return (
     <button
@@ -228,6 +241,12 @@ function ToneButton({ tone, isSelected, onSelect }: ToneButtonProps) {
       {label}
     </button>
   )
+}
+
+function fontCategoryKey(
+  fontId: (typeof FONT_REGISTRY)[number]["id"]
+): MessageKey {
+  return `font.category.${fontId}`
 }
 
 type ColorInputProps = {

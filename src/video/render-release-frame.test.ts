@@ -61,6 +61,7 @@ function createComposition(
   aspectRatio: ReleaseComposition["output"]["aspectRatio"]
 ): ReleaseComposition {
   return {
+    locale: "en",
     content: {
       productName: "Shipit",
       version: "v1.0.0",

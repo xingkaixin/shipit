@@ -15,28 +15,32 @@ export type LogoImageState =
   | { status: "empty"; image: null }
   | { status: "loading"; image: null }
   | { status: "ready"; image: ReleaseLogoImage }
-  | { status: "failed"; image: null; message: string }
+  | { status: "failed"; image: null; error: LogoValidationError }
+
+export type LogoValidationError = "bytes" | "decode" | "dimensions" | "type"
 
 export function isLogoStateExportable(state: LogoImageState): boolean {
   return state.status === "empty" || state.status === "ready"
 }
 
-export function logoFileValidationMessage(file: File): string | null {
+export function logoFileValidationError(
+  file: File
+): LogoValidationError | null {
   if (!(ACCEPTED_LOGO_TYPES as readonly string[]).includes(file.type)) {
-    return "请选择 PNG、JPG 或 WebP 文件"
+    return "type"
   }
 
   if (file.size > MAX_LOGO_BYTES) {
-    return "Logo 文件不能超过 10 MB"
+    return "bytes"
   }
 
   return null
 }
 
-export function logoDimensionValidationMessage(
+export function logoDimensionValidationError(
   width: number,
   height: number
-): string | null {
+): LogoValidationError | null {
   if (
     width <= 0 ||
     height <= 0 ||
@@ -44,7 +48,7 @@ export function logoDimensionValidationMessage(
     height > MAX_LOGO_EDGE ||
     width * height > MAX_LOGO_PIXELS
   ) {
-    return "Logo 尺寸过大，请使用不超过 8192 像素且低于 1600 万像素的图片"
+    return "dimensions"
   }
 
   return null
@@ -67,12 +71,12 @@ export function useLogoImage(file: File | null): LogoImageState {
     setState({ status: "loading", image: null })
 
     image.onload = () => {
-      const validationMessage = logoDimensionValidationMessage(
+      const validationError = logoDimensionValidationError(
         image.naturalWidth,
         image.naturalHeight
       )
 
-      if (validationMessage) {
+      if (validationError) {
         console.error("[logo] Image dimensions exceed limits", {
           fileName: file.name,
           width: image.naturalWidth,
@@ -81,7 +85,7 @@ export function useLogoImage(file: File | null): LogoImageState {
         setState({
           status: "failed",
           image: null,
-          message: validationMessage,
+          error: validationError,
         })
         return
       }
@@ -103,7 +107,7 @@ export function useLogoImage(file: File | null): LogoImageState {
       setState({
         status: "failed",
         image: null,
-        message: "无法读取这个 Logo，请换一张图片",
+        error: "decode",
       })
     }
     image.src = imageUrl

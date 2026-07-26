@@ -21,9 +21,12 @@ import {
 } from "@/components/ui/select"
 import {
   ACCEPTED_LOGO_TYPES,
-  logoFileValidationMessage,
+  logoFileValidationError,
   type LogoImageState,
+  type LogoValidationError,
 } from "@/hooks/use-logo-image"
+import { useI18n } from "@/i18n/i18n"
+import type { MessageKey } from "@/i18n/messages"
 import type { ReleaseDraftAction } from "@/state/release-draft-reducer"
 import { isDetailKind, type ReleaseDraft } from "@/video/release-video"
 
@@ -38,11 +41,14 @@ export function ContentSettings({
   logoState,
   dispatch,
 }: ContentSettingsProps) {
-  const [logoValidationMessage, setLogoValidationMessage] = React.useState("")
+  const { t } = useI18n()
+  const [logoValidationError, setLogoValidationError] =
+    React.useState<LogoValidationError | null>(null)
   const { content } = draft
-  const logoMessage =
-    logoValidationMessage ||
-    (logoState.status === "failed" ? logoState.message : "")
+  const logoError =
+    logoValidationError ||
+    (logoState.status === "failed" ? logoState.error : null)
+  const logoMessage = logoError ? t(logoErrorMessageKey(logoError)) : ""
 
   function selectLogo(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0] ?? null
@@ -52,21 +58,21 @@ export function ContentSettings({
       return
     }
 
-    const validationMessage = logoFileValidationMessage(file)
-    if (validationMessage) {
-      setLogoValidationMessage(validationMessage)
+    const validationError = logoFileValidationError(file)
+    if (validationError) {
+      setLogoValidationError(validationError)
       return
     }
 
-    setLogoValidationMessage("")
+    setLogoValidationError(null)
     dispatch({ type: "set-logo-file", value: file })
   }
 
   return (
     <div className="space-y-7">
       <SettingsSection
-        title="产品标识"
-        description="透明背景 Logo 在纯净模式下效果最佳。"
+        title={t("content.logo.title")}
+        description={t("content.logo.description")}
       >
         <div className="flex items-center gap-2">
           <label
@@ -86,7 +92,7 @@ export function ContentSettings({
               className="size-4 shrink-0 text-muted-foreground"
             />
             <span className="truncate">
-              {content.logoFile?.name ?? "上传产品 Logo"}
+              {content.logoFile?.name ?? t("content.logo.upload")}
             </span>
           </label>
           {content.logoFile ? (
@@ -94,7 +100,7 @@ export function ContentSettings({
               type="button"
               variant="outline"
               size="icon"
-              aria-label="移除 Logo"
+              aria-label={t("content.logo.remove")}
               onClick={() => {
                 dispatch({ type: "set-logo-file", value: null })
               }}
@@ -109,17 +115,17 @@ export function ContentSettings({
           </p>
         ) : (
           <p className="text-xs text-muted-foreground">
-            PNG、JPG 或 WebP，最大 10&nbsp;MB，最多 1600 万像素
+            {t("content.logo.help")}
           </p>
         )}
       </SettingsSection>
 
-      <SettingsSection title="发布信息">
+      <SettingsSection title={t("content.release.title")}>
         <div className="grid grid-cols-[minmax(0,1fr)_112px] gap-3">
           <div className="space-y-2">
             <Label htmlFor="product-name">
               <Icon icon={TextFontIcon} className="size-3.5" />
-              产品名称
+              {t("content.productName")}
             </Label>
             <Input
               id="product-name"
@@ -127,7 +133,7 @@ export function ContentSettings({
               value={content.productName}
               maxLength={48}
               autoComplete="off"
-              placeholder="例如 Shipit…"
+              placeholder={t("content.productName.placeholder")}
               onChange={(event) => {
                 dispatch({
                   type: "set-product-name",
@@ -139,7 +145,7 @@ export function ContentSettings({
           <div className="space-y-2">
             <Label htmlFor="version">
               <Icon icon={PackageIcon} className="size-3.5" />
-              版本
+              {t("content.version")}
             </Label>
             <Input
               id="version"
@@ -148,7 +154,7 @@ export function ContentSettings({
               maxLength={24}
               autoComplete="off"
               spellCheck={false}
-              placeholder="例如 v1.0.0…"
+              placeholder={t("content.version.placeholder")}
               onChange={(event) => {
                 dispatch({ type: "set-version", value: event.target.value })
               }}
@@ -158,14 +164,14 @@ export function ContentSettings({
       </SettingsSection>
 
       <SettingsSection
-        title="补充信息"
-        description="可展示域名、安装命令或一句发布说明。"
+        title={t("content.detail.title")}
+        description={t("content.detail.description")}
       >
         <div className="space-y-3">
           <div className="space-y-2">
             <Label htmlFor="detail-kind">
               <Icon icon={Link01Icon} className="size-3.5" />
-              信息类型
+              {t("content.detail.kind")}
             </Label>
             <Select
               value={content.detail.kind}
@@ -177,21 +183,27 @@ export function ContentSettings({
             >
               <SelectTrigger id="detail-kind" className="w-full">
                 <SelectValue>
-                  {detailKindLabel(content.detail.kind)}
+                  {detailKindLabel(content.detail.kind, t)}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent alignItemWithTrigger={false}>
-                <SelectItem value="none">不显示</SelectItem>
-                <SelectItem value="website">产品域名</SelectItem>
-                <SelectItem value="install">安装命令</SelectItem>
-                <SelectItem value="custom">自定义文字</SelectItem>
+                <SelectItem value="none">{t("content.detail.none")}</SelectItem>
+                <SelectItem value="website">
+                  {t("content.detail.website")}
+                </SelectItem>
+                <SelectItem value="install">
+                  {t("content.detail.install")}
+                </SelectItem>
+                <SelectItem value="custom">
+                  {t("content.detail.custom")}
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {content.detail.kind !== "none" ? (
             <div className="space-y-2">
-              <Label htmlFor="detail-value">显示内容</Label>
+              <Label htmlFor="detail-value">{t("content.detail.value")}</Label>
               <Input
                 id="detail-value"
                 name="releaseDetail"
@@ -202,7 +214,7 @@ export function ContentSettings({
                 maxLength={80}
                 autoComplete="off"
                 spellCheck={content.detail.kind === "custom"}
-                placeholder={detailInputPlaceholder(content.detail.kind)}
+                placeholder={detailInputPlaceholder(content.detail.kind, t)}
                 onChange={(event) => {
                   dispatch({
                     type: "set-detail-value",
@@ -219,31 +231,37 @@ export function ContentSettings({
 }
 
 function detailKindLabel(
-  kind: ReleaseDraft["content"]["detail"]["kind"]
+  kind: ReleaseDraft["content"]["detail"]["kind"],
+  t: (key: MessageKey) => string
 ): string {
   switch (kind) {
     case "none":
-      return "不显示"
+      return t("content.detail.none")
     case "website":
-      return "产品域名"
+      return t("content.detail.website")
     case "install":
-      return "安装命令"
+      return t("content.detail.install")
     case "custom":
-      return "自定义文字"
+      return t("content.detail.custom")
   }
 }
 
 function detailInputPlaceholder(
-  kind: ReleaseDraft["content"]["detail"]["kind"]
+  kind: ReleaseDraft["content"]["detail"]["kind"],
+  t: (key: MessageKey) => string
 ): string {
   switch (kind) {
     case "none":
       return ""
     case "website":
-      return "例如 shipit.dev…"
+      return t("content.detail.websitePlaceholder")
     case "install":
-      return "例如 pnpm add shipit…"
+      return t("content.detail.installPlaceholder")
     case "custom":
-      return "例如 Available now…"
+      return t("content.detail.customPlaceholder")
   }
+}
+
+function logoErrorMessageKey(error: LogoValidationError): MessageKey {
+  return `logo.error.${error}`
 }

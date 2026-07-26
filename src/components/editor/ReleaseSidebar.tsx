@@ -12,6 +12,7 @@ import { Icon } from "@/components/ui/icon"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { LogoImageState } from "@/hooks/use-logo-image"
 import type { OutputCapabilityState } from "@/hooks/use-output-capability"
+import { useI18n } from "@/i18n/i18n"
 import type { ReleaseDraftAction } from "@/state/release-draft-reducer"
 import type { ReleaseDraft } from "@/video/release-video"
 
@@ -28,14 +29,16 @@ export function ReleaseSidebar({
   outputCapability,
   dispatch,
 }: ReleaseSidebarProps) {
+  const { t } = useI18n()
+
   return (
     <aside className="flex min-h-0 flex-col border-b bg-background lg:border-r lg:border-b-0">
       <div className="px-5 pt-5 pb-4 sm:px-6">
         <p className="mb-1.5 text-xs font-medium text-muted-foreground">
-          发布影片
+          {t("sidebar.eyebrow")}
         </p>
         <h1 className="font-heading text-xl font-semibold tracking-[-0.025em] text-balance">
-          制作发布短片
+          {t("sidebar.title")}
         </h1>
       </div>
 
@@ -44,15 +47,15 @@ export function ReleaseSidebar({
           <TabsList className="grid h-[52px] w-full grid-cols-3 group-data-horizontal/tabs:h-[52px] sm:h-10 sm:group-data-horizontal/tabs:h-10">
             <TabsTrigger value="content">
               <Icon icon={Settings02Icon} data-icon="inline-start" />
-              内容
+              {t("sidebar.content")}
             </TabsTrigger>
             <TabsTrigger value="style">
               <Icon icon={PaintBoardIcon} data-icon="inline-start" />
-              样式
+              {t("sidebar.style")}
             </TabsTrigger>
             <TabsTrigger value="output">
               <Icon icon={Film01Icon} data-icon="inline-start" />
-              输出
+              {t("sidebar.output")}
             </TabsTrigger>
           </TabsList>
         </div>

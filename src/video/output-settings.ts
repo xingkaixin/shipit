@@ -65,15 +65,6 @@ export function outputBitrate(
   return Math.round(pixelsPerSecond * 0.12)
 }
 
-export function outputSummary(
-  aspectRatio: AspectRatio,
-  resolution: Resolution,
-  frameRate: FrameRate
-): string {
-  const { width, height } = outputDimensions(aspectRatio, resolution)
-  return `${VIDEO_DURATION_SECONDS} 秒 / ${width}×${height} / ${frameRate} FPS`
-}
-
 export function isAspectRatio(value: string | null): value is AspectRatio {
   return ASPECT_RATIOS.some((aspectRatio) => aspectRatio === value)
 }

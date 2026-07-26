@@ -16,6 +16,7 @@ vi.mock("@/video/export-release-video", () => ({
 }))
 
 const BASE_COMPOSITION: ReleaseComposition = {
+  locale: "en",
   content: {
     productName: "Shipit",
     version: "v1.0.0",

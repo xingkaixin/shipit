@@ -6,6 +6,7 @@ import {
   progress,
 } from "@/video/animation"
 import { colorWithAlpha, mixHexColors } from "@/video/color"
+import { translate } from "@/i18n/i18n"
 import {
   drawConfetti,
   prepareConfetti,
@@ -46,6 +47,7 @@ type FrameStyle = {
 type ReleaseFramePlan = {
   frameStyle: FrameStyle
   confetti: ConfettiPlan
+  badge: string
   title: FittedCanvasText & {
     color: string
     fontFamily: string
@@ -126,7 +128,10 @@ function framePlanFor(
   }
 
   const frameStyle = frameStyleFor(composition)
-  const titleText = composition.content.productName.trim() || "Untitled"
+  const titleText =
+    composition.content.productName.trim() ||
+    translate(composition.locale, "video.untitled")
+  const badge = translate(composition.locale, "video.badge")
   const titleFontFamily = fontById(composition.style.titleFontId).family
   const title = fitSingleLineText(context, {
     text: titleText,
@@ -166,6 +171,7 @@ function framePlanFor(
 
   const plan: ReleaseFramePlan = {
     frameStyle,
+    badge,
     confetti: prepareConfetti(
       frameStyle.template,
       frameStyle.palette,
@@ -203,12 +209,15 @@ function areCompositionFontsReady(composition: ReleaseComposition): boolean {
     return true
   }
 
-  const title = composition.content.productName.trim() || "Untitled"
+  const title =
+    composition.content.productName.trim() ||
+    translate(composition.locale, "video.untitled")
+  const badge = translate(composition.locale, "video.badge")
   const titleFontFamily = fontById(composition.style.titleFontId).family
 
   return (
     document.fonts.check(`760 16px ${titleFontFamily}`, title) &&
-    document.fonts.check(`650 16px ${UI_FONT_FAMILY}`, "NEW RELEASE")
+    document.fonts.check(`650 16px ${UI_FONT_FAMILY}`, badge)
   )
 }
 
@@ -504,7 +513,7 @@ function drawReleaseContent(
   plan: ReleaseFramePlan,
   time: number
 ): void {
-  drawEyebrow(context, plan.frameStyle, time)
+  drawEyebrow(context, plan.frameStyle, plan.badge, time)
   drawLogo(context, composition, plan.frameStyle, time)
   drawProductName(context, plan, time)
   drawVersion(context, composition, plan, time)
@@ -514,6 +523,7 @@ function drawReleaseContent(
 function drawEyebrow(
   context: CanvasRenderingContext2D,
   frameStyle: FrameStyle,
+  label: string,
   time: number
 ): void {
   const reveal = easeOutCubic(progress(time, 0.5, 0.55))
@@ -525,11 +535,7 @@ function drawEyebrow(
   context.textAlign = "center"
   context.textBaseline = "middle"
   context.letterSpacing = "9px"
-  context.fillText(
-    "NEW RELEASE",
-    frameStyle.layout.centerX,
-    frameStyle.layout.eyebrowY
-  )
+  context.fillText(label, frameStyle.layout.centerX, frameStyle.layout.eyebrowY)
   context.restore()
 }
 

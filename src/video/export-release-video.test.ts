@@ -96,6 +96,7 @@ vi.mock("@/video/video-encoding-support", () => ({
 }))
 
 const BASE_COMPOSITION: ReleaseComposition = {
+  locale: "en",
   content: {
     productName: "Shipit",
     version: "v1.0.0",

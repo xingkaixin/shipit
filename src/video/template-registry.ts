@@ -29,7 +29,6 @@ export type TemplatePalette = {
 export type TemplateDefinition = {
   id: TemplateId
   name: string
-  description: string
   pattern: TemplatePattern
   layout: TemplateLayout
   seed: number
@@ -40,7 +39,6 @@ export const TEMPLATE_REGISTRY: readonly TemplateDefinition[] = [
   {
     id: "midnight-burst",
     name: "Midnight Burst",
-    description: "高对比网格礼花",
     pattern: "grid",
     layout: "stacked",
     seed: 721,
@@ -64,7 +62,6 @@ export const TEMPLATE_REGISTRY: readonly TemplateDefinition[] = [
   {
     id: "aurora-launch",
     name: "Aurora Launch",
-    description: "流动极光与光点",
     pattern: "aurora",
     layout: "stacked",
     seed: 1439,
@@ -88,7 +85,6 @@ export const TEMPLATE_REGISTRY: readonly TemplateDefinition[] = [
   {
     id: "paper-parade",
     name: "Paper Parade",
-    description: "温暖纸张放射线",
     pattern: "rays",
     layout: "stacked",
     seed: 2861,
@@ -112,7 +108,6 @@ export const TEMPLATE_REGISTRY: readonly TemplateDefinition[] = [
   {
     id: "kinetic-signal",
     name: "Kinetic Signal",
-    description: "大胆排版与速度线",
     pattern: "stripes",
     layout: "type-forward",
     seed: 3929,
@@ -136,7 +131,6 @@ export const TEMPLATE_REGISTRY: readonly TemplateDefinition[] = [
   {
     id: "studio-spotlight",
     name: "Studio Spotlight",
-    description: "舞台聚光与悬浮卡片",
     pattern: "spotlight",
     layout: "spotlight",
     seed: 5107,

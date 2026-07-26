@@ -13,6 +13,7 @@ import {
   outputFrameCount,
 } from "@/video/output-settings"
 import { renderReleaseFrame } from "@/video/render-release-frame"
+import { ReleaseExportError } from "@/video/release-export-error"
 import type {
   ReleaseComposition,
   ReleaseLogoImage,
@@ -60,7 +61,7 @@ export async function exportReleaseVideo({
 
   const context = canvas.getContext("2d", { alpha: false })
   if (!context) {
-    throw new Error("当前浏览器无法创建视频画布")
+    throw new ReleaseExportError("canvas")
   }
 
   const compositionSnapshot = snapshotComposition(composition)
@@ -169,7 +170,7 @@ async function createOutputStorage(
     fastStart: "in-memory",
     video: async () => {
       if (!target.buffer) {
-        throw new Error("视频编码完成，但没有生成文件")
+        throw new ReleaseExportError("empty")
       }
 
       return new Blob([target.buffer], { type: "video/mp4" })
@@ -231,7 +232,7 @@ function snapshotLogo(image: ReleaseLogoImage | null): ReleaseLogoImage | null {
   const context = canvas.getContext("2d")
 
   if (!context) {
-    throw new Error("当前浏览器无法复制 Logo 素材")
+    throw new ReleaseExportError("logo")
   }
 
   context.drawImage(image.source, 0, 0, canvas.width, canvas.height)
@@ -244,7 +245,7 @@ function snapshotLogo(image: ReleaseLogoImage | null): ReleaseLogoImage | null {
 
 function throwIfAborted(signal?: AbortSignal): void {
   if (signal?.aborted) {
-    throw signal.reason ?? new DOMException("视频导出已取消", "AbortError")
+    throw signal.reason ?? new DOMException("Export cancelled", "AbortError")
   }
 }
 
