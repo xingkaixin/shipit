@@ -1,9 +1,25 @@
 # Shipit
 
-把 Logo、产品名称、版本和发布信息变成一条 5 秒庆祝短片。预览和
-MP4 导出完全在浏览器本地完成。
+Shipit turns a product logo, name, version, and release details into a
+five-second celebration film. Preview rendering and MP4 export happen entirely
+in the browser.
 
-## 开发
+## Features
+
+- Five motion templates with light and dark palettes
+- Landscape and portrait compositions
+- 1080p and 4K output at 30 or 60 FPS
+- Optional logo framing, custom accent colors, and title fonts
+- English and Simplified Chinese interfaces
+- Local-only logo processing and video encoding
+
+## Requirements
+
+- Node.js 24
+- pnpm 11.17.0
+- A browser with H.264 WebCodecs encoding support for MP4 export
+
+## Development
 
 ```bash
 corepack enable
@@ -11,17 +27,47 @@ pnpm install
 pnpm dev
 ```
 
-## 验证
+## Verification
 
 ```bash
 pnpm check
 pnpm build
 ```
 
-## 浏览器与输出
+`pnpm check` runs formatting, linting, type checking, and the test suite. The
+production bundle is written to `dist`.
 
-- MP4 导出依赖浏览器的 H.264/WebCodecs 编码能力，页面会按所选规格实时检查。
-- 4K 导出优先写入浏览器的本地临时文件，避免完整视频常驻内存；不支持该能力时会回退到内存导出。
-- 4K 60 FPS 的像素处理量约为 1080p 30 FPS 的 8 倍，移动设备建议优先使用 1080p。
-- Logo 支持 PNG、JPG 和 WebP，最大 10 MB、最长边 8192 像素且总像素低于 1600 万。
-- 素材、预览和视频编码都在当前浏览器本地完成。
+## Browser and Export Behavior
+
+- MP4 export depends on the browser's H.264/WebCodecs encoder. Shipit checks
+  support for the selected output configuration at runtime.
+- 4K export prefers an origin-private temporary file so the complete video does
+  not remain in memory. Browsers without that capability fall back to an
+  in-memory export.
+- 4K at 60 FPS processes roughly eight times as many pixels as 1080p at 30 FPS.
+  Use 1080p on mobile or memory-constrained devices.
+- Logos may be PNG, JPEG, or WebP files up to 10 MB, 8192 pixels per side, and
+  16 million total pixels.
+- Uploaded assets, previews, and encoded videos remain in the current browser.
+
+## Localization
+
+Shipit supports English and Simplified Chinese. It uses the saved language
+preference when available, then falls back to the browser language. Interface
+messages are defined in `src/i18n/messages.ts`.
+
+## Cloudflare Pages
+
+The application is a static Vite site and can be deployed directly to
+Cloudflare Pages with the following settings:
+
+| Setting                | Value        |
+| ---------------------- | ------------ |
+| Framework preset       | React (Vite) |
+| Build command          | `pnpm build` |
+| Build output directory | `dist`       |
+| Node.js version        | `24.18.0`    |
+| pnpm version           | `11.17.0`    |
+
+Set `NODE_VERSION` and `PNPM_VERSION` in the Pages build environment to keep
+Cloudflare aligned with local development and CI.
