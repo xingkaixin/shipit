@@ -29,7 +29,7 @@ export function OutputToolbar({
   const dimensions = outputDimensions(output.aspectRatio, output.resolution)
 
   return (
-    <div className="flex shrink-0 flex-wrap items-center gap-2 border-b bg-background/70 px-4 py-2.5 sm:px-6">
+    <div className="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-2 border-b bg-background/70 px-4 py-3.5 sm:px-6">
       <SegmentedControl
         label={t("output.aspect.title")}
         value={output.aspectRatio}

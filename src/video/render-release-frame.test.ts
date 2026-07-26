@@ -4,11 +4,11 @@ import { LOGICAL_VIEWPORTS } from "@/video/output-settings"
 import { renderReleaseFrame } from "@/video/render-release-frame"
 import type { ReleaseComposition } from "@/video/release-video"
 import { PALETTE_REGISTRY } from "@/video/palette-registry"
-import { TEMPLATE_REGISTRY } from "@/video/template-registry"
+import { BACKGROUND_REGISTRY } from "@/video/background-registry"
 
 describe("renderReleaseFrame", () => {
-  it("renders every template, palette, and aspect combination", () => {
-    for (const template of TEMPLATE_REGISTRY) {
+  it("renders every background, palette, and aspect combination", () => {
+    for (const background of BACKGROUND_REGISTRY) {
       for (const palette of PALETTE_REGISTRY) {
         for (const aspectRatio of ["landscape", "portrait"] as const) {
           const context = createCanvasContext(
@@ -19,7 +19,7 @@ describe("renderReleaseFrame", () => {
           expect(() => {
             renderReleaseFrame(
               context,
-              createComposition(template.id, palette.id, aspectRatio),
+              createComposition(background.id, palette.id, aspectRatio),
               2.62
             )
           }).not.toThrow()
@@ -65,7 +65,7 @@ describe("renderReleaseFrame", () => {
 })
 
 function createComposition(
-  templateId: ReleaseComposition["style"]["templateId"],
+  backgroundId: ReleaseComposition["style"]["backgroundId"],
   paletteId: ReleaseComposition["style"]["paletteId"],
   aspectRatio: ReleaseComposition["output"]["aspectRatio"]
 ): ReleaseComposition {
@@ -78,12 +78,12 @@ function createComposition(
       logoImage: null,
     },
     style: {
-      templateId,
+      backgroundId,
       paletteId,
       accentColor: "#B7FF5A",
       logoTreatment: "card-glow",
       titleFontId: "geist",
-      titleColor: { mode: "template" },
+      titleColor: { mode: "theme" },
     },
     output: {
       aspectRatio,

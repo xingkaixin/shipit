@@ -2,22 +2,22 @@ import * as React from "react"
 
 import { renderReleaseFrame } from "@/video/render-release-frame"
 import type { ReleaseComposition } from "@/video/release-video"
-import type { TemplateId } from "@/video/template-registry"
+import type { BackgroundId } from "@/video/background-registry"
 
 /** All three confetti bursts are in the air, and every reveal has landed. */
 const THUMBNAIL_TIME_SECONDS = 2.62
 const THUMBNAIL_WIDTH = 320
 const THUMBNAIL_HEIGHT = 180
 
-type TemplateThumbnailProps = {
+type BackgroundThumbnailProps = {
   composition: ReleaseComposition
-  templateId: TemplateId
+  backgroundId: BackgroundId
 }
 
-export function TemplateThumbnail({
+export function BackgroundThumbnail({
   composition,
-  templateId,
-}: TemplateThumbnailProps) {
+  backgroundId,
+}: BackgroundThumbnailProps) {
   const canvasReference = React.useRef<HTMLCanvasElement>(null)
   const thumbnailComposition = React.useMemo<ReleaseComposition>(
     () => ({
@@ -28,7 +28,7 @@ export function TemplateThumbnail({
         detail: { kind: "none" },
         logoImage: composition.content.logoImage,
       },
-      style: { ...composition.style, templateId },
+      style: { ...composition.style, backgroundId },
       output: { aspectRatio: "landscape", resolution: "1080p", frameRate: 30 },
     }),
     [
@@ -37,7 +37,7 @@ export function TemplateThumbnail({
       composition.content.version,
       composition.locale,
       composition.style,
-      templateId,
+      backgroundId,
     ]
   )
 

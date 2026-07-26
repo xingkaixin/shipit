@@ -6,7 +6,7 @@ import type {
   Resolution,
 } from "@/video/output-settings"
 import type { PaletteId } from "@/video/palette-registry"
-import type { TemplateId } from "@/video/template-registry"
+import type { BackgroundId } from "@/video/background-registry"
 
 export const VIDEO_DURATION_SECONDS = 5
 
@@ -27,12 +27,10 @@ export const LOGO_TREATMENTS = ["plain", "card", "card-glow"] as const
 
 export type LogoTreatment = (typeof LOGO_TREATMENTS)[number]
 
-export type TitleColor =
-  | { mode: "template" }
-  | { mode: "custom"; value: string }
+export type TitleColor = { mode: "theme" } | { mode: "custom"; value: string }
 
 export type ReleaseStyle = {
-  templateId: TemplateId
+  backgroundId: BackgroundId
   paletteId: PaletteId
   accentColor: string
   logoTreatment: LogoTreatment

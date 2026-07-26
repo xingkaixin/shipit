@@ -66,10 +66,10 @@ export function TypeSettings({ style, dispatch }: TypeSettingsProps) {
         </Label>
         <div className="grid grid-cols-2 gap-2">
           <OptionButton
-            isSelected={style.titleColor.mode === "template"}
+            isSelected={style.titleColor.mode === "theme"}
             className="h-10"
             onClick={() => {
-              dispatch({ type: "use-template-title-color" })
+              dispatch({ type: "use-theme-title-color" })
             }}
           >
             {t("style.color.theme")}

@@ -26,9 +26,9 @@ import {
 } from "@/video/release-video"
 import { paletteById, type PaletteDefinition } from "@/video/palette-registry"
 import {
-  templateById,
-  type TemplateDefinition,
-} from "@/video/template-registry"
+  backgroundById,
+  type BackgroundDefinition,
+} from "@/video/background-registry"
 import { fitSingleLineText, type FittedCanvasText } from "@/video/text-layout"
 
 const DETAIL_MAX_FONT_SIZE = 34
@@ -37,7 +37,7 @@ const UI_FONT_FAMILY = '"Geist Variable", "Helvetica Neue", sans-serif'
 const MONO_FONT_FAMILY = '"SFMono-Regular", Consolas, monospace'
 
 type FrameStyle = {
-  template: TemplateDefinition
+  background: BackgroundDefinition
   palette: PaletteDefinition
   layout: ReleaseLayout
   viewport: VideoDimensions
@@ -172,7 +172,7 @@ function framePlanFor(
     frameStyle,
     badge,
     confetti: prepareConfetti(
-      frameStyle.template.seed,
+      frameStyle.background.seed,
       frameStyle.palette,
       composition.style.accentColor
     ),
@@ -221,16 +221,16 @@ function areCompositionFontsReady(composition: ReleaseComposition): boolean {
 }
 
 function frameStyleFor(composition: ReleaseComposition): FrameStyle {
-  const template = templateById(composition.style.templateId)
+  const background = backgroundById(composition.style.backgroundId)
   const palette = paletteById(composition.style.paletteId)
   const viewport = LOGICAL_VIEWPORTS[composition.output.aspectRatio]
   const layout = releaseLayout(
     composition.output.aspectRatio,
-    template.layout,
+    background.layout,
     viewport
   )
 
-  return { template, palette, viewport, layout }
+  return { background, palette, viewport, layout }
 }
 
 function drawBackground(
@@ -239,12 +239,12 @@ function drawBackground(
   frameStyle: FrameStyle,
   time: number
 ): void {
-  const { template, palette, viewport, layout } = frameStyle
+  const { background, palette, viewport, layout } = frameStyle
 
   context.fillStyle = palette.background
   context.fillRect(0, 0, viewport.width, viewport.height)
 
-  switch (template.pattern) {
+  switch (background.pattern) {
     case "grid":
       drawGridBackground(
         context,

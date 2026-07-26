@@ -8,6 +8,13 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+ * The editor is a fixed, self-scrolling shell only when the viewport can hold
+ * it. Shorter windows scroll the page instead, so clipping never hides the
+ * export bar and the shell never outgrows the document.
+ */
+@custom-variant desk (@media (width >= 64rem) and (height >= 42.5rem));
+
 @theme inline {
   --font-heading: "Space Grotesk Variable", sans-serif;
   --font-sans: "Geist Variable", sans-serif;
@@ -103,10 +110,10 @@
   /*
    * Everything stacked above and below the landscape canvas at lg, so the
    * stage can size itself from the remaining viewport height:
-   * header 3.5 + output toolbar 3.5 + stage padding 4 + card padding 1
+   * header 3.5 + output toolbar 4 + stage padding 4 + card padding 1
    * + transport 3.25 + export bar 4 + hairline borders.
    */
-  --stage-chrome: 19.5rem;
+  --stage-chrome: 20rem;
 }
 
 .dark {
@@ -244,7 +251,7 @@ input[type="range"]::-moz-range-thumb {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .template-option:hover {
+  .background-option:hover {
     transform: translateY(-2px);
   }
 }

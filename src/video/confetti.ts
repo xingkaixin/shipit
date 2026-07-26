@@ -44,7 +44,7 @@ type ConfettiRenderOptions = {
 }
 
 export function prepareConfetti(
-  templateSeed: number,
+  backgroundSeed: number,
   palette: PaletteDefinition,
   accentColor: string
 ): ConfettiPlan {
@@ -59,7 +59,7 @@ export function prepareConfetti(
 
       for (let index = 0; index < burst.particlesPerSide; index += 1) {
         const particleSeed =
-          templateSeed + burstIndex * 10_000 + sideSeed * 101 + index * 31
+          backgroundSeed + burstIndex * 10_000 + sideSeed * 101 + index * 31
         const speed =
           (760 + randomUnit(particleSeed + 2) * 470) * burst.strength
         const layer = index % 4 === 0 ? "front" : "back"

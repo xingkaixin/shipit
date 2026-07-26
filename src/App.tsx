@@ -11,7 +11,7 @@ export function App() {
   const { appearance, setAppearance } = useAppearance()
 
   return (
-    <div className="flex min-h-svh flex-col bg-workspace lg:h-svh lg:min-h-[680px] lg:overflow-hidden">
+    <div className="flex min-h-svh flex-col bg-workspace desk:h-svh desk:overflow-hidden">
       <a
         href="#release-editor"
         className="sr-only z-50 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-brand-foreground focus:not-sr-only focus:fixed focus:top-3 focus:left-3"

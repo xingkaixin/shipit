@@ -50,7 +50,7 @@ export function ReleaseEditor() {
   return (
     <main
       id="release-editor"
-      className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[22rem_minmax(0,1fr)] lg:overflow-hidden"
+      className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[22rem_minmax(0,1fr)] desk:overflow-hidden"
     >
       <ReleaseInspector
         draft={draft}

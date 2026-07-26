@@ -15,7 +15,7 @@ import {
   paletteById,
   type PaletteId,
 } from "@/video/palette-registry"
-import type { TemplateId } from "@/video/template-registry"
+import type { BackgroundId } from "@/video/background-registry"
 
 const INITIAL_PALETTE_ID = "midnight"
 
@@ -27,12 +27,12 @@ export const INITIAL_RELEASE_DRAFT: ReleaseDraft = {
     logoFile: null,
   },
   style: {
-    templateId: "midnight-burst",
+    backgroundId: "midnight-burst",
     paletteId: INITIAL_PALETTE_ID,
     accentColor: defaultAccentOf(paletteById(INITIAL_PALETTE_ID)),
     logoTreatment: "card-glow",
     titleFontId: "geist",
-    titleColor: { mode: "template" },
+    titleColor: { mode: "theme" },
   },
   output: {
     aspectRatio: "landscape",
@@ -46,13 +46,13 @@ export type ReleaseDraftAction =
   | { type: "set-version"; value: string }
   | { type: "set-detail-kind"; value: DetailKind }
   | { type: "set-detail-value"; value: string }
-  | { type: "set-template"; value: TemplateId }
+  | { type: "set-background"; value: BackgroundId }
   | { type: "set-palette"; value: PaletteId }
   | { type: "set-accent-color"; value: string }
   | { type: "set-logo-file"; value: File | null }
   | { type: "set-logo-treatment"; value: LogoTreatment }
   | { type: "set-title-font"; value: FontId }
-  | { type: "use-template-title-color" }
+  | { type: "use-theme-title-color" }
   | { type: "set-custom-title-color"; value: string }
   | { type: "set-aspect-ratio"; value: AspectRatio }
   | { type: "set-resolution"; value: Resolution }
@@ -85,8 +85,8 @@ export function releaseDraftReducer(
       return withContent(draft, {
         detail: { ...draft.content.detail, value: action.value },
       })
-    case "set-template":
-      return withStyle(draft, { templateId: action.value })
+    case "set-background":
+      return withStyle(draft, { backgroundId: action.value })
     case "set-palette":
       return withStyle(draft, {
         paletteId: action.value,
@@ -100,8 +100,8 @@ export function releaseDraftReducer(
       return withStyle(draft, { logoTreatment: action.value })
     case "set-title-font":
       return withStyle(draft, { titleFontId: action.value })
-    case "use-template-title-color":
-      return withStyle(draft, { titleColor: { mode: "template" } })
+    case "use-theme-title-color":
+      return withStyle(draft, { titleColor: { mode: "theme" } })
     case "set-custom-title-color":
       return withStyle(draft, {
         titleColor: { mode: "custom", value: action.value },

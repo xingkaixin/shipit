@@ -12,12 +12,12 @@ const BASE_COMPOSITION: ReleaseComposition = {
     logoImage: null,
   },
   style: {
-    templateId: "midnight-burst",
+    backgroundId: "midnight-burst",
     paletteId: "midnight",
     accentColor: "#B7FF5A",
     logoTreatment: "card-glow",
     titleFontId: "geist",
-    titleColor: { mode: "template" },
+    titleColor: { mode: "theme" },
   },
   output: {
     aspectRatio: "landscape",

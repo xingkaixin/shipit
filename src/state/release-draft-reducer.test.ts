@@ -6,13 +6,13 @@ import {
 } from "@/state/release-draft-reducer"
 
 describe("releaseDraftReducer", () => {
-  it("keeps the accent color when only the motion template changes", () => {
+  it("keeps the accent color when only the background changes", () => {
     const nextDraft = releaseDraftReducer(INITIAL_RELEASE_DRAFT, {
-      type: "set-template",
+      type: "set-background",
       value: "paper-parade",
     })
 
-    expect(nextDraft.style.templateId).toBe("paper-parade")
+    expect(nextDraft.style.backgroundId).toBe("paper-parade")
     expect(nextDraft.style.accentColor).toBe(
       INITIAL_RELEASE_DRAFT.style.accentColor
     )
@@ -47,7 +47,7 @@ describe("releaseDraftReducer", () => {
       value: "daylight",
     })
 
-    expect(nextDraft.style.templateId).toBe("midnight-burst")
+    expect(nextDraft.style.backgroundId).toBe("midnight-burst")
     expect(nextDraft.style.paletteId).toBe("daylight")
     expect(nextDraft.style.accentColor).toBe("#5C2CFF")
   })

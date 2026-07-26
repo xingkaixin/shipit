@@ -1,4 +1,4 @@
-export const TEMPLATE_IDS = [
+export const BACKGROUND_IDS = [
   "midnight-burst",
   "aurora-launch",
   "paper-parade",
@@ -6,24 +6,24 @@ export const TEMPLATE_IDS = [
   "studio-spotlight",
 ] as const
 
-export type TemplateId = (typeof TEMPLATE_IDS)[number]
-export type TemplatePattern =
+export type BackgroundId = (typeof BACKGROUND_IDS)[number]
+export type BackgroundPattern =
   | "grid"
   | "aurora"
   | "rays"
   | "stripes"
   | "spotlight"
-export type TemplateLayout = "stacked" | "type-forward" | "spotlight"
+export type BackgroundLayout = "stacked" | "type-forward" | "spotlight"
 
-export type TemplateDefinition = {
-  id: TemplateId
+export type BackgroundDefinition = {
+  id: BackgroundId
   name: string
-  pattern: TemplatePattern
-  layout: TemplateLayout
+  pattern: BackgroundPattern
+  layout: BackgroundLayout
   seed: number
 }
 
-export const TEMPLATE_REGISTRY: readonly TemplateDefinition[] = [
+export const BACKGROUND_REGISTRY: readonly BackgroundDefinition[] = [
   {
     id: "midnight-burst",
     name: "Midnight Burst",
@@ -61,16 +61,18 @@ export const TEMPLATE_REGISTRY: readonly TemplateDefinition[] = [
   },
 ]
 
-export function templateById(templateId: TemplateId): TemplateDefinition {
-  const template = TEMPLATE_REGISTRY.find(({ id }) => id === templateId)
+export function backgroundById(
+  backgroundId: BackgroundId
+): BackgroundDefinition {
+  const background = BACKGROUND_REGISTRY.find(({ id }) => id === backgroundId)
 
-  if (!template) {
-    throw new Error(`Unknown template: ${templateId}`)
+  if (!background) {
+    throw new Error(`Unknown background: ${backgroundId}`)
   }
 
-  return template
+  return background
 }
 
-export function isTemplateId(value: string): value is TemplateId {
-  return TEMPLATE_IDS.some((templateId) => templateId === value)
+export function isBackgroundId(value: string): value is BackgroundId {
+  return BACKGROUND_IDS.some((backgroundId) => backgroundId === value)
 }

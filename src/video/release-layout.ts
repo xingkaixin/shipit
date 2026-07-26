@@ -1,6 +1,6 @@
 import type { VideoDimensions } from "@/video/output-settings"
 import type { AspectRatio } from "@/video/output-settings"
-import type { TemplateLayout } from "@/video/template-registry"
+import type { BackgroundLayout } from "@/video/background-registry"
 
 export type ReleaseLayout = {
   centerX: number
@@ -20,18 +20,18 @@ export type ReleaseLayout = {
 
 export function releaseLayout(
   aspectRatio: AspectRatio,
-  templateLayout: TemplateLayout,
+  backgroundLayout: BackgroundLayout,
   viewport: VideoDimensions
 ): ReleaseLayout {
   if (aspectRatio === "portrait") {
-    return portraitLayout(templateLayout, viewport)
+    return portraitLayout(backgroundLayout, viewport)
   }
 
-  return landscapeLayout(templateLayout, viewport)
+  return landscapeLayout(backgroundLayout, viewport)
 }
 
 function landscapeLayout(
-  templateLayout: TemplateLayout,
+  backgroundLayout: BackgroundLayout,
   viewport: VideoDimensions
 ): ReleaseLayout {
   const base = {
@@ -50,7 +50,7 @@ function landscapeLayout(
     confettiOriginY: viewport.height - 64,
   }
 
-  switch (templateLayout) {
+  switch (backgroundLayout) {
     case "stacked":
       return base
     case "type-forward":
@@ -77,7 +77,7 @@ function landscapeLayout(
 }
 
 function portraitLayout(
-  templateLayout: TemplateLayout,
+  backgroundLayout: BackgroundLayout,
   viewport: VideoDimensions
 ): ReleaseLayout {
   const base = {
@@ -96,7 +96,7 @@ function portraitLayout(
     confettiOriginY: viewport.height * 0.88,
   }
 
-  switch (templateLayout) {
+  switch (backgroundLayout) {
     case "stacked":
       return base
     case "type-forward":

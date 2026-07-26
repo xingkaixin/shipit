@@ -9,7 +9,7 @@ import {
 import { ContentSettings } from "@/components/editor/ContentSettings"
 import { InspectorSection } from "@/components/editor/InspectorSection"
 import { paletteNameKey } from "@/components/editor/PalettePicker"
-import { TemplatePicker } from "@/components/editor/TemplatePicker"
+import { BackgroundPicker } from "@/components/editor/BackgroundPicker"
 import { ThemeSettings } from "@/components/editor/ThemeSettings"
 import { TypeSettings } from "@/components/editor/TypeSettings"
 import type { LogoImageState } from "@/hooks/use-logo-image"
@@ -35,7 +35,7 @@ export function ReleaseInspector({
   const palette = paletteById(draft.style.paletteId)
 
   return (
-    <aside className="flex min-h-0 scrollbar-thin flex-col overscroll-contain border-b bg-background lg:overflow-y-auto lg:border-r lg:border-b-0">
+    <aside className="flex min-h-0 scrollbar-thin flex-col overscroll-contain border-b bg-background lg:border-r lg:border-b-0 desk:overflow-y-auto">
       <InspectorSection icon={PackageIcon} title={t("inspector.content")}>
         <ContentSettings
           draft={draft}
@@ -44,11 +44,11 @@ export function ReleaseInspector({
         />
       </InspectorSection>
 
-      <InspectorSection icon={Film01Icon} title={t("inspector.template")}>
-        <TemplatePicker
+      <InspectorSection icon={Film01Icon} title={t("inspector.background")}>
+        <BackgroundPicker
           composition={composition}
-          onSelect={(templateId) => {
-            dispatch({ type: "set-template", value: templateId })
+          onSelect={(backgroundId) => {
+            dispatch({ type: "set-background", value: backgroundId })
           }}
         />
       </InspectorSection>

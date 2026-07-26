@@ -14,7 +14,7 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { I18nProvider } from "@/i18n/i18n"
 import { EN_MESSAGES } from "@/i18n/messages"
 import { PALETTE_REGISTRY } from "@/video/palette-registry"
-import { TEMPLATE_REGISTRY } from "@/video/template-registry"
+import { BACKGROUND_REGISTRY } from "@/video/background-registry"
 
 function renderApp() {
   return render(
@@ -41,13 +41,13 @@ afterEach(() => {
 })
 
 describe("App", () => {
-  it("offers every template and color theme in one inspector", () => {
+  it("offers every background and color theme in one inspector", () => {
     renderApp()
 
-    for (const template of TEMPLATE_REGISTRY) {
+    for (const background of BACKGROUND_REGISTRY) {
       expect(
         screen.getByRole("button", {
-          name: new RegExp(`^${template.name}\\.`),
+          name: new RegExp(`^${background.name}\\.`),
         })
       ).toBeTruthy()
     }
