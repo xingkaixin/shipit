@@ -4,6 +4,8 @@ Shipit turns a product logo, name, version, and release details into a
 five-second celebration film. Preview rendering and MP4 export happen entirely
 in the browser.
 
+Production: [shipit.xingkaixin.me](https://shipit.xingkaixin.me/)
+
 ## Features
 
 - Five motion templates with light and dark palettes
@@ -71,3 +73,13 @@ Cloudflare Pages with the following settings:
 
 Set `NODE_VERSION` and `PNPM_VERSION` in the Pages build environment to keep
 Cloudflare aligned with local development and CI.
+
+For a direct production deployment from an authenticated local environment:
+
+```bash
+pnpm deploy:cf
+```
+
+The command creates a production build and uploads `dist` to the `shipit`
+Cloudflare Pages project. Wrangler uses `wrangler.jsonc` as the source of truth
+for the Pages configuration.
