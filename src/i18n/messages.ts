@@ -38,8 +38,6 @@ export const EN_MESSAGES = {
   "logo.error.dimensions":
     "Use a logo no larger than 8192 px per side and 16 million pixels",
   "logo.error.decode": "This logo could not be read. Try another image.",
-  "style.palette.description":
-    "Every color theme works with every motion template.",
   "palette.midnight": "Midnight",
   "palette.graphite": "Graphite",
   "palette.cobalt": "Cobalt",
@@ -157,7 +155,6 @@ export const ZH_CN_MESSAGES: Record<MessageKey, string> = {
   "logo.error.dimensions":
     "Logo 尺寸过大，请使用不超过 8192 像素且低于 1600 万像素的图片",
   "logo.error.decode": "无法读取这个 Logo，请换一张图片",
-  "style.palette.description": "任意配色主题都可以搭配任意动效模板。",
   "palette.midnight": "午夜",
   "palette.graphite": "石墨",
   "palette.cobalt": "钴蓝",

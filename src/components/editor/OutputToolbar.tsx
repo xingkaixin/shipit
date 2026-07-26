@@ -34,8 +34,16 @@ export function OutputToolbar({
         label={t("output.aspect.title")}
         value={output.aspectRatio}
         options={[
-          { value: "landscape", label: "16:9" },
-          { value: "portrait", label: "9:16" },
+          {
+            value: "landscape",
+            label: t("output.aspect.landscape"),
+            text: "16:9",
+          },
+          {
+            value: "portrait",
+            label: t("output.aspect.portrait"),
+            text: "9:16",
+          },
         ]}
         onChange={(value) => {
           if (isAspectRatio(value)) {

@@ -5,8 +5,9 @@ import { cn } from "@/lib/utils"
 
 export type SegmentedOption<TValue extends string> = {
   value: TValue
-  /** Accessible name. Also rendered when the option has no icon. */
+  /** Accessible name, and the visible text unless `text` or `icon` is set. */
   label: string
+  text?: string
   icon?: HugeiconsIconProps["icon"]
 }
 
@@ -50,6 +51,7 @@ export function SegmentedControl<TValue extends string>({
           key={option.value}
           type="button"
           aria-pressed={option.value === value}
+          aria-label={option.label}
           title={option.label}
           className={cn(
             "flex h-8 flex-1 items-center justify-center gap-1.5 rounded-full px-2.5 text-[11px] font-semibold whitespace-nowrap transition-colors duration-150 outline-none focus-visible:ring-3 focus-visible:ring-ring/30",
@@ -60,12 +62,9 @@ export function SegmentedControl<TValue extends string>({
           onClick={() => onChange(option.value)}
         >
           {option.icon ? (
-            <>
-              <Icon icon={option.icon} className="size-4" />
-              <span className="sr-only">{option.label}</span>
-            </>
+            <Icon icon={option.icon} className="size-4" />
           ) : (
-            option.label
+            (option.text ?? option.label)
           )}
         </button>
       ))}
