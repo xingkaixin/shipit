@@ -86,8 +86,7 @@ export const EN_MESSAGES = {
   "output.capability.checking": "Checking this output configuration…",
   "output.capability.unsupported":
     "This browser does not support this output. Lower the resolution.",
-  "output.capability.failed":
-    "The browser's encoding capability could not be checked.",
+  "output.capability.unknown": "Support unconfirmed. The export will tell.",
   "output.warning.memory":
     "Local temporary files are unavailable. 4K will fall back to memory; use 1080p on memory-constrained devices.",
   "output.warning.maximum":
@@ -207,7 +206,7 @@ export const ZH_CN_MESSAGES: Record<MessageKey, string> = {
   "output.frameRate.title": "帧率",
   "output.capability.checking": "正在检查当前规格…",
   "output.capability.unsupported": "当前浏览器不支持此规格，请降低分辨率",
-  "output.capability.failed": "无法检查当前浏览器的编码能力",
+  "output.capability.unknown": "无法预检编码能力，可直接导出试试",
   "output.warning.memory":
     "当前浏览器不支持本地临时文件，4K 将回退到内存导出；低内存设备建议改用 1080p。",
   "output.warning.maximum":

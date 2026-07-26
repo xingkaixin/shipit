@@ -1,5 +1,9 @@
 import type * as React from "react"
-import { Alert02Icon, Loading03Icon } from "@hugeicons/core-free-icons"
+import {
+  Alert02Icon,
+  InformationCircleIcon,
+  Loading03Icon,
+} from "@hugeicons/core-free-icons"
 
 import { Icon } from "@/components/ui/icon"
 import { SegmentedControl } from "@/components/ui/segmented-control"
@@ -108,15 +112,25 @@ function CapabilityNotice({ state }: { state: OutputCapabilityState }) {
     )
   }
 
+  if (state.status === "unknown") {
+    return (
+      <span
+        className="flex items-center gap-1.5 text-[11px] text-muted-foreground"
+        aria-live="polite"
+      >
+        <Icon icon={InformationCircleIcon} className="size-3.5 shrink-0" />
+        {t("output.capability.unknown")}
+      </span>
+    )
+  }
+
   return (
     <span
       className="flex items-center gap-1.5 text-[11px] font-medium text-destructive"
       aria-live="polite"
     >
       <Icon icon={Alert02Icon} className="size-3.5 shrink-0" />
-      {state.status === "unsupported"
-        ? t("output.capability.unsupported")
-        : t("output.capability.failed")}
+      {t("output.capability.unsupported")}
     </span>
   )
 }

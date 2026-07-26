@@ -6,7 +6,17 @@ export type OutputCapabilityState =
   | { status: "checking" }
   | { status: "supported"; storage: "memory" | "file" }
   | { status: "unsupported" }
-  | { status: "failed" }
+  /** The probe itself failed, so nothing is known about this configuration. */
+  | { status: "unknown" }
+
+/**
+ * Only positive evidence that the browser cannot encode the configuration
+ * blocks an export. When the probe could not run, the export itself is the
+ * better answer: it reports a typed error instead of refusing to start.
+ */
+export function isOutputExportable(state: OutputCapabilityState): boolean {
+  return state.status === "supported" || state.status === "unknown"
+}
 
 export function useOutputCapability(
   output: OutputSettings
@@ -53,6 +63,6 @@ async function checkOutputCapability(
     }
   } catch (error) {
     console.error("[video-capability] Check failed", error)
-    return { status: "failed" }
+    return { status: "unknown" }
   }
 }

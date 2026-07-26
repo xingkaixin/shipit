@@ -3,7 +3,10 @@ import * as React from "react"
 import { ReleaseInspector } from "@/components/editor/ReleaseInspector"
 import { ReleaseStage } from "@/components/editor/ReleaseStage"
 import { isLogoStateExportable, useLogoImage } from "@/hooks/use-logo-image"
-import { useOutputCapability } from "@/hooks/use-output-capability"
+import {
+  isOutputExportable,
+  useOutputCapability,
+} from "@/hooks/use-output-capability"
 import { useI18n } from "@/i18n/i18n"
 import {
   INITIAL_RELEASE_DRAFT,
@@ -45,7 +48,7 @@ export function ReleaseEditor() {
   const canExport =
     draft.content.productName.trim().length > 0 &&
     isLogoStateExportable(logoState) &&
-    outputCapability.status === "supported"
+    isOutputExportable(outputCapability)
 
   return (
     <main
