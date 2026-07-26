@@ -1,10 +1,7 @@
 import { clamp } from "@/video/animation"
 import { colorWithAlpha, mixHexColors } from "@/video/color"
 import type { VideoDimensions } from "@/video/output-settings"
-import type {
-  TemplateDefinition,
-  TemplatePalette,
-} from "@/video/template-registry"
+import type { PaletteDefinition } from "@/video/palette-registry"
 
 const GRAVITY = 640
 const BURSTS = [
@@ -47,8 +44,8 @@ type ConfettiRenderOptions = {
 }
 
 export function prepareConfetti(
-  template: TemplateDefinition,
-  palette: TemplatePalette,
+  templateSeed: number,
+  palette: PaletteDefinition,
   accentColor: string
 ): ConfettiPlan {
   return BURSTS.flatMap((burst, burstIndex) =>
@@ -62,7 +59,7 @@ export function prepareConfetti(
 
       for (let index = 0; index < burst.particlesPerSide; index += 1) {
         const particleSeed =
-          template.seed + burstIndex * 10_000 + sideSeed * 101 + index * 31
+          templateSeed + burstIndex * 10_000 + sideSeed * 101 + index * 31
         const speed =
           (760 + randomUnit(particleSeed + 2) * 470) * burst.strength
         const layer = index % 4 === 0 ? "front" : "back"
@@ -212,7 +209,7 @@ function drawBurstFlash(
 }
 
 function particleColor(
-  palette: TemplatePalette,
+  palette: PaletteDefinition,
   accentColor: string,
   index: number
 ): string {
@@ -224,7 +221,7 @@ function particleColor(
     return mixHexColors(accentColor, "#FFFFFF", 0.45)
   }
 
-  return palette.confetti[index % palette.confetti.length]!
+  return palette.accents[index % palette.accents.length]!
 }
 
 function randomUnit(seed: number): number {

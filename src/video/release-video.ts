@@ -5,7 +5,8 @@ import type {
   FrameRate,
   Resolution,
 } from "@/video/output-settings"
-import type { TemplateId, ThemeTone } from "@/video/template-registry"
+import type { PaletteId } from "@/video/palette-registry"
+import type { TemplateId } from "@/video/template-registry"
 
 export const VIDEO_DURATION_SECONDS = 5
 
@@ -30,7 +31,7 @@ export type TitleColor =
 
 export type ReleaseStyle = {
   templateId: TemplateId
-  themeTone: ThemeTone
+  paletteId: PaletteId
   accentColor: string
   logoTreatment: LogoTreatment
   titleFontId: FontId

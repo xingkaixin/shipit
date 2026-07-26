@@ -3,12 +3,13 @@ import { describe, expect, it, vi } from "vitest"
 import { LOGICAL_VIEWPORTS } from "@/video/output-settings"
 import { renderReleaseFrame } from "@/video/render-release-frame"
 import type { ReleaseComposition } from "@/video/release-video"
-import { TEMPLATE_REGISTRY, THEME_TONES } from "@/video/template-registry"
+import { PALETTE_REGISTRY } from "@/video/palette-registry"
+import { TEMPLATE_REGISTRY } from "@/video/template-registry"
 
 describe("renderReleaseFrame", () => {
-  it("renders every template, tone, and aspect combination", () => {
+  it("renders every template, palette, and aspect combination", () => {
     for (const template of TEMPLATE_REGISTRY) {
-      for (const themeTone of THEME_TONES) {
+      for (const palette of PALETTE_REGISTRY) {
         for (const aspectRatio of ["landscape", "portrait"] as const) {
           const context = createCanvasContext(
             LOGICAL_VIEWPORTS[aspectRatio].width,
@@ -18,7 +19,7 @@ describe("renderReleaseFrame", () => {
           expect(() => {
             renderReleaseFrame(
               context,
-              createComposition(template.id, themeTone, aspectRatio),
+              createComposition(template.id, palette.id, aspectRatio),
               2.62
             )
           }).not.toThrow()
@@ -29,7 +30,11 @@ describe("renderReleaseFrame", () => {
 
   it("renders bounded text for long valid input", () => {
     const context = createCanvasContext(1_080, 1_920)
-    const composition = createComposition("kinetic-signal", "dark", "portrait")
+    const composition = createComposition(
+      "kinetic-signal",
+      "signal",
+      "portrait"
+    )
     composition.content.productName = "发".repeat(48)
     composition.content.detail = {
       kind: "custom",
@@ -44,7 +49,11 @@ describe("renderReleaseFrame", () => {
 
   it("reuses static text measurements across frames", () => {
     const context = createCanvasContext(1_920, 1_080)
-    const composition = createComposition("midnight-burst", "dark", "landscape")
+    const composition = createComposition(
+      "midnight-burst",
+      "midnight",
+      "landscape"
+    )
 
     renderReleaseFrame(context, composition, 1)
     const firstFrameMeasurements = context.measureText.mock.calls.length
@@ -57,7 +66,7 @@ describe("renderReleaseFrame", () => {
 
 function createComposition(
   templateId: ReleaseComposition["style"]["templateId"],
-  themeTone: ReleaseComposition["style"]["themeTone"],
+  paletteId: ReleaseComposition["style"]["paletteId"],
   aspectRatio: ReleaseComposition["output"]["aspectRatio"]
 ): ReleaseComposition {
   return {
@@ -70,7 +79,7 @@ function createComposition(
     },
     style: {
       templateId,
-      themeTone,
+      paletteId,
       accentColor: "#B7FF5A",
       logoTreatment: "card-glow",
       titleFontId: "geist",

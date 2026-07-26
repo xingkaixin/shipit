@@ -11,16 +11,13 @@ import {
   type ReleaseDraft,
 } from "@/video/release-video"
 import {
-  paletteForTemplate,
-  templateById,
-  type TemplateId,
-  type ThemeTone,
-} from "@/video/template-registry"
+  defaultAccentOf,
+  paletteById,
+  type PaletteId,
+} from "@/video/palette-registry"
+import type { TemplateId } from "@/video/template-registry"
 
-const INITIAL_TEMPLATE_ID = "midnight-burst"
-const INITIAL_THEME_TONE = "dark"
-const INITIAL_TEMPLATE = templateById(INITIAL_TEMPLATE_ID)
-const INITIAL_PALETTE = paletteForTemplate(INITIAL_TEMPLATE, INITIAL_THEME_TONE)
+const INITIAL_PALETTE_ID = "midnight"
 
 export const INITIAL_RELEASE_DRAFT: ReleaseDraft = {
   content: {
@@ -30,9 +27,9 @@ export const INITIAL_RELEASE_DRAFT: ReleaseDraft = {
     logoFile: null,
   },
   style: {
-    templateId: INITIAL_TEMPLATE_ID,
-    themeTone: INITIAL_THEME_TONE,
-    accentColor: INITIAL_PALETTE.defaultAccent,
+    templateId: "midnight-burst",
+    paletteId: INITIAL_PALETTE_ID,
+    accentColor: defaultAccentOf(paletteById(INITIAL_PALETTE_ID)),
     logoTreatment: "card-glow",
     titleFontId: "geist",
     titleColor: { mode: "template" },
@@ -50,7 +47,7 @@ export type ReleaseDraftAction =
   | { type: "set-detail-kind"; value: DetailKind }
   | { type: "set-detail-value"; value: string }
   | { type: "set-template"; value: TemplateId }
-  | { type: "set-theme-tone"; value: ThemeTone }
+  | { type: "set-palette"; value: PaletteId }
   | { type: "set-accent-color"; value: string }
   | { type: "set-logo-file"; value: File | null }
   | { type: "set-logo-treatment"; value: LogoTreatment }
@@ -88,22 +85,13 @@ export function releaseDraftReducer(
       return withContent(draft, {
         detail: { ...draft.content.detail, value: action.value },
       })
-    case "set-template": {
-      const template = templateById(action.value)
-      const palette = paletteForTemplate(template, draft.style.themeTone)
+    case "set-template":
+      return withStyle(draft, { templateId: action.value })
+    case "set-palette":
       return withStyle(draft, {
-        templateId: action.value,
-        accentColor: palette.defaultAccent,
+        paletteId: action.value,
+        accentColor: defaultAccentOf(paletteById(action.value)),
       })
-    }
-    case "set-theme-tone": {
-      const template = templateById(draft.style.templateId)
-      const palette = paletteForTemplate(template, action.value)
-      return withStyle(draft, {
-        themeTone: action.value,
-        accentColor: palette.defaultAccent,
-      })
-    }
     case "set-accent-color":
       return withStyle(draft, { accentColor: action.value })
     case "set-logo-file":

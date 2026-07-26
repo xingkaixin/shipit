@@ -13,7 +13,7 @@ const BASE_COMPOSITION: ReleaseComposition = {
   },
   style: {
     templateId: "midnight-burst",
-    themeTone: "dark",
+    paletteId: "midnight",
     accentColor: "#B7FF5A",
     logoTreatment: "card-glow",
     titleFontId: "geist",

@@ -6,14 +6,16 @@ import {
 } from "@/state/release-draft-reducer"
 
 describe("releaseDraftReducer", () => {
-  it("resets the accent color when a template changes", () => {
+  it("keeps the accent color when only the motion template changes", () => {
     const nextDraft = releaseDraftReducer(INITIAL_RELEASE_DRAFT, {
       type: "set-template",
       value: "paper-parade",
     })
 
     expect(nextDraft.style.templateId).toBe("paper-parade")
-    expect(nextDraft.style.accentColor).toBe("#FF7048")
+    expect(nextDraft.style.accentColor).toBe(
+      INITIAL_RELEASE_DRAFT.style.accentColor
+    )
   })
 
   it("models hidden detail without stale value state", () => {
@@ -39,14 +41,14 @@ describe("releaseDraftReducer", () => {
     ).toBe(hiddenDraft)
   })
 
-  it("switches tone without duplicating the selected motion template", () => {
+  it("adopts the default accent when the color theme changes", () => {
     const nextDraft = releaseDraftReducer(INITIAL_RELEASE_DRAFT, {
-      type: "set-theme-tone",
-      value: "light",
+      type: "set-palette",
+      value: "daylight",
     })
 
     expect(nextDraft.style.templateId).toBe("midnight-burst")
-    expect(nextDraft.style.themeTone).toBe("light")
+    expect(nextDraft.style.paletteId).toBe("daylight")
     expect(nextDraft.style.accentColor).toBe("#5C2CFF")
   })
 

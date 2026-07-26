@@ -24,11 +24,10 @@ import {
   type ReleaseComposition,
   type ReleaseLogoImage,
 } from "@/video/release-video"
+import { paletteById, type PaletteDefinition } from "@/video/palette-registry"
 import {
-  paletteForTemplate,
   templateById,
   type TemplateDefinition,
-  type TemplatePalette,
 } from "@/video/template-registry"
 import { fitSingleLineText, type FittedCanvasText } from "@/video/text-layout"
 
@@ -39,7 +38,7 @@ const MONO_FONT_FAMILY = '"SFMono-Regular", Consolas, monospace'
 
 type FrameStyle = {
   template: TemplateDefinition
-  palette: TemplatePalette
+  palette: PaletteDefinition
   layout: ReleaseLayout
   viewport: VideoDimensions
 }
@@ -173,7 +172,7 @@ function framePlanFor(
     frameStyle,
     badge,
     confetti: prepareConfetti(
-      frameStyle.template,
+      frameStyle.template.seed,
       frameStyle.palette,
       composition.style.accentColor
     ),
@@ -223,7 +222,7 @@ function areCompositionFontsReady(composition: ReleaseComposition): boolean {
 
 function frameStyleFor(composition: ReleaseComposition): FrameStyle {
   const template = templateById(composition.style.templateId)
-  const palette = paletteForTemplate(template, composition.style.themeTone)
+  const palette = paletteById(composition.style.paletteId)
   const viewport = LOGICAL_VIEWPORTS[composition.output.aspectRatio]
   const layout = releaseLayout(
     composition.output.aspectRatio,
@@ -588,7 +587,7 @@ function drawLogoSurface(
   context: CanvasRenderingContext2D,
   treatment: ReleaseComposition["style"]["logoTreatment"],
   logoSize: number,
-  palette: TemplatePalette,
+  palette: PaletteDefinition,
   accentColor: string
 ): void {
   if (treatment === "plain") {

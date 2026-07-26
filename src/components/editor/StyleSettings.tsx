@@ -1,11 +1,10 @@
 import type * as React from "react"
-import {
-  Moon02Icon,
-  PaintBoardIcon,
-  Sun03Icon,
-  TextFontIcon,
-} from "@hugeicons/core-free-icons"
+import { PaintBoardIcon, TextFontIcon } from "@hugeicons/core-free-icons"
 
+import {
+  PalettePicker,
+  paletteNameKey,
+} from "@/components/editor/PalettePicker"
 import { SettingsSection } from "@/components/editor/SettingsSection"
 import { TemplatePicker } from "@/components/editor/TemplatePicker"
 import { Button } from "@/components/ui/button"
@@ -23,12 +22,12 @@ import { useI18n } from "@/i18n/i18n"
 import type { MessageKey } from "@/i18n/messages"
 import type { ReleaseDraftAction } from "@/state/release-draft-reducer"
 import { FONT_REGISTRY, fontById, isFontId } from "@/video/font-registry"
+import { paletteById } from "@/video/palette-registry"
 import {
   isLogoTreatment,
   type LogoTreatment,
   type ReleaseDraft,
 } from "@/video/release-video"
-import type { ThemeTone } from "@/video/template-registry"
 
 type StyleSettingsProps = {
   draft: ReleaseDraft
@@ -38,6 +37,7 @@ type StyleSettingsProps = {
 export function StyleSettings({ draft, dispatch }: StyleSettingsProps) {
   const { t } = useI18n()
   const { style } = draft
+  const palette = paletteById(style.paletteId)
   const selectedFont = fontById(style.titleFontId)
   const customTitleColor =
     style.titleColor.mode === "custom" ? style.titleColor.value : "#FFFFFF"
@@ -45,31 +45,21 @@ export function StyleSettings({ draft, dispatch }: StyleSettingsProps) {
   return (
     <div className="space-y-7">
       <SettingsSection
-        title={t("style.tone.title")}
-        description={t("style.tone.description")}
+        title={t("style.palette.title")}
+        description={`${t(paletteNameKey(palette.id))} · ${t("style.palette.description")}`}
       >
-        <div className="grid grid-cols-2 gap-2">
-          <ToneButton
-            tone="dark"
-            isSelected={style.themeTone === "dark"}
-            onSelect={(tone) => {
-              dispatch({ type: "set-theme-tone", value: tone })
-            }}
-          />
-          <ToneButton
-            tone="light"
-            isSelected={style.themeTone === "light"}
-            onSelect={(tone) => {
-              dispatch({ type: "set-theme-tone", value: tone })
-            }}
-          />
-        </div>
+        <PalettePicker
+          selectedPaletteId={style.paletteId}
+          onSelect={(paletteId) => {
+            dispatch({ type: "set-palette", value: paletteId })
+          }}
+        />
       </SettingsSection>
 
       <SettingsSection title={t("style.template.title")}>
         <TemplatePicker
           selectedTemplateId={style.templateId}
-          themeTone={style.themeTone}
+          palette={palette}
           onSelect={(templateId) => {
             dispatch({ type: "set-template", value: templateId })
           }}
@@ -212,35 +202,6 @@ function logoTreatmentLabel(
     case "card-glow":
       return t("style.logo.cardGlow")
   }
-}
-
-type ToneButtonProps = {
-  tone: ThemeTone
-  isSelected: boolean
-  onSelect: (tone: ThemeTone) => void
-}
-
-function ToneButton({ tone, isSelected, onSelect }: ToneButtonProps) {
-  const { t } = useI18n()
-  const icon = tone === "dark" ? Moon02Icon : Sun03Icon
-  const label = tone === "dark" ? t("style.tone.dark") : t("style.tone.light")
-
-  return (
-    <button
-      type="button"
-      aria-pressed={isSelected}
-      className={cn(
-        "flex h-11 items-center justify-center gap-2 rounded-[10px] border text-sm font-semibold transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/20 active:scale-[0.98]",
-        isSelected
-          ? "border-foreground bg-foreground text-background"
-          : "border-border bg-card hover:border-foreground/20 hover:bg-muted"
-      )}
-      onClick={() => onSelect(tone)}
-    >
-      <Icon icon={icon} className="size-4" />
-      {label}
-    </button>
-  )
 }
 
 function fontCategoryKey(

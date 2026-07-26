@@ -4,22 +4,18 @@ import { Icon } from "@/components/ui/icon"
 import { useI18n } from "@/i18n/i18n"
 import type { MessageKey } from "@/i18n/messages"
 import { cn } from "@/lib/utils"
-import {
-  paletteForTemplate,
-  TEMPLATE_REGISTRY,
-  type TemplateId,
-  type ThemeTone,
-} from "@/video/template-registry"
+import type { PaletteDefinition } from "@/video/palette-registry"
+import { TEMPLATE_REGISTRY, type TemplateId } from "@/video/template-registry"
 
 type TemplatePickerProps = {
   selectedTemplateId: TemplateId
-  themeTone: ThemeTone
+  palette: PaletteDefinition
   onSelect: (templateId: TemplateId) => void
 }
 
 export function TemplatePicker({
   selectedTemplateId,
-  themeTone,
+  palette,
   onSelect,
 }: TemplatePickerProps) {
   const { t } = useI18n()
@@ -28,7 +24,6 @@ export function TemplatePicker({
     <div className="grid grid-cols-2 gap-2">
       {TEMPLATE_REGISTRY.map((template) => {
         const isSelected = template.id === selectedTemplateId
-        const palette = paletteForTemplate(template, themeTone)
 
         return (
           <button
@@ -53,19 +48,19 @@ export function TemplatePicker({
               />
               <span
                 className="absolute top-2 left-2 size-1.5 rounded-full"
-                style={{ backgroundColor: palette.defaultAccent }}
+                style={{ backgroundColor: palette.accents[0] }}
               />
               <span
                 className="absolute top-3 right-3 size-1 rotate-45"
-                style={{ backgroundColor: palette.confetti[1] }}
+                style={{ backgroundColor: palette.accents[1] }}
               />
               <span
                 className="absolute bottom-3 left-5 h-1 w-1.5 -rotate-12"
-                style={{ backgroundColor: palette.confetti[2] }}
+                style={{ backgroundColor: palette.accents[2] }}
               />
               <span
                 className="absolute right-6 bottom-2 size-1 rounded-full"
-                style={{ backgroundColor: palette.confetti[3] }}
+                style={{ backgroundColor: palette.accents[3] }}
               />
               {isSelected ? (
                 <span className="absolute top-1.5 right-1.5 flex size-4 items-center justify-center rounded-full bg-brand text-brand-foreground shadow-sm">
