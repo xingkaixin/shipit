@@ -14,7 +14,7 @@ export const ACCEPTED_LOGO_TYPES = [
 export type LogoImageState =
   | { status: "empty"; image: null }
   | { status: "loading"; image: null }
-  | { status: "ready"; image: ReleaseLogoImage }
+  | { status: "ready"; image: ReleaseLogoImage; previewUrl: string }
   | { status: "failed"; image: null; error: LogoValidationError }
 
 export type LogoValidationError = "bytes" | "decode" | "dimensions" | "type"
@@ -92,6 +92,7 @@ export function useLogoImage(file: File | null): LogoImageState {
 
       setState({
         status: "ready",
+        previewUrl: imageUrl,
         image: {
           source: image,
           width: image.naturalWidth,

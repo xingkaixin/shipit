@@ -1,13 +1,11 @@
-import * as React from "react"
+import type * as React from "react"
 import {
-  Cancel01Icon,
-  ImageAdd02Icon,
   Link01Icon,
   PackageIcon,
   TextFontIcon,
 } from "@hugeicons/core-free-icons"
 
-import { Button } from "@/components/ui/button"
+import { LogoField } from "@/components/editor/LogoField"
 import { Icon } from "@/components/ui/icon"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -18,12 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import {
-  ACCEPTED_LOGO_TYPES,
-  logoFileValidationError,
-  type LogoImageState,
-  type LogoValidationError,
-} from "@/hooks/use-logo-image"
+import type { LogoImageState } from "@/hooks/use-logo-image"
 import { useI18n } from "@/i18n/i18n"
 import type { MessageKey } from "@/i18n/messages"
 import type { ReleaseDraftAction } from "@/state/release-draft-reducer"
@@ -41,79 +34,17 @@ export function ContentSettings({
   dispatch,
 }: ContentSettingsProps) {
   const { t } = useI18n()
-  const [logoValidationError, setLogoValidationError] =
-    React.useState<LogoValidationError | null>(null)
   const { content } = draft
-  const logoError =
-    logoValidationError ||
-    (logoState.status === "failed" ? logoState.error : null)
-
-  function selectLogo(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0] ?? null
-    event.target.value = ""
-
-    if (!file) {
-      return
-    }
-
-    const validationError = logoFileValidationError(file)
-    if (validationError) {
-      setLogoValidationError(validationError)
-      return
-    }
-
-    setLogoValidationError(null)
-    dispatch({ type: "set-logo-file", value: file })
-  }
 
   return (
     <div className="space-y-4">
-      <div className="space-y-2">
-        <div className="flex items-center gap-2">
-          <label
-            htmlFor="logo-upload"
-            className="flex h-11 min-w-0 flex-1 cursor-pointer items-center gap-2.5 rounded-[10px] border border-dashed border-input bg-card px-3 text-sm transition-[border-color,background-color,transform] duration-150 ease-[var(--ease-out)] focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/20 hover:border-foreground/25 hover:bg-muted/60 active:scale-[0.99]"
-          >
-            <input
-              id="logo-upload"
-              name="productLogo"
-              type="file"
-              className="sr-only"
-              accept={ACCEPTED_LOGO_TYPES.join(",")}
-              onChange={selectLogo}
-            />
-            <Icon
-              icon={ImageAdd02Icon}
-              className="size-4 shrink-0 text-muted-foreground"
-            />
-            <span className="truncate">
-              {content.logoFile?.name ?? t("content.logo.upload")}
-            </span>
-          </label>
-          {content.logoFile ? (
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              aria-label={t("content.logo.remove")}
-              onClick={() => {
-                dispatch({ type: "set-logo-file", value: null })
-              }}
-            >
-              <Icon icon={Cancel01Icon} />
-            </Button>
-          ) : null}
-        </div>
-        {logoError ? (
-          <p className="text-xs text-destructive" aria-live="polite">
-            {t(logoErrorMessageKey(logoError))}
-          </p>
-        ) : (
-          <p className="text-[11px] leading-4 text-muted-foreground">
-            {t("content.logo.help")}
-          </p>
-        )}
-      </div>
+      <LogoField
+        file={content.logoFile}
+        state={logoState}
+        onChange={(value) => {
+          dispatch({ type: "set-logo-file", value })
+        }}
+      />
 
       <div className="grid grid-cols-[minmax(0,1fr)_112px] gap-3">
         <div className="space-y-2">
@@ -242,8 +173,4 @@ function detailInputPlaceholder(
     case "custom":
       return t("content.detail.customPlaceholder")
   }
-}
-
-function logoErrorMessageKey(error: LogoValidationError): MessageKey {
-  return `logo.error.${error}`
 }
