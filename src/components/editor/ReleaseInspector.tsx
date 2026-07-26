@@ -16,16 +16,18 @@ import type { LogoImageState } from "@/hooks/use-logo-image"
 import { useI18n } from "@/i18n/i18n"
 import type { ReleaseDraftAction } from "@/state/release-draft-reducer"
 import { paletteById } from "@/video/palette-registry"
-import type { ReleaseDraft } from "@/video/release-video"
+import type { ReleaseComposition, ReleaseDraft } from "@/video/release-video"
 
 type ReleaseInspectorProps = {
   draft: ReleaseDraft
+  composition: ReleaseComposition
   logoState: LogoImageState
   dispatch: React.Dispatch<ReleaseDraftAction>
 }
 
 export function ReleaseInspector({
   draft,
+  composition,
   logoState,
   dispatch,
 }: ReleaseInspectorProps) {
@@ -44,8 +46,7 @@ export function ReleaseInspector({
 
       <InspectorSection icon={Film01Icon} title={t("inspector.template")}>
         <TemplatePicker
-          selectedTemplateId={draft.style.templateId}
-          palette={palette}
+          composition={composition}
           onSelect={(templateId) => {
             dispatch({ type: "set-template", value: templateId })
           }}

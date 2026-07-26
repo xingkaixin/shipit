@@ -54,6 +54,7 @@ export function ReleaseEditor() {
     >
       <ReleaseInspector
         draft={draft}
+        composition={composition}
         logoState={logoState}
         dispatch={dispatch}
       />
