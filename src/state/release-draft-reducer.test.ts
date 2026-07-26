@@ -52,14 +52,63 @@ describe("releaseDraftReducer", () => {
     expect(nextDraft.style.accentColor).toBe("#5C2CFF")
   })
 
-  it("stores custom title color as an explicit mode", () => {
+  it("stores a custom title color and switches to it", () => {
     const nextDraft = releaseDraftReducer(INITIAL_RELEASE_DRAFT, {
       type: "set-custom-title-color",
       value: "#123456",
     })
 
     expect(nextDraft.style.titleColor).toEqual({
-      mode: "custom",
+      useCustom: true,
+      value: "#123456",
+    })
+  })
+
+  it("keeps the custom title color while following the theme", () => {
+    const customised = releaseDraftReducer(INITIAL_RELEASE_DRAFT, {
+      type: "set-custom-title-color",
+      value: "#123456",
+    })
+    const followingTheme = releaseDraftReducer(customised, {
+      type: "use-custom-title-color",
+      value: false,
+    })
+    const customisedAgain = releaseDraftReducer(followingTheme, {
+      type: "use-custom-title-color",
+      value: true,
+    })
+
+    expect(followingTheme.style.titleColor.value).toBe("#123456")
+    expect(customisedAgain.style.titleColor).toEqual({
+      useCustom: true,
+      value: "#123456",
+    })
+  })
+
+  it("reseeds the untouched title color from the new theme", () => {
+    const onDaylight = releaseDraftReducer(INITIAL_RELEASE_DRAFT, {
+      type: "set-palette",
+      value: "daylight",
+    })
+
+    expect(onDaylight.style.titleColor).toEqual({
+      useCustom: false,
+      value: "#11131A",
+    })
+  })
+
+  it("leaves a customised title color alone when the theme changes", () => {
+    const customised = releaseDraftReducer(INITIAL_RELEASE_DRAFT, {
+      type: "set-custom-title-color",
+      value: "#123456",
+    })
+    const onDaylight = releaseDraftReducer(customised, {
+      type: "set-palette",
+      value: "daylight",
+    })
+
+    expect(onDaylight.style.titleColor).toEqual({
+      useCustom: true,
       value: "#123456",
     })
   })

@@ -1,6 +1,6 @@
 import type * as React from "react"
 
-import { Label } from "@/components/ui/label"
+import { ColorInput } from "@/components/editor/ColorInput"
 import { OptionButton } from "@/components/ui/option-button"
 import { useI18n } from "@/i18n/i18n"
 import type { MessageKey } from "@/i18n/messages"
@@ -20,8 +20,6 @@ type TypeSettingsProps = {
 
 export function TypeSettings({ style, dispatch }: TypeSettingsProps) {
   const { t } = useI18n()
-  const customTitleColor =
-    style.titleColor.mode === "custom" ? style.titleColor.value : "#FFFFFF"
 
   return (
     <div className="space-y-4">
@@ -60,49 +58,42 @@ export function TypeSettings({ style, dispatch }: TypeSettingsProps) {
         </div>
       </fieldset>
 
-      <div className="space-y-2">
-        <Label htmlFor="custom-title-color">
+      <fieldset>
+        <legend className="mb-2 text-[12px] leading-none font-semibold text-foreground/85">
           {t("style.color.titleColor")}
-        </Label>
+        </legend>
         <div className="grid grid-cols-2 gap-2">
           <OptionButton
-            isSelected={style.titleColor.mode === "theme"}
+            isSelected={!style.titleColor.useCustom}
             className="h-10"
             onClick={() => {
-              dispatch({ type: "use-theme-title-color" })
+              dispatch({ type: "use-custom-title-color", value: false })
             }}
           >
             {t("style.color.theme")}
           </OptionButton>
-          <label
-            className={cn(
-              "flex h-10 cursor-pointer items-center justify-center gap-2 rounded-[10px] border px-3 text-sm font-semibold transition-[color,background-color,border-color,transform] duration-150 ease-[var(--ease-out)] focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/20 active:scale-[0.98]",
-              style.titleColor.mode === "custom"
-                ? "border-foreground bg-foreground text-background"
-                : "border-border bg-card hover:border-foreground/20 hover:bg-muted"
-            )}
+          <OptionButton
+            isSelected={style.titleColor.useCustom}
+            className="h-10"
+            onClick={() => {
+              dispatch({ type: "use-custom-title-color", value: true })
+            }}
           >
-            <span
-              className="size-3.5 shrink-0 rounded-full shadow-[inset_0_0_0_1px_rgb(0_0_0/0.12)]"
-              style={{ backgroundColor: customTitleColor }}
-            />
             {t("style.color.custom")}
-            <input
-              id="custom-title-color"
-              name="titleColor"
-              type="color"
-              className="sr-only"
-              value={customTitleColor}
-              onChange={(event) => {
-                dispatch({
-                  type: "set-custom-title-color",
-                  value: event.target.value,
-                })
-              }}
-            />
-          </label>
+          </OptionButton>
         </div>
-      </div>
+        {style.titleColor.useCustom ? (
+          <ColorInput
+            id="custom-title-color"
+            label={t("style.color.titleColor")}
+            className="mt-2"
+            value={style.titleColor.value}
+            onChange={(value) => {
+              dispatch({ type: "set-custom-title-color", value })
+            }}
+          />
+        ) : null}
+      </fieldset>
 
       <fieldset>
         <legend className="mb-2 text-[12px] leading-none font-semibold text-foreground/85">

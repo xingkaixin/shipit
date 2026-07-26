@@ -32,7 +32,10 @@ export const INITIAL_RELEASE_DRAFT: ReleaseDraft = {
     accentColor: defaultAccentOf(paletteById(INITIAL_PALETTE_ID)),
     logoTreatment: "card-glow",
     titleFontId: "geist",
-    titleColor: { mode: "theme" },
+    titleColor: {
+      useCustom: false,
+      value: paletteById(INITIAL_PALETTE_ID).foreground,
+    },
   },
   output: {
     aspectRatio: "landscape",
@@ -52,7 +55,7 @@ export type ReleaseDraftAction =
   | { type: "set-logo-file"; value: File | null }
   | { type: "set-logo-treatment"; value: LogoTreatment }
   | { type: "set-title-font"; value: FontId }
-  | { type: "use-theme-title-color" }
+  | { type: "use-custom-title-color"; value: boolean }
   | { type: "set-custom-title-color"; value: string }
   | { type: "set-aspect-ratio"; value: AspectRatio }
   | { type: "set-resolution"; value: Resolution }
@@ -87,11 +90,17 @@ export function releaseDraftReducer(
       })
     case "set-background":
       return withStyle(draft, { backgroundId: action.value })
-    case "set-palette":
+    case "set-palette": {
+      const palette = paletteById(action.value)
       return withStyle(draft, {
         paletteId: action.value,
-        accentColor: defaultAccentOf(paletteById(action.value)),
+        accentColor: defaultAccentOf(palette),
+        // Keep the custom seed on the theme until the title is customised.
+        titleColor: draft.style.titleColor.useCustom
+          ? draft.style.titleColor
+          : { useCustom: false, value: palette.foreground },
       })
+    }
     case "set-accent-color":
       return withStyle(draft, { accentColor: action.value })
     case "set-logo-file":
@@ -100,11 +109,13 @@ export function releaseDraftReducer(
       return withStyle(draft, { logoTreatment: action.value })
     case "set-title-font":
       return withStyle(draft, { titleFontId: action.value })
-    case "use-theme-title-color":
-      return withStyle(draft, { titleColor: { mode: "theme" } })
+    case "use-custom-title-color":
+      return withStyle(draft, {
+        titleColor: { ...draft.style.titleColor, useCustom: action.value },
+      })
     case "set-custom-title-color":
       return withStyle(draft, {
-        titleColor: { mode: "custom", value: action.value },
+        titleColor: { useCustom: true, value: action.value },
       })
     case "set-aspect-ratio":
       return withOutput(draft, { aspectRatio: action.value })

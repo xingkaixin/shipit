@@ -29,7 +29,7 @@ const BASE_COMPOSITION: ReleaseComposition = {
     accentColor: "#B7FF5A",
     logoTreatment: "card-glow",
     titleFontId: "geist",
-    titleColor: { mode: "theme" },
+    titleColor: { useCustom: false, value: "#F7F8FF" },
   },
   output: {
     aspectRatio: "landscape",

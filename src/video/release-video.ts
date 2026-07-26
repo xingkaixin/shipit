@@ -27,7 +27,14 @@ export const LOGO_TREATMENTS = ["plain", "card", "card-glow"] as const
 
 export type LogoTreatment = (typeof LOGO_TREATMENTS)[number]
 
-export type TitleColor = { mode: "theme" } | { mode: "custom"; value: string }
+/**
+ * Whether the title follows the color theme is independent of which custom
+ * color was picked, so the picked color survives toggling between the two.
+ */
+export type TitleColor = {
+  useCustom: boolean
+  value: string
+}
 
 export type ReleaseStyle = {
   backgroundId: BackgroundId

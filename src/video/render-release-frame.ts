@@ -141,10 +141,9 @@ function framePlanFor(
     fontWeight: 760,
     fontFamily: titleFontFamily,
   })
-  const titleColor =
-    composition.style.titleColor.mode === "custom"
-      ? composition.style.titleColor.value
-      : frameStyle.palette.foreground
+  const titleColor = composition.style.titleColor.useCustom
+    ? composition.style.titleColor.value
+    : frameStyle.palette.foreground
   const versionLabel = composition.content.version.trim() || "v1.0.0"
 
   context.font = `680 36px ${MONO_FONT_FAMILY}`
