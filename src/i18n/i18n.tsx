@@ -36,10 +36,19 @@ export function I18nProvider({ children }: React.PropsWithChildren) {
 
   React.useEffect(() => {
     document.documentElement.lang = locale
-    document.title = translateCurrentLocale("app.title")
-    document
-      .querySelector('meta[name="description"]')
-      ?.setAttribute("content", translateCurrentLocale("app.description"))
+    const title = translateCurrentLocale("app.title")
+    const description = translateCurrentLocale("app.description")
+
+    document.title = title
+    updateMetaContent('meta[name="description"]', description)
+    updateMetaContent('meta[property="og:title"]', title)
+    updateMetaContent('meta[property="og:description"]', description)
+    updateMetaContent(
+      'meta[property="og:locale"]',
+      locale === "zh-CN" ? "zh_CN" : "en_US"
+    )
+    updateMetaContent('meta[name="twitter:title"]', title)
+    updateMetaContent('meta[name="twitter:description"]', description)
     storeLocale(locale)
   }, [locale, translateCurrentLocale])
 
@@ -100,4 +109,8 @@ function storeLocale(locale: AppLocale): void {
   } catch {
     return
   }
+}
+
+function updateMetaContent(selector: string, content: string): void {
+  document.querySelector(selector)?.setAttribute("content", content)
 }

@@ -1,6 +1,7 @@
 export const EN_MESSAGES = {
-  "app.description": "Turn product releases into shareable celebration films",
-  "app.title": "Shipit | Release film maker",
+  "app.description":
+    "Create polished 5-second product release videos from your logo, name, version, domain, or install command. Preview and export MP4 entirely in your browser.",
+  "app.title": "Free Release Video Maker for Product Launches | Shipit",
   "app.skipToEditor": "Skip to editor",
   "app.tagline": "Make every release a moment in 5 seconds",
   "language.label": "Language",
@@ -119,8 +120,9 @@ export const EN_MESSAGES = {
 export type MessageKey = keyof typeof EN_MESSAGES
 
 export const ZH_CN_MESSAGES: Record<MessageKey, string> = {
-  "app.description": "把产品发布信息变成一条值得分享的庆祝短片",
-  "app.title": "Shipit | 发布影片制作器",
+  "app.description":
+    "使用 Logo、产品名称、版本、域名或安装命令，制作精美的 5 秒产品发布庆祝视频。所有预览和 MP4 导出均在浏览器本地完成。",
+  "app.title": "免费产品发布视频制作器｜Shipit",
   "app.skipToEditor": "跳到编辑器",
   "app.tagline": "5 秒，把发布变成一个时刻",
   "language.label": "语言",
