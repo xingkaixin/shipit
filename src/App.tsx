@@ -1,12 +1,6 @@
-import {
-  ComputerIcon,
-  Moon02Icon,
-  SparklesIcon,
-  Sun03Icon,
-} from "@hugeicons/core-free-icons"
+import { ComputerIcon, Moon02Icon, Sun03Icon } from "@hugeicons/core-free-icons"
 
 import { ReleaseEditor } from "@/components/editor/ReleaseEditor"
-import { Icon } from "@/components/ui/icon"
 import { SegmentedControl } from "@/components/ui/segmented-control"
 import { useAppearance, type Appearance } from "@/hooks/use-appearance"
 import { useI18n, type AppLocale } from "@/i18n/i18n"
@@ -24,35 +18,31 @@ export function App() {
       >
         {t("app.skipToEditor")}
       </a>
-      <header className="flex h-16 shrink-0 items-center justify-between border-b bg-background/95 px-4 shadow-[0_1px_0_color-mix(in_oklch,var(--border),transparent_25%)] sm:px-6">
-        <div className="flex min-w-0 items-center gap-3">
-          <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#fdfefb] ring-1 ring-foreground/7">
+      <header className="flex h-14 shrink-0 items-center justify-between gap-3 border-b bg-background/95 px-4 sm:px-6">
+        <div className="flex min-w-0 items-center gap-2.5">
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-[10px] bg-[#fdfefb] ring-1 ring-foreground/8">
             <img
-              className="size-10 object-contain"
+              className="size-8 object-contain"
               src={shipitLogo}
               alt=""
-              width="40"
-              height="40"
+              width="32"
+              height="32"
               fetchPriority="high"
             />
           </span>
-          <div>
-            <p
+          <div className="min-w-0">
+            <h1
               className="font-heading text-[15px] leading-none font-semibold tracking-[-0.02em]"
               translate="no"
             >
               Shipit
-            </p>
-            <p className="mt-1.5 truncate text-[11px] leading-none text-muted-foreground">
-              Release Film Maker
+            </h1>
+            <p className="mt-1.5 hidden truncate text-[11px] leading-none text-muted-foreground sm:block">
+              {t("app.subtitle")}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="hidden items-center gap-2 rounded-full border bg-card px-3 py-1.5 text-[11px] font-medium text-muted-foreground shadow-[0_1px_2px_color-mix(in_oklch,var(--foreground),transparent_94%)] md:flex">
-            <Icon icon={SparklesIcon} className="size-3.5 text-ring" />
-            {t("app.tagline")}
-          </div>
+        <div className="flex shrink-0 items-center gap-2">
           <AppearanceControl value={appearance} onChange={setAppearance} />
           <LanguageControl value={locale} onChange={setLocale} />
         </div>

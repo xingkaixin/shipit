@@ -7,7 +7,6 @@ import {
   TextFontIcon,
 } from "@hugeicons/core-free-icons"
 
-import { SettingsSection } from "@/components/editor/SettingsSection"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
 import { Input } from "@/components/ui/input"
@@ -48,7 +47,6 @@ export function ContentSettings({
   const logoError =
     logoValidationError ||
     (logoState.status === "failed" ? logoState.error : null)
-  const logoMessage = logoError ? t(logoErrorMessageKey(logoError)) : ""
 
   function selectLogo(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0] ?? null
@@ -69,15 +67,12 @@ export function ContentSettings({
   }
 
   return (
-    <div className="space-y-7">
-      <SettingsSection
-        title={t("content.logo.title")}
-        description={t("content.logo.description")}
-      >
+    <div className="space-y-4">
+      <div className="space-y-2">
         <div className="flex items-center gap-2">
           <label
             htmlFor="logo-upload"
-            className="flex h-12 min-w-0 flex-1 cursor-pointer items-center gap-2.5 rounded-[10px] border border-dashed border-input bg-card px-3 text-sm transition-[border-color,background-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/20 hover:border-foreground/20 hover:bg-muted/60 active:scale-[0.99]"
+            className="flex h-11 min-w-0 flex-1 cursor-pointer items-center gap-2.5 rounded-[10px] border border-dashed border-input bg-card px-3 text-sm transition-[border-color,background-color,transform] duration-150 ease-[var(--ease-out)] focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/20 hover:border-foreground/25 hover:bg-muted/60 active:scale-[0.99]"
           >
             <input
               id="logo-upload"
@@ -109,123 +104,110 @@ export function ContentSettings({
             </Button>
           ) : null}
         </div>
-        {logoMessage ? (
+        {logoError ? (
           <p className="text-xs text-destructive" aria-live="polite">
-            {logoMessage}
+            {t(logoErrorMessageKey(logoError))}
           </p>
         ) : (
-          <p className="text-xs text-muted-foreground">
+          <p className="text-[11px] leading-4 text-muted-foreground">
             {t("content.logo.help")}
           </p>
         )}
-      </SettingsSection>
+      </div>
 
-      <SettingsSection title={t("content.release.title")}>
-        <div className="grid grid-cols-[minmax(0,1fr)_112px] gap-3">
-          <div className="space-y-2">
-            <Label htmlFor="product-name">
-              <Icon icon={TextFontIcon} className="size-3.5" />
-              {t("content.productName")}
-            </Label>
-            <Input
-              id="product-name"
-              name="productName"
-              value={content.productName}
-              maxLength={48}
-              autoComplete="off"
-              placeholder={t("content.productName.placeholder")}
-              onChange={(event) => {
-                dispatch({
-                  type: "set-product-name",
-                  value: event.target.value,
-                })
-              }}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="version">
-              <Icon icon={PackageIcon} className="size-3.5" />
-              {t("content.version")}
-            </Label>
-            <Input
-              id="version"
-              name="releaseVersion"
-              value={content.version}
-              maxLength={24}
-              autoComplete="off"
-              spellCheck={false}
-              placeholder={t("content.version.placeholder")}
-              onChange={(event) => {
-                dispatch({ type: "set-version", value: event.target.value })
-              }}
-            />
-          </div>
+      <div className="grid grid-cols-[minmax(0,1fr)_112px] gap-3">
+        <div className="space-y-2">
+          <Label htmlFor="product-name">
+            <Icon icon={TextFontIcon} className="size-3.5" />
+            {t("content.productName")}
+          </Label>
+          <Input
+            id="product-name"
+            name="productName"
+            value={content.productName}
+            maxLength={48}
+            autoComplete="off"
+            placeholder={t("content.productName.placeholder")}
+            onChange={(event) => {
+              dispatch({
+                type: "set-product-name",
+                value: event.target.value,
+              })
+            }}
+          />
         </div>
-      </SettingsSection>
-
-      <SettingsSection
-        title={t("content.detail.title")}
-        description={t("content.detail.description")}
-      >
-        <div className="space-y-3">
-          <div className="space-y-2">
-            <Label htmlFor="detail-kind">
-              <Icon icon={Link01Icon} className="size-3.5" />
-              {t("content.detail.kind")}
-            </Label>
-            <Select
-              value={content.detail.kind}
-              onValueChange={(value) => {
-                if (isDetailKind(value)) {
-                  dispatch({ type: "set-detail-kind", value })
-                }
-              }}
-            >
-              <SelectTrigger id="detail-kind" className="w-full">
-                <SelectValue>
-                  {detailKindLabel(content.detail.kind, t)}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent alignItemWithTrigger={false}>
-                <SelectItem value="none">{t("content.detail.none")}</SelectItem>
-                <SelectItem value="website">
-                  {t("content.detail.website")}
-                </SelectItem>
-                <SelectItem value="install">
-                  {t("content.detail.install")}
-                </SelectItem>
-                <SelectItem value="custom">
-                  {t("content.detail.custom")}
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {content.detail.kind !== "none" ? (
-            <div className="space-y-2">
-              <Label htmlFor="detail-value">{t("content.detail.value")}</Label>
-              <Input
-                id="detail-value"
-                name="releaseDetail"
-                className={
-                  content.detail.kind === "install" ? "font-mono" : undefined
-                }
-                value={content.detail.value}
-                maxLength={80}
-                autoComplete="off"
-                spellCheck={content.detail.kind === "custom"}
-                placeholder={detailInputPlaceholder(content.detail.kind, t)}
-                onChange={(event) => {
-                  dispatch({
-                    type: "set-detail-value",
-                    value: event.target.value,
-                  })
-                }}
-              />
-            </div>
-          ) : null}
+        <div className="space-y-2">
+          <Label htmlFor="version">
+            <Icon icon={PackageIcon} className="size-3.5" />
+            {t("content.version")}
+          </Label>
+          <Input
+            id="version"
+            name="releaseVersion"
+            value={content.version}
+            maxLength={24}
+            autoComplete="off"
+            spellCheck={false}
+            placeholder={t("content.version.placeholder")}
+            onChange={(event) => {
+              dispatch({ type: "set-version", value: event.target.value })
+            }}
+          />
         </div>
-      </SettingsSection>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="detail-kind">
+          <Icon icon={Link01Icon} className="size-3.5" />
+          {t("content.detail.kind")}
+        </Label>
+        <Select
+          value={content.detail.kind}
+          onValueChange={(value) => {
+            if (isDetailKind(value)) {
+              dispatch({ type: "set-detail-kind", value })
+            }
+          }}
+        >
+          <SelectTrigger id="detail-kind" className="w-full">
+            <SelectValue>{detailKindLabel(content.detail.kind, t)}</SelectValue>
+          </SelectTrigger>
+          <SelectContent alignItemWithTrigger={false}>
+            <SelectItem value="none">{t("content.detail.none")}</SelectItem>
+            <SelectItem value="website">
+              {t("content.detail.website")}
+            </SelectItem>
+            <SelectItem value="install">
+              {t("content.detail.install")}
+            </SelectItem>
+            <SelectItem value="custom">{t("content.detail.custom")}</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {content.detail.kind !== "none" ? (
+        <div className="space-y-2">
+          <Label htmlFor="detail-value">{t("content.detail.value")}</Label>
+          <Input
+            id="detail-value"
+            name="releaseDetail"
+            className={
+              content.detail.kind === "install" ? "font-mono" : undefined
+            }
+            value={content.detail.value}
+            maxLength={80}
+            autoComplete="off"
+            spellCheck={content.detail.kind === "custom"}
+            placeholder={detailInputPlaceholder(content.detail.kind, t)}
+            onChange={(event) => {
+              dispatch({
+                type: "set-detail-value",
+                value: event.target.value,
+              })
+            }}
+          />
+        </div>
+      ) : null}
     </div>
   )
 }

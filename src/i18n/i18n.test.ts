@@ -9,8 +9,8 @@ describe("i18n", () => {
   })
 
   it("translates both locales and interpolates variables", () => {
-    expect(translate("en", "sidebar.title")).toBe("Create a release film")
-    expect(translate("zh-CN", "sidebar.title")).toBe("制作发布短片")
+    expect(translate("en", "inspector.theme")).toBe("Color theme")
+    expect(translate("zh-CN", "inspector.theme")).toBe("配色主题")
     expect(translate("en", "preview.figureLabel", { product: "Shipit" })).toBe(
       "Shipit release film preview"
     )

@@ -23,7 +23,9 @@ export type ReleaseContentDraft = {
   logoFile: File | null
 }
 
-export type LogoTreatment = "plain" | "card" | "card-glow"
+export const LOGO_TREATMENTS = ["plain", "card", "card-glow"] as const
+
+export type LogoTreatment = (typeof LOGO_TREATMENTS)[number]
 
 export type TitleColor =
   | { mode: "template" }
@@ -77,7 +79,7 @@ export function isDetailKind(value: string | null): value is DetailKind {
 }
 
 export function isLogoTreatment(value: string | null): value is LogoTreatment {
-  return value === "plain" || value === "card" || value === "card-glow"
+  return LOGO_TREATMENTS.some((treatment) => treatment === value)
 }
 
 export function detailValue(detail: ReleaseDetail): string {

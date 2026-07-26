@@ -1,7 +1,7 @@
 import * as React from "react"
 
-import { ReleaseSidebar } from "@/components/editor/ReleaseSidebar"
-import { VideoPreview } from "@/components/editor/VideoPreview"
+import { ReleaseInspector } from "@/components/editor/ReleaseInspector"
+import { ReleaseStage } from "@/components/editor/ReleaseStage"
 import { isLogoStateExportable, useLogoImage } from "@/hooks/use-logo-image"
 import { useOutputCapability } from "@/hooks/use-output-capability"
 import { useI18n } from "@/i18n/i18n"
@@ -50,15 +50,19 @@ export function ReleaseEditor() {
   return (
     <main
       id="release-editor"
-      className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[23rem_minmax(0,1fr)] lg:overflow-hidden"
+      className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[22rem_minmax(0,1fr)] lg:overflow-hidden"
     >
-      <ReleaseSidebar
+      <ReleaseInspector
         draft={draft}
         logoState={logoState}
-        outputCapability={outputCapability}
         dispatch={dispatch}
       />
-      <VideoPreview composition={composition} canExport={canExport} />
+      <ReleaseStage
+        composition={composition}
+        capability={outputCapability}
+        canExport={canExport}
+        dispatch={dispatch}
+      />
     </main>
   )
 }
