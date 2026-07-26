@@ -8,8 +8,8 @@ Production: [shipit.xingkaixin.me](https://shipit.xingkaixin.me/)
 
 ## Features
 
-- Five motion templates and sixteen color themes, combined freely
-- Live template previews drawn by the export renderer
+- Ten backgrounds and sixteen color themes, combined freely
+- Live background previews drawn by the export renderer
 - Landscape and portrait compositions
 - 1080p and 4K output at 30 or 60 FPS
 - Optional logo framing, custom accent colors, and title fonts
@@ -67,15 +67,16 @@ The interface appearance follows the same pattern: the saved choice wins, and
 
 A film is composed from two independent registries:
 
-| Registry                         | Controls                                      |
-| -------------------------------- | --------------------------------------------- |
-| `src/video/template-registry.ts` | Background pattern, layout, and confetti seed |
-| `src/video/palette-registry.ts`  | Background, foreground, surface, and accents  |
+| Registry                           | Controls                                      |
+| ---------------------------------- | --------------------------------------------- |
+| `src/video/background-registry.ts` | Background pattern, layout, and confetti seed |
+| `src/video/palette-registry.ts`    | Background, foreground, surface, and accents  |
 
-Any color theme renders with any motion template. To add a theme, append an
+Any color theme renders with any background. To add a theme, append an
 entry to `PALETTE_REGISTRY` and a matching `palette.<id>` message in both
 locales; the pickers, the accent swatches, and the confetti pick it up
-automatically.
+automatically. Backgrounds work the same way: add a `BackgroundPattern`, draw
+it in `src/video/background-patterns.ts`, and register it.
 
 ## Cloudflare Pages
 

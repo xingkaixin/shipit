@@ -105,6 +105,7 @@ function createCanvasContext(width: number, height: number) {
     scale: () => undefined,
     fillRect: () => undefined,
     createRadialGradient: () => gradient,
+    createLinearGradient: () => gradient,
     beginPath: () => undefined,
     moveTo: () => undefined,
     lineTo: () => undefined,
