@@ -46,28 +46,32 @@ export function SegmentedControl<TValue extends string>({
           }}
         />
       ) : null}
-      {options.map((option) => (
-        <button
-          key={option.value}
-          type="button"
-          aria-pressed={option.value === value}
-          aria-label={option.label}
-          title={option.label}
-          className={cn(
-            "flex h-8 flex-1 items-center justify-center gap-1.5 rounded-full px-2.5 text-[11px] font-semibold whitespace-nowrap transition-colors duration-150 outline-none focus-visible:ring-3 focus-visible:ring-ring/30",
-            option.value === value
-              ? "text-foreground"
-              : "text-muted-foreground hover:text-foreground"
-          )}
-          onClick={() => onChange(option.value)}
-        >
-          {option.icon ? (
-            <Icon icon={option.icon} className="size-4" />
-          ) : (
-            (option.text ?? option.label)
-          )}
-        </button>
-      ))}
+      {options.map((option) => {
+        const visibleText = option.icon ? null : (option.text ?? option.label)
+
+        return (
+          <button
+            key={option.value}
+            type="button"
+            aria-pressed={option.value === value}
+            aria-label={visibleText === option.label ? undefined : option.label}
+            title={visibleText === option.label ? undefined : option.label}
+            className={cn(
+              "flex h-8 flex-1 items-center justify-center gap-1.5 rounded-full px-2.5 text-[11px] font-semibold whitespace-nowrap transition-colors duration-150 outline-none focus-visible:ring-3 focus-visible:ring-ring/30",
+              option.value === value
+                ? "text-foreground"
+                : "text-muted-foreground hover:text-foreground"
+            )}
+            onClick={() => onChange(option.value)}
+          >
+            {option.icon ? (
+              <Icon icon={option.icon} className="size-4" />
+            ) : (
+              visibleText
+            )}
+          </button>
+        )
+      })}
     </fieldset>
   )
 }
