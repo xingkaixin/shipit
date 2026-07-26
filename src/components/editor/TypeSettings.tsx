@@ -25,9 +25,11 @@ export function TypeSettings({ style, dispatch }: TypeSettingsProps) {
 
   return (
     <div className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="title-font">{t("style.font.family")}</Label>
-        <div id="title-font" className="grid grid-cols-2 gap-2">
+      <fieldset>
+        <legend className="mb-2 text-[12px] leading-none font-semibold text-foreground/85">
+          {t("style.font.family")}
+        </legend>
+        <div className="grid grid-cols-2 gap-2">
           {FONT_REGISTRY.map((font) => (
             <OptionButton
               key={font.id}
@@ -56,7 +58,7 @@ export function TypeSettings({ style, dispatch }: TypeSettingsProps) {
             </OptionButton>
           ))}
         </div>
-      </div>
+      </fieldset>
 
       <div className="space-y-2">
         <Label htmlFor="custom-title-color">
@@ -102,9 +104,11 @@ export function TypeSettings({ style, dispatch }: TypeSettingsProps) {
         </div>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="logo-treatment">{t("style.logo.title")}</Label>
-        <div id="logo-treatment" className="grid grid-cols-3 gap-2">
+      <fieldset>
+        <legend className="mb-2 text-[12px] leading-none font-semibold text-foreground/85">
+          {t("style.logo.title")}
+        </legend>
+        <div className="grid grid-cols-3 gap-2">
           {LOGO_TREATMENTS.map((treatment) => (
             <OptionButton
               key={treatment}
@@ -118,7 +122,7 @@ export function TypeSettings({ style, dispatch }: TypeSettingsProps) {
             </OptionButton>
           ))}
         </div>
-      </div>
+      </fieldset>
     </div>
   )
 }

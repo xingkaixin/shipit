@@ -99,6 +99,14 @@
   --sidebar-ring: #84c900;
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+
+  /*
+   * Everything stacked above and below the landscape canvas at lg, so the
+   * stage can size itself from the remaining viewport height:
+   * header 3.5 + output toolbar 3.5 + stage padding 4 + card padding 1
+   * + transport 3.25 + export bar 4 + hairline borders.
+   */
+  --stage-chrome: 19.5rem;
 }
 
 .dark {

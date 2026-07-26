@@ -204,7 +204,7 @@ export function ReleaseStage({
           className={cn(
             "preview-stage flex max-w-full min-w-0 flex-col rounded-[22px] bg-stage p-2 text-stage-foreground shadow-[0_24px_70px_color-mix(in_oklch,var(--stage),transparent_72%),inset_0_1px_0_color-mix(in_oklch,var(--stage-foreground),transparent_90%)] ring-1 ring-stage-foreground/8",
             isLandscape
-              ? "w-full max-w-5xl lg:w-[min(100%,calc((100svh-17rem)*16/9))]"
+              ? "w-full max-w-5xl lg:w-[min(100%,calc((100svh-var(--stage-chrome))*16/9))]"
               : "w-fit max-w-full"
           )}
         >
