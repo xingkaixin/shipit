@@ -57,7 +57,7 @@ export function SegmentedControl<TValue extends string>({
             aria-label={visibleText === option.label ? undefined : option.label}
             title={visibleText === option.label ? undefined : option.label}
             className={cn(
-              "flex h-8 flex-1 items-center justify-center gap-1.5 rounded-full px-2.5 text-[11px] font-semibold whitespace-nowrap transition-colors duration-150 outline-none focus-visible:ring-3 focus-visible:ring-ring/30",
+              "flex h-8 flex-1 items-center justify-center gap-1.5 rounded-full px-3.5 text-[11px] font-semibold whitespace-nowrap transition-colors duration-150 outline-none focus-visible:ring-3 focus-visible:ring-ring/30",
               option.value === value
                 ? "text-foreground"
                 : "text-muted-foreground hover:text-foreground"
