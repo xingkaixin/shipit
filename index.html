@@ -4,16 +4,23 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="canonical" href="https://shipit.xingkaixin.me/" />
-    <meta
-      name="theme-color"
-      content="#f4f6f2"
-      media="(prefers-color-scheme: light)"
-    />
-    <meta
-      name="theme-color"
-      content="#0e110f"
-      media="(prefers-color-scheme: dark)"
-    />
+    <meta name="theme-color" content="#f4f6f2" />
+    <!-- Resolves the saved appearance before first paint. Mirrors resolveAppearance in use-appearance.ts. -->
+    <script>
+      try {
+        var savedAppearance = localStorage.getItem("shipit-appearance")
+        var isDark =
+          savedAppearance === "dark" ||
+          (savedAppearance !== "light" &&
+            matchMedia("(prefers-color-scheme: dark)").matches)
+        document.documentElement.classList.add(isDark ? "dark" : "light")
+        document
+          .querySelector('meta[name="theme-color"]')
+          .setAttribute("content", isDark ? "#0e110f" : "#f4f6f2")
+      } catch (error) {
+        document.documentElement.classList.add("light")
+      }
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="application-name" content="Shipit" />
     <meta

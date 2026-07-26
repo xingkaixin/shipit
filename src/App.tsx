@@ -1,13 +1,20 @@
-import { LanguageCircleIcon, SparklesIcon } from "@hugeicons/core-free-icons"
+import {
+  ComputerIcon,
+  Moon02Icon,
+  SparklesIcon,
+  Sun03Icon,
+} from "@hugeicons/core-free-icons"
 
 import { ReleaseEditor } from "@/components/editor/ReleaseEditor"
 import { Icon } from "@/components/ui/icon"
+import { SegmentedControl } from "@/components/ui/segmented-control"
+import { useAppearance, type Appearance } from "@/hooks/use-appearance"
 import { useI18n, type AppLocale } from "@/i18n/i18n"
-import { cn } from "@/lib/utils"
 import shipitLogo from "../assets/shipit-logo-header.png"
 
 export function App() {
   const { locale, setLocale, t } = useI18n()
+  const { appearance, setAppearance } = useAppearance()
 
   return (
     <div className="flex min-h-svh flex-col bg-workspace lg:h-svh lg:min-h-[680px] lg:overflow-hidden">
@@ -46,7 +53,8 @@ export function App() {
             <Icon icon={SparklesIcon} className="size-3.5 text-ring" />
             {t("app.tagline")}
           </div>
-          <LanguageSwitcher locale={locale} onChange={setLocale} />
+          <AppearanceControl value={appearance} onChange={setAppearance} />
+          <LanguageControl value={locale} onChange={setLocale} />
         </div>
       </header>
       <ReleaseEditor />
@@ -54,40 +62,48 @@ export function App() {
   )
 }
 
-type LanguageSwitcherProps = {
-  locale: AppLocale
-  onChange: (locale: AppLocale) => void
-}
-
-function LanguageSwitcher({ locale, onChange }: LanguageSwitcherProps) {
+function AppearanceControl({
+  value,
+  onChange,
+}: {
+  value: Appearance
+  onChange: (appearance: Appearance) => void
+}) {
   const { t } = useI18n()
 
   return (
-    <fieldset
-      aria-label={t("language.label")}
-      className="flex h-9 items-center rounded-full border bg-card p-0.5 shadow-[0_1px_2px_color-mix(in_oklch,var(--foreground),transparent_94%)]"
-    >
-      <Icon
-        icon={LanguageCircleIcon}
-        className="ml-2 size-3.5 text-muted-foreground"
-      />
-      {(["zh-CN", "en"] as const).map((option) => (
-        <button
-          key={option}
-          type="button"
-          aria-pressed={locale === option}
-          className={cn(
-            "h-7 rounded-full px-2 text-[11px] font-semibold transition-[color,background-color,box-shadow] duration-150",
-            locale === option
-              ? "bg-foreground text-background shadow-sm"
-              : "text-muted-foreground hover:text-foreground"
-          )}
-          onClick={() => onChange(option)}
-        >
-          {option === "zh-CN" ? t("language.chinese") : t("language.english")}
-        </button>
-      ))}
-    </fieldset>
+    <SegmentedControl
+      label={t("appearance.label")}
+      value={value}
+      onChange={onChange}
+      options={[
+        { value: "system", label: t("appearance.system"), icon: ComputerIcon },
+        { value: "light", label: t("appearance.light"), icon: Sun03Icon },
+        { value: "dark", label: t("appearance.dark"), icon: Moon02Icon },
+      ]}
+    />
+  )
+}
+
+function LanguageControl({
+  value,
+  onChange,
+}: {
+  value: AppLocale
+  onChange: (locale: AppLocale) => void
+}) {
+  const { t } = useI18n()
+
+  return (
+    <SegmentedControl
+      label={t("language.label")}
+      value={value}
+      onChange={onChange}
+      options={[
+        { value: "zh-CN", label: t("language.chinese") },
+        { value: "en", label: t("language.english") },
+      ]}
+    />
   )
 }
 
