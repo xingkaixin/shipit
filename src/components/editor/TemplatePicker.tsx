@@ -1,0 +1,83 @@
+import { Tick02Icon } from "@hugeicons/core-free-icons"
+
+import { Icon } from "@/components/ui/icon"
+import { cn } from "@/lib/utils"
+import {
+  paletteForTemplate,
+  TEMPLATE_REGISTRY,
+  type TemplateId,
+  type ThemeTone,
+} from "@/video/template-registry"
+
+type TemplatePickerProps = {
+  selectedTemplateId: TemplateId
+  themeTone: ThemeTone
+  onSelect: (templateId: TemplateId) => void
+}
+
+export function TemplatePicker({
+  selectedTemplateId,
+  themeTone,
+  onSelect,
+}: TemplatePickerProps) {
+  return (
+    <div className="grid grid-cols-2 gap-2">
+      {TEMPLATE_REGISTRY.map((template) => {
+        const isSelected = template.id === selectedTemplateId
+        const palette = paletteForTemplate(template, themeTone)
+
+        return (
+          <button
+            key={template.id}
+            type="button"
+            aria-pressed={isSelected}
+            className={cn(
+              "template-option group relative min-w-0 rounded-xl border p-1.5 text-left transition-[border-color,background-color,box-shadow,transform] duration-200 ease-[var(--ease-out)] outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/20 active:scale-[0.98]",
+              isSelected
+                ? "border-foreground/25 bg-foreground/[0.045] shadow-[0_3px_10px_color-mix(in_oklch,var(--foreground),transparent_93%)]"
+                : "border-border bg-card hover:border-foreground/20 hover:bg-muted/50"
+            )}
+            onClick={() => onSelect(template.id)}
+          >
+            <span
+              className="relative mb-2 block aspect-[16/10] overflow-hidden rounded-lg"
+              style={{ backgroundColor: palette.background }}
+            >
+              <span
+                className="absolute top-1/2 left-1/2 size-6 -translate-x-1/2 -translate-y-1/2 rounded-md shadow-lg"
+                style={{ backgroundColor: palette.surface }}
+              />
+              <span
+                className="absolute top-2 left-2 size-1.5 rounded-full"
+                style={{ backgroundColor: palette.defaultAccent }}
+              />
+              <span
+                className="absolute top-3 right-3 size-1 rotate-45"
+                style={{ backgroundColor: palette.confetti[1] }}
+              />
+              <span
+                className="absolute bottom-3 left-5 h-1 w-1.5 -rotate-12"
+                style={{ backgroundColor: palette.confetti[2] }}
+              />
+              <span
+                className="absolute right-6 bottom-2 size-1 rounded-full"
+                style={{ backgroundColor: palette.confetti[3] }}
+              />
+              {isSelected ? (
+                <span className="absolute top-1.5 right-1.5 flex size-4 items-center justify-center rounded-full bg-brand text-brand-foreground shadow-sm">
+                  <Icon icon={Tick02Icon} className="size-2.5" />
+                </span>
+              ) : null}
+            </span>
+            <span className="block truncate text-[11px] leading-4 font-medium">
+              {template.name}
+            </span>
+            <span className="block truncate text-[10px] text-muted-foreground">
+              {template.description}
+            </span>
+          </button>
+        )
+      })}
+    </div>
+  )
+}

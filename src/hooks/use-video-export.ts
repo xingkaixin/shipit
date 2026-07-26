@@ -1,0 +1,176 @@
+import * as React from "react"
+
+import { releaseVideoFileName } from "@/video/release-video-file-name"
+import type { ReleaseComposition } from "@/video/release-video"
+
+const PROGRESS_UPDATE_INTERVAL_MS = 80
+
+export type VideoExportState =
+  | { status: "idle" }
+  | { status: "exporting"; progress: number }
+  | { status: "completed" }
+  | { status: "failed"; message: string }
+
+export function useVideoExport(composition: ReleaseComposition) {
+  const [state, setState] = React.useState<VideoExportState>({
+    status: "idle",
+  })
+  const currentCompositionReference = React.useRef(composition)
+  const exportedCompositionReference = React.useRef<ReleaseComposition | null>(
+    null
+  )
+  const isExportingReference = React.useRef(false)
+  const abortControllerReference = React.useRef<AbortController | null>(null)
+  const isMountedReference = React.useRef(true)
+  currentCompositionReference.current = composition
+
+  React.useEffect(() => {
+    if (
+      isExportingReference.current &&
+      exportedCompositionReference.current !== composition
+    ) {
+      abortControllerReference.current?.abort(
+        new DOMException("配置已更新，当前导出已取消", "AbortError")
+      )
+      return
+    }
+
+    setState((currentState) =>
+      currentState.status === "exporting" ? currentState : { status: "idle" }
+    )
+  }, [composition])
+
+  React.useEffect(() => {
+    isMountedReference.current = true
+    return () => {
+      isMountedReference.current = false
+      abortControllerReference.current?.abort(
+        new DOMException("页面已关闭，当前导出已取消", "AbortError")
+      )
+    }
+  }, [])
+
+  const exportVideo = React.useCallback(async () => {
+    if (isExportingReference.current) {
+      return
+    }
+
+    isExportingReference.current = true
+    const exportedComposition = currentCompositionReference.current
+    const abortController = new AbortController()
+    abortControllerReference.current = abortController
+    exportedCompositionReference.current = exportedComposition
+    let lastProgressUpdate = 0
+
+    setState({ status: "exporting", progress: 0 })
+
+    try {
+      const { exportReleaseVideo } =
+        await import("@/video/export-release-video")
+      const result = await exportReleaseVideo({
+        composition: exportedComposition,
+        onProgress: (progress) => {
+          const now = performance.now()
+          if (
+            progress < 1 &&
+            now - lastProgressUpdate < PROGRESS_UPDATE_INTERVAL_MS
+          ) {
+            return
+          }
+
+          lastProgressUpdate = now
+          if (isMountedReference.current) {
+            setState({ status: "exporting", progress })
+          }
+        },
+        signal: abortController.signal,
+      })
+
+      if (
+        abortController.signal.aborted ||
+        currentCompositionReference.current !== exportedComposition
+      ) {
+        await result.cleanup()
+        if (isMountedReference.current) {
+          setState({ status: "idle" })
+        }
+        return
+      }
+
+      downloadVideo(
+        result.video,
+        releaseVideoFileName(exportedComposition),
+        result.cleanup
+      )
+      setState({ status: "completed" })
+    } catch (error) {
+      if (isAbortError(error)) {
+        if (isMountedReference.current) {
+          setState({ status: "idle" })
+        }
+        return
+      }
+
+      console.error("[video-export] Export failed", error)
+
+      if (currentCompositionReference.current !== exportedComposition) {
+        if (isMountedReference.current) {
+          setState({ status: "idle" })
+        }
+        return
+      }
+
+      if (isMountedReference.current) {
+        setState({
+          status: "failed",
+          message:
+            error instanceof Error ? error.message : "视频导出失败，请重试",
+        })
+      }
+    } finally {
+      if (abortControllerReference.current === abortController) {
+        abortControllerReference.current = null
+        exportedCompositionReference.current = null
+        isExportingReference.current = false
+      }
+    }
+  }, [])
+
+  const cancelExport = React.useCallback(() => {
+    abortControllerReference.current?.abort(
+      new DOMException("视频导出已取消", "AbortError")
+    )
+  }, [])
+
+  return { state, exportVideo, cancelExport }
+}
+
+function downloadVideo(
+  video: Blob,
+  fileName: string,
+  cleanup: () => Promise<void>
+): void {
+  let videoUrl: string | null = null
+
+  try {
+    videoUrl = URL.createObjectURL(video)
+    const downloadLink = document.createElement("a")
+    downloadLink.href = videoUrl
+    downloadLink.download = fileName
+    downloadLink.click()
+  } finally {
+    if (videoUrl) {
+      const createdVideoUrl = videoUrl
+      window.setTimeout(() => {
+        URL.revokeObjectURL(createdVideoUrl)
+        void cleanup()
+      }, 1_000)
+    } else {
+      void cleanup()
+    }
+  }
+}
+
+function isAbortError(error: unknown): boolean {
+  return error instanceof DOMException && error.name === "AbortError"
+}
