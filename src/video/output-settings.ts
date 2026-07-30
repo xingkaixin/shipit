@@ -41,8 +41,8 @@ export const LOGICAL_VIEWPORTS: Record<AspectRatio, VideoDimensions> = {
 }
 
 export const PREVIEW_DIMENSIONS: Record<AspectRatio, VideoDimensions> = {
-  landscape: { width: 1280, height: 720 },
-  portrait: { width: 720, height: 1280 },
+  landscape: { width: 1920, height: 1080 },
+  portrait: { width: 1080, height: 1920 },
 }
 
 export function outputDimensions(

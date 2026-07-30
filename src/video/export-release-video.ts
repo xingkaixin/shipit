@@ -12,6 +12,7 @@ import {
   outputDimensions,
   outputFrameCount,
 } from "@/video/output-settings"
+import { setHighQualityImageSmoothing } from "@/video/canvas-drawing"
 import { renderReleaseFrame } from "@/video/render-release-frame"
 import { ReleaseExportError } from "@/video/release-export-error"
 import type { ReleaseComposition, ReleaseImage } from "@/video/release-video"
@@ -245,6 +246,7 @@ function snapshotImage(
     throw new ReleaseExportError("asset")
   }
 
+  setHighQualityImageSmoothing(context)
   context.drawImage(image.source, 0, 0, canvas.width, canvas.height)
   return {
     source: canvas,

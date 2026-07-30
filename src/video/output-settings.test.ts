@@ -4,6 +4,7 @@ import {
   outputBitrate,
   outputDimensions,
   outputFrameCount,
+  PREVIEW_DIMENSIONS,
 } from "@/video/output-settings"
 
 describe("output settings", () => {
@@ -21,6 +22,17 @@ describe("output settings", () => {
   it("derives frame count from the selected frame rate", () => {
     expect(outputFrameCount(30)).toBe(150)
     expect(outputFrameCount(60)).toBe(300)
+  })
+
+  it("previews both orientations at full HD", () => {
+    expect(PREVIEW_DIMENSIONS.landscape).toEqual({
+      width: 1920,
+      height: 1080,
+    })
+    expect(PREVIEW_DIMENSIONS.portrait).toEqual({
+      width: 1080,
+      height: 1920,
+    })
   })
 
   it("scales bitrate with pixels per second", () => {

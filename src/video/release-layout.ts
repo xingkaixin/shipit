@@ -167,16 +167,16 @@ function productShotLayout(
 
   return {
     ...centered,
-    centerX: viewport.width * 0.285,
-    titleMaximumWidth: Math.min(centered.titleMaximumWidth, 760),
+    centerX: viewport.width * 0.255,
+    titleMaximumWidth: Math.min(centered.titleMaximumWidth, 700),
     titleMaximumFontSize: Math.min(centered.titleMaximumFontSize, 96),
     titleMinimumFontSize: Math.min(centered.titleMinimumFontSize, 50),
-    detailMaximumWidth: Math.min(centered.detailMaximumWidth, 700),
+    detailMaximumWidth: Math.min(centered.detailMaximumWidth, 640),
     productShotArea: {
       centerX: viewport.width * 0.735,
       centerY: 520,
-      maximumWidth: 700,
-      maximumHeight: 650,
+      maximumWidth: 840,
+      maximumHeight: 700,
     },
   }
 }

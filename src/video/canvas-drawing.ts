@@ -19,6 +19,7 @@ export function drawImageContain(
   maximumWidth: number,
   maximumHeight: number = maximumWidth
 ): void {
+  setHighQualityImageSmoothing(context)
   const scale = Math.min(
     maximumWidth / image.width,
     maximumHeight / image.height
@@ -36,6 +37,7 @@ export function drawImageCover(
   width: number,
   height: number
 ): void {
+  setHighQualityImageSmoothing(context)
   const scale = Math.max(width / image.width, height / image.height)
   const sourceWidth = width / scale
   const sourceHeight = height / scale
@@ -53,4 +55,11 @@ export function drawImageCover(
     width,
     height
   )
+}
+
+export function setHighQualityImageSmoothing(
+  context: CanvasRenderingContext2D
+): void {
+  context.imageSmoothingEnabled = true
+  context.imageSmoothingQuality = "high"
 }

@@ -218,9 +218,12 @@ describe("exportReleaseVideo", () => {
 
   it("snapshots a product screenshot before encoding", async () => {
     const drawImage = vi.fn<(...args: unknown[]) => void>()
-    vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue({
+    const context = {
       drawImage,
-    } as unknown as CanvasRenderingContext2D)
+      imageSmoothingEnabled: false,
+      imageSmoothingQuality: "low",
+    } as unknown as CanvasRenderingContext2D
+    vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(context)
     const screenshotSource = document.createElement("canvas")
 
     await exportReleaseVideo({
@@ -244,5 +247,7 @@ describe("exportReleaseVideo", () => {
       width: 2_048,
       height: 1_280,
     })
+    expect(context.imageSmoothingEnabled).toBe(true)
+    expect(context.imageSmoothingQuality).toBe("high")
   })
 })
