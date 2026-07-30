@@ -2,8 +2,18 @@ import type { VideoDimensions } from "@/video/output-settings"
 import type { AspectRatio } from "@/video/output-settings"
 import type { BackgroundLayout } from "@/video/background-registry"
 
+export type ReleaseLayoutMode = "centered" | "product-shot"
+
+export type ProductShotArea = {
+  centerX: number
+  centerY: number
+  maximumWidth: number
+  maximumHeight: number
+}
+
 export type ReleaseLayout = {
   centerX: number
+  backgroundCenterX: number
   eyebrowY: number
   logoY: number
   logoSize: number
@@ -16,18 +26,23 @@ export type ReleaseLayout = {
   detailMaximumWidth: number
   backgroundCenterY: number
   confettiOriginY: number
+  productShotArea: ProductShotArea | null
 }
 
 export function releaseLayout(
   aspectRatio: AspectRatio,
   backgroundLayout: BackgroundLayout,
-  viewport: VideoDimensions
+  viewport: VideoDimensions,
+  mode: ReleaseLayoutMode = "centered"
 ): ReleaseLayout {
-  if (aspectRatio === "portrait") {
-    return portraitLayout(backgroundLayout, viewport)
-  }
+  const centered =
+    aspectRatio === "portrait"
+      ? portraitLayout(backgroundLayout, viewport)
+      : landscapeLayout(backgroundLayout, viewport)
 
-  return landscapeLayout(backgroundLayout, viewport)
+  return mode === "product-shot"
+    ? productShotLayout(centered, aspectRatio, viewport)
+    : centered
 }
 
 function landscapeLayout(
@@ -36,6 +51,7 @@ function landscapeLayout(
 ): ReleaseLayout {
   const base = {
     centerX: viewport.width / 2,
+    backgroundCenterX: viewport.width / 2,
     eyebrowY: 124,
     logoY: 282,
     logoSize: 176,
@@ -48,6 +64,7 @@ function landscapeLayout(
     detailMaximumWidth: 910,
     backgroundCenterY: 510,
     confettiOriginY: viewport.height - 64,
+    productShotArea: null,
   }
 
   switch (backgroundLayout) {
@@ -82,6 +99,7 @@ function portraitLayout(
 ): ReleaseLayout {
   const base = {
     centerX: viewport.width / 2,
+    backgroundCenterX: viewport.width / 2,
     eyebrowY: 210,
     logoY: 630,
     logoSize: 190,
@@ -94,6 +112,7 @@ function portraitLayout(
     detailMaximumWidth: 840,
     backgroundCenterY: 960,
     confettiOriginY: viewport.height * 0.88,
+    productShotArea: null,
   }
 
   switch (backgroundLayout) {
@@ -118,5 +137,46 @@ function portraitLayout(
         versionY: 1240,
         detailY: 1370,
       }
+  }
+}
+
+function productShotLayout(
+  centered: ReleaseLayout,
+  aspectRatio: AspectRatio,
+  viewport: VideoDimensions
+): ReleaseLayout {
+  if (aspectRatio === "portrait") {
+    return {
+      ...centered,
+      eyebrowY: 120,
+      logoY: 310,
+      logoSize: Math.min(centered.logoSize, 154),
+      titleY: 565,
+      titleMaximumFontSize: Math.min(centered.titleMaximumFontSize, 96),
+      versionY: 710,
+      detailY: 805,
+      backgroundCenterY: 980,
+      productShotArea: {
+        centerX: viewport.width / 2,
+        centerY: 1_365,
+        maximumWidth: 820,
+        maximumHeight: 760,
+      },
+    }
+  }
+
+  return {
+    ...centered,
+    centerX: viewport.width * 0.285,
+    titleMaximumWidth: Math.min(centered.titleMaximumWidth, 760),
+    titleMaximumFontSize: Math.min(centered.titleMaximumFontSize, 96),
+    titleMinimumFontSize: Math.min(centered.titleMinimumFontSize, 50),
+    detailMaximumWidth: Math.min(centered.detailMaximumWidth, 700),
+    productShotArea: {
+      centerX: viewport.width * 0.735,
+      centerY: 520,
+      maximumWidth: 700,
+      maximumHeight: 650,
+    },
   }
 }

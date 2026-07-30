@@ -1,4 +1,8 @@
-export type ReleaseExportErrorCode = "canvas" | "empty" | "logo" | "unsupported"
+export type ReleaseExportErrorCode =
+  | "asset"
+  | "canvas"
+  | "empty"
+  | "unsupported"
 
 export class ReleaseExportError extends Error {
   readonly code: ReleaseExportErrorCode

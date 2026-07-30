@@ -7,6 +7,7 @@ import {
 } from "@/video/animation"
 import { drawBackgroundPattern } from "@/video/background-patterns"
 import { colorWithAlpha, mixHexColors } from "@/video/color"
+import { drawImageContain, roundedRectangle } from "@/video/canvas-drawing"
 import { translate } from "@/i18n/i18n"
 import {
   drawConfetti,
@@ -23,7 +24,6 @@ import {
   detailValue,
   VIDEO_DURATION_SECONDS,
   type ReleaseComposition,
-  type ReleaseImage,
 } from "@/video/release-video"
 import { paletteById, type PaletteDefinition } from "@/video/palette-registry"
 import {
@@ -31,6 +31,8 @@ import {
   type BackgroundDefinition,
 } from "@/video/background-registry"
 import { fitSingleLineText, type FittedCanvasText } from "@/video/text-layout"
+import { drawProductShot } from "@/video/render-product-shot"
+import { shimmerGradient } from "@/video/shimmer"
 
 const DETAIL_MAX_FONT_SIZE = 34
 const DETAIL_MIN_FONT_SIZE = 23
@@ -51,6 +53,7 @@ type ReleaseFramePlan = {
   title: FittedCanvasText & {
     color: string
     fontFamily: string
+    width: number
   }
   version: {
     label: string
@@ -144,6 +147,8 @@ function framePlanFor(
   const titleColor = composition.style.titleColor.useCustom
     ? composition.style.titleColor.value
     : frameStyle.palette.foreground
+  context.font = `760 ${title.fontSize}px ${titleFontFamily}`
+  const titleWidth = context.measureText(title.text).width
   const versionLabel = composition.content.version.trim() || "v1.0.0"
 
   context.font = `680 36px ${MONO_FONT_FAMILY}`
@@ -180,6 +185,7 @@ function framePlanFor(
       ...title,
       color: titleColor,
       fontFamily: titleFontFamily,
+      width: titleWidth,
     },
     version: {
       label: versionLabel,
@@ -227,7 +233,8 @@ function frameStyleFor(composition: ReleaseComposition): FrameStyle {
   const layout = releaseLayout(
     composition.output.aspectRatio,
     background.layout,
-    viewport
+    viewport,
+    composition.content.screenshotImage ? "product-shot" : "centered"
   )
 
   return { background, palette, viewport, layout }
@@ -244,7 +251,7 @@ function drawBackground(
     pattern: frameStyle.background.pattern,
     palette: frameStyle.palette,
     viewport: frameStyle.viewport,
-    centerX: frameStyle.layout.centerX,
+    centerX: frameStyle.layout.backgroundCenterX,
     centerY: frameStyle.layout.backgroundCenterY,
     accentColor: composition.style.accentColor,
     time,
@@ -259,9 +266,24 @@ function drawReleaseContent(
 ): void {
   drawEyebrow(context, plan.frameStyle, plan.badge, time)
   drawLogo(context, composition, plan.frameStyle, time)
-  drawProductName(context, plan, time)
+  drawProductName(context, composition, plan, time)
   drawVersion(context, composition, plan, time)
   drawDetail(context, plan, time)
+
+  if (
+    composition.content.screenshotImage &&
+    plan.frameStyle.layout.productShotArea
+  ) {
+    drawProductShot({
+      context,
+      image: composition.content.screenshotImage,
+      style: composition.style.productShot,
+      area: plan.frameStyle.layout.productShotArea,
+      palette: plan.frameStyle.palette,
+      accentColor: composition.style.accentColor,
+      time,
+    })
+  }
 }
 
 function drawEyebrow(
@@ -360,17 +382,6 @@ function drawLogoSurface(
   context.stroke()
 }
 
-function drawImageContain(
-  context: CanvasRenderingContext2D,
-  image: ReleaseImage,
-  maximumSize: number
-): void {
-  const scale = Math.min(maximumSize / image.width, maximumSize / image.height)
-  const width = image.width * scale
-  const height = image.height * scale
-  context.drawImage(image.source, -width / 2, -height / 2, width, height)
-}
-
 function drawLogoFallback(
   context: CanvasRenderingContext2D,
   productName: string,
@@ -386,6 +397,7 @@ function drawLogoFallback(
 
 function drawProductName(
   context: CanvasRenderingContext2D,
+  composition: ReleaseComposition,
   plan: ReleaseFramePlan,
   time: number
 ): void {
@@ -400,7 +412,38 @@ function drawProductName(
   context.textAlign = "center"
   context.textBaseline = "middle"
   context.fillText(plan.title.text, layout.centerX, layout.titleY)
+
+  if (composition.style.titleShimmer) {
+    drawTitleShimmer(context, plan, time)
+  }
   context.restore()
+}
+
+function drawTitleShimmer(
+  context: CanvasRenderingContext2D,
+  plan: ReleaseFramePlan,
+  time: number
+): void {
+  const { layout } = plan.frameStyle
+  const gradient = shimmerGradient(
+    context,
+    {
+      x: layout.centerX - plan.title.width / 2,
+      y: layout.titleY - plan.title.fontSize / 2,
+      width: plan.title.width,
+      height: plan.title.fontSize,
+    },
+    time,
+    1.72,
+    1.05
+  )
+
+  if (!gradient) {
+    return
+  }
+
+  context.fillStyle = gradient
+  context.fillText(plan.title.text, layout.centerX, layout.titleY)
 }
 
 function drawVersion(
@@ -501,17 +544,4 @@ function readableAccentForeground(accentColor: string): string {
   const luminance = 0.2126 * red + 0.7152 * green + 0.0722 * blue
 
   return luminance > 150 ? darkMix : lightMix
-}
-
-function roundedRectangle(
-  context: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  radius: number
-): void {
-  const clampedRadius = Math.min(radius, width / 2, height / 2)
-  context.beginPath()
-  context.roundRect(x, y, width, height, clampedRadius)
 }

@@ -191,8 +191,16 @@ function snapshotComposition(composition: ReleaseComposition): {
   composition: ReleaseComposition
   dispose: () => void
 } {
-  const logoSnapshot = snapshotLogo(composition.content.logoImage)
-  if (!logoSnapshot) {
+  const logoSnapshot = snapshotImage(composition.content.logoImage, 1_024)
+  const screenshotSnapshot = snapshotImage(
+    composition.content.screenshotImage,
+    2_048
+  )
+  const snapshots = [logoSnapshot, screenshotSnapshot].filter(
+    (image): image is ReleaseImage => image !== null
+  )
+
+  if (snapshots.length === 0) {
     return {
       composition,
       dispose: () => undefined,
@@ -205,23 +213,28 @@ function snapshotComposition(composition: ReleaseComposition): {
       content: {
         ...composition.content,
         logoImage: logoSnapshot,
+        screenshotImage: screenshotSnapshot,
       },
     },
     dispose: () => {
-      if (logoSnapshot.source instanceof HTMLCanvasElement) {
-        logoSnapshot.source.width = 0
-        logoSnapshot.source.height = 0
+      for (const image of snapshots) {
+        if (image.source instanceof HTMLCanvasElement) {
+          image.source.width = 0
+          image.source.height = 0
+        }
       }
     },
   }
 }
 
-function snapshotLogo(image: ReleaseImage | null): ReleaseImage | null {
+function snapshotImage(
+  image: ReleaseImage | null,
+  maximumEdge: number
+): ReleaseImage | null {
   if (!image) {
     return null
   }
 
-  const maximumEdge = 1_024
   const scale = Math.min(1, maximumEdge / Math.max(image.width, image.height))
   const canvas = document.createElement("canvas")
   canvas.width = Math.max(1, Math.round(image.width * scale))
@@ -229,7 +242,7 @@ function snapshotLogo(image: ReleaseImage | null): ReleaseImage | null {
   const context = canvas.getContext("2d")
 
   if (!context) {
-    throw new ReleaseExportError("logo")
+    throw new ReleaseExportError("asset")
   }
 
   context.drawImage(image.source, 0, 0, canvas.width, canvas.height)

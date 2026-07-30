@@ -8,6 +8,11 @@ import {
   detailValueForKind,
   type DetailKind,
   type LogoTreatment,
+  PRODUCT_SHOT_SCALE_MAX,
+  PRODUCT_SHOT_SCALE_MIN,
+  PRODUCT_SHOT_TILT_MAX,
+  PRODUCT_SHOT_TILT_MIN,
+  type ProductFrame,
   type ReleaseDraft,
 } from "@/video/release-video"
 import {
@@ -25,6 +30,7 @@ export const INITIAL_RELEASE_DRAFT: ReleaseDraft = {
     version: "v1.0.0",
     detail: { kind: "install", value: "pnpm add shipit" },
     logoFile: null,
+    screenshotFile: null,
   },
   style: {
     backgroundId: "midnight-burst",
@@ -35,6 +41,13 @@ export const INITIAL_RELEASE_DRAFT: ReleaseDraft = {
     titleColor: {
       useCustom: false,
       value: paletteById(INITIAL_PALETTE_ID).foreground,
+    },
+    titleShimmer: false,
+    productShot: {
+      frame: "browser",
+      scale: 1,
+      tilt: -4,
+      shimmer: true,
     },
   },
   output: {
@@ -53,7 +66,13 @@ export type ReleaseDraftAction =
   | { type: "set-palette"; value: PaletteId }
   | { type: "set-accent-color"; value: string }
   | { type: "set-logo-file"; value: File | null }
+  | { type: "set-screenshot-file"; value: File | null }
   | { type: "set-logo-treatment"; value: LogoTreatment }
+  | { type: "set-title-shimmer"; value: boolean }
+  | { type: "set-product-frame"; value: ProductFrame }
+  | { type: "set-product-shot-scale"; value: number }
+  | { type: "set-product-shot-tilt"; value: number }
+  | { type: "set-product-shot-shimmer"; value: boolean }
   | { type: "set-title-font"; value: FontId }
   | { type: "use-custom-title-color"; value: boolean }
   | { type: "set-custom-title-color"; value: string }
@@ -105,8 +124,36 @@ export function releaseDraftReducer(
       return withStyle(draft, { accentColor: action.value })
     case "set-logo-file":
       return withContent(draft, { logoFile: action.value })
+    case "set-screenshot-file":
+      return withContent(draft, { screenshotFile: action.value })
     case "set-logo-treatment":
       return withStyle(draft, { logoTreatment: action.value })
+    case "set-title-shimmer":
+      return withStyle(draft, { titleShimmer: action.value })
+    case "set-product-frame":
+      return withProductShot(draft, { frame: action.value })
+    case "set-product-shot-scale":
+      if (!Number.isFinite(action.value)) {
+        return draft
+      }
+
+      return withProductShot(draft, {
+        scale: clamp(
+          action.value,
+          PRODUCT_SHOT_SCALE_MIN,
+          PRODUCT_SHOT_SCALE_MAX
+        ),
+      })
+    case "set-product-shot-tilt":
+      if (!Number.isFinite(action.value)) {
+        return draft
+      }
+
+      return withProductShot(draft, {
+        tilt: clamp(action.value, PRODUCT_SHOT_TILT_MIN, PRODUCT_SHOT_TILT_MAX),
+      })
+    case "set-product-shot-shimmer":
+      return withProductShot(draft, { shimmer: action.value })
     case "set-title-font":
       return withStyle(draft, { titleFontId: action.value })
     case "use-custom-title-color":
@@ -140,9 +187,22 @@ function withStyle(
   return { ...draft, style: { ...draft.style, ...style } }
 }
 
+function withProductShot(
+  draft: ReleaseDraft,
+  productShot: Partial<ReleaseDraft["style"]["productShot"]>
+): ReleaseDraft {
+  return withStyle(draft, {
+    productShot: { ...draft.style.productShot, ...productShot },
+  })
+}
+
 function withOutput(
   draft: ReleaseDraft,
   output: Partial<ReleaseDraft["output"]>
 ): ReleaseDraft {
   return { ...draft, output: { ...draft.output, ...output } }
+}
+
+function clamp(value: number, minimum: number, maximum: number): number {
+  return Math.min(Math.max(value, minimum), maximum)
 }

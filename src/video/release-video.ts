@@ -21,11 +21,28 @@ export type ReleaseContentDraft = {
   version: string
   detail: ReleaseDetail
   logoFile: File | null
+  screenshotFile: File | null
 }
 
 export const LOGO_TREATMENTS = ["plain", "card", "card-glow"] as const
 
 export type LogoTreatment = (typeof LOGO_TREATMENTS)[number]
+
+export const PRODUCT_FRAMES = ["none", "browser", "macbook", "iphone"] as const
+
+export type ProductFrame = (typeof PRODUCT_FRAMES)[number]
+
+export const PRODUCT_SHOT_SCALE_MIN = 0.7
+export const PRODUCT_SHOT_SCALE_MAX = 1.2
+export const PRODUCT_SHOT_TILT_MIN = -12
+export const PRODUCT_SHOT_TILT_MAX = 12
+
+export type ProductShotStyle = {
+  frame: ProductFrame
+  scale: number
+  tilt: number
+  shimmer: boolean
+}
 
 /**
  * Whether the title follows the color theme is independent of which custom
@@ -43,6 +60,8 @@ export type ReleaseStyle = {
   logoTreatment: LogoTreatment
   titleFontId: FontId
   titleColor: TitleColor
+  titleShimmer: boolean
+  productShot: ProductShotStyle
 }
 
 export type OutputSettings = {
@@ -65,8 +84,9 @@ export type ReleaseImage = {
 
 export type ReleaseComposition = {
   locale: AppLocale
-  content: Omit<ReleaseContentDraft, "logoFile"> & {
+  content: Omit<ReleaseContentDraft, "logoFile" | "screenshotFile"> & {
     logoImage: ReleaseImage | null
+    screenshotImage: ReleaseImage | null
   }
   style: ReleaseStyle
   output: OutputSettings
@@ -85,6 +105,10 @@ export function isDetailKind(value: string | null): value is DetailKind {
 
 export function isLogoTreatment(value: string | null): value is LogoTreatment {
   return LOGO_TREATMENTS.some((treatment) => treatment === value)
+}
+
+export function isProductFrame(value: string | null): value is ProductFrame {
+  return PRODUCT_FRAMES.some((frame) => frame === value)
 }
 
 export function detailValue(detail: ReleaseDetail): string {

@@ -62,6 +62,50 @@ describe("renderReleaseFrame", () => {
     expect(firstFrameMeasurements).toBeGreaterThan(0)
     expect(context.measureText).toHaveBeenCalledTimes(firstFrameMeasurements)
   })
+
+  it("renders every product frame with tilt and shimmer", () => {
+    for (const frame of ["none", "browser", "macbook", "iphone"] as const) {
+      const context = createCanvasContext(1_920, 1_080)
+      const composition = createComposition(
+        "midnight-burst",
+        "midnight",
+        "landscape"
+      )
+      composition.content.screenshotImage = {
+        source: {} as CanvasImageSource,
+        width: 1_440,
+        height: 900,
+      }
+      composition.style.productShot.frame = frame
+      composition.style.titleShimmer = true
+
+      expect(() => {
+        renderReleaseFrame(context, composition, 2.62)
+      }).not.toThrow()
+      expect(context.drawImage).toHaveBeenCalled()
+    }
+  })
+
+  it("adds a title highlight only when enabled", () => {
+    const staticContext = createCanvasContext(1_920, 1_080)
+    const shimmerContext = createCanvasContext(1_920, 1_080)
+    const staticComposition = createComposition(
+      "clean-slate",
+      "midnight",
+      "landscape"
+    )
+    const shimmerComposition = {
+      ...staticComposition,
+      style: { ...staticComposition.style, titleShimmer: true },
+    }
+
+    renderReleaseFrame(staticContext, staticComposition, 2.1)
+    renderReleaseFrame(shimmerContext, shimmerComposition, 2.1)
+
+    expect(shimmerContext.fillText.mock.calls.length).toBe(
+      staticContext.fillText.mock.calls.length + 1
+    )
+  })
 })
 
 function createComposition(
@@ -76,6 +120,7 @@ function createComposition(
       version: "v1.0.0",
       detail: { kind: "install", value: "pnpm add shipit" },
       logoImage: null,
+      screenshotImage: null,
     },
     style: {
       backgroundId,
@@ -84,6 +129,13 @@ function createComposition(
       logoTreatment: "card-glow",
       titleFontId: "geist",
       titleColor: { useCustom: false, value: "#F7F8FF" },
+      titleShimmer: false,
+      productShot: {
+        frame: "browser",
+        scale: 1,
+        tilt: -4,
+        shimmer: true,
+      },
     },
     output: {
       aspectRatio,
@@ -103,6 +155,7 @@ function createCanvasContext(width: number, height: number) {
     restore: () => undefined,
     clearRect: () => undefined,
     scale: () => undefined,
+    transform: () => undefined,
     fillRect: () => undefined,
     createRadialGradient: () => gradient,
     createLinearGradient: () => gradient,
@@ -115,10 +168,11 @@ function createCanvasContext(width: number, height: number) {
     rotate: () => undefined,
     arc: () => undefined,
     closePath: () => undefined,
+    clip: () => undefined,
     fill: () => undefined,
     ellipse: () => undefined,
     roundRect: () => undefined,
-    drawImage: () => undefined,
+    drawImage: vi.fn<(...args: unknown[]) => void>(),
     measureText: vi.fn<(text: string) => { width: number }>((text) => {
       const fontSize = Number.parseFloat(
         /\s(\d+(?:\.\d+)?)px/.exec(context.font)?.[1] ?? "16"
@@ -137,10 +191,13 @@ function createCanvasContext(width: number, height: number) {
     letterSpacing: "0px",
     shadowColor: "",
     shadowBlur: 0,
+    shadowOffsetX: 0,
+    shadowOffsetY: 0,
   }
 
   return context as unknown as CanvasRenderingContext2D & {
     fillText: ReturnType<typeof vi.fn>
     measureText: ReturnType<typeof vi.fn>
+    drawImage: ReturnType<typeof vi.fn>
   }
 }

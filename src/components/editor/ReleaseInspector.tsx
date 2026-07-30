@@ -2,6 +2,7 @@ import type * as React from "react"
 import {
   ColorsIcon,
   Film01Icon,
+  ImageCompositionIcon,
   PackageIcon,
   TextFontIcon,
 } from "@hugeicons/core-free-icons"
@@ -9,6 +10,7 @@ import {
 import { ContentSettings } from "@/components/editor/ContentSettings"
 import { InspectorSection } from "@/components/editor/InspectorSection"
 import { paletteNameKey } from "@/components/editor/PalettePicker"
+import { ProductShotSettings } from "@/components/editor/ProductShotSettings"
 import { BackgroundPicker } from "@/components/editor/BackgroundPicker"
 import { ThemeSettings } from "@/components/editor/ThemeSettings"
 import { TypeSettings } from "@/components/editor/TypeSettings"
@@ -22,6 +24,7 @@ type ReleaseInspectorProps = {
   draft: ReleaseDraft
   composition: ReleaseComposition
   logoState: ImageFileState
+  screenshotState: ImageFileState
   dispatch: React.Dispatch<ReleaseDraftAction>
 }
 
@@ -29,6 +32,7 @@ export function ReleaseInspector({
   draft,
   composition,
   logoState,
+  screenshotState,
   dispatch,
 }: ReleaseInspectorProps) {
   const { t } = useI18n()
@@ -40,6 +44,18 @@ export function ReleaseInspector({
         <ContentSettings
           draft={draft}
           logoState={logoState}
+          dispatch={dispatch}
+        />
+      </InspectorSection>
+
+      <InspectorSection
+        icon={ImageCompositionIcon}
+        title={t("inspector.productShot")}
+        hint={t("productShot.hint")}
+      >
+        <ProductShotSettings
+          draft={draft}
+          screenshotState={screenshotState}
           dispatch={dispatch}
         />
       </InspectorSection>

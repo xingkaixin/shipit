@@ -10,6 +10,7 @@ const BASE_COMPOSITION: ReleaseComposition = {
     version: "v1.0.0",
     detail: { kind: "none" },
     logoImage: null,
+    screenshotImage: null,
   },
   style: {
     backgroundId: "midnight-burst",
@@ -18,6 +19,13 @@ const BASE_COMPOSITION: ReleaseComposition = {
     logoTreatment: "card-glow",
     titleFontId: "geist",
     titleColor: { useCustom: false, value: "#F7F8FF" },
+    titleShimmer: false,
+    productShot: {
+      frame: "browser",
+      scale: 1,
+      tilt: -4,
+      shimmer: true,
+    },
   },
   output: {
     aspectRatio: "landscape",

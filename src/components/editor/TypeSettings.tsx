@@ -1,6 +1,8 @@
 import type * as React from "react"
+import { SparklesIcon } from "@hugeicons/core-free-icons"
 
 import { ColorInput } from "@/components/editor/ColorInput"
+import { Icon } from "@/components/ui/icon"
 import { OptionButton } from "@/components/ui/option-button"
 import { useI18n } from "@/i18n/i18n"
 import type { MessageKey } from "@/i18n/messages"
@@ -56,6 +58,25 @@ export function TypeSettings({ style, dispatch }: TypeSettingsProps) {
             </OptionButton>
           ))}
         </div>
+      </fieldset>
+
+      <fieldset>
+        <legend className="mb-2 text-[12px] leading-none font-semibold text-foreground/85">
+          {t("style.title.effect")}
+        </legend>
+        <OptionButton
+          isSelected={style.titleShimmer}
+          className="h-10 w-full text-[12px]"
+          onClick={() => {
+            dispatch({
+              type: "set-title-shimmer",
+              value: !style.titleShimmer,
+            })
+          }}
+        >
+          <Icon icon={SparklesIcon} className="size-3.5" />
+          {t("style.title.shimmer")}
+        </OptionButton>
       </fieldset>
 
       <fieldset>

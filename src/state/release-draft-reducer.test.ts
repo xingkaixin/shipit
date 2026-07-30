@@ -112,4 +112,27 @@ describe("releaseDraftReducer", () => {
       value: "#123456",
     })
   })
+
+  it("clamps product shot controls to renderable bounds", () => {
+    const oversized = releaseDraftReducer(INITIAL_RELEASE_DRAFT, {
+      type: "set-product-shot-scale",
+      value: 10,
+    })
+    const overtilted = releaseDraftReducer(oversized, {
+      type: "set-product-shot-tilt",
+      value: -90,
+    })
+
+    expect(overtilted.style.productShot.scale).toBe(1.2)
+    expect(overtilted.style.productShot.tilt).toBe(-12)
+  })
+
+  it("ignores non-finite product shot values", () => {
+    expect(
+      releaseDraftReducer(INITIAL_RELEASE_DRAFT, {
+        type: "set-product-shot-scale",
+        value: Number.NaN,
+      })
+    ).toBe(INITIAL_RELEASE_DRAFT)
+  })
 })

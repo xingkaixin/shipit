@@ -3,6 +3,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { exportReleaseVideo } from "@/video/export-release-video"
+import { renderReleaseFrame } from "@/video/render-release-frame"
 import type { ReleaseComposition } from "@/video/release-video"
 
 const mediaMocks = vi.hoisted(() => ({
@@ -102,6 +103,7 @@ const BASE_COMPOSITION: ReleaseComposition = {
     version: "v1.0.0",
     detail: { kind: "none" },
     logoImage: null,
+    screenshotImage: null,
   },
   style: {
     backgroundId: "midnight-burst",
@@ -110,6 +112,13 @@ const BASE_COMPOSITION: ReleaseComposition = {
     logoTreatment: "card-glow",
     titleFontId: "geist",
     titleColor: { useCustom: false, value: "#F7F8FF" },
+    titleShimmer: false,
+    productShot: {
+      frame: "browser",
+      scale: 1,
+      tilt: -4,
+      shimmer: true,
+    },
   },
   output: {
     aspectRatio: "landscape",
@@ -125,6 +134,7 @@ beforeEach(() => {
   mediaMocks.trackMetadata = null
   mediaMocks.addFrame.mockReset()
   mediaMocks.addFrame.mockResolvedValue(undefined)
+  vi.mocked(renderReleaseFrame).mockClear()
 
   Object.defineProperty(document, "fonts", {
     configurable: true,
@@ -204,5 +214,35 @@ describe("exportReleaseVideo", () => {
     ).rejects.toMatchObject({ name: "AbortError" })
 
     expect(mediaMocks.outputs[0]?.cancel).toHaveBeenCalledOnce()
+  })
+
+  it("snapshots a product screenshot before encoding", async () => {
+    const drawImage = vi.fn<(...args: unknown[]) => void>()
+    vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue({
+      drawImage,
+    } as unknown as CanvasRenderingContext2D)
+    const screenshotSource = document.createElement("canvas")
+
+    await exportReleaseVideo({
+      composition: {
+        ...BASE_COMPOSITION,
+        content: {
+          ...BASE_COMPOSITION.content,
+          screenshotImage: {
+            source: screenshotSource,
+            width: 2_880,
+            height: 1_800,
+          },
+        },
+      },
+      onProgress: vi.fn<(progress: number) => void>(),
+    })
+
+    const renderedComposition = vi.mocked(renderReleaseFrame).mock.calls[0]?.[1]
+    expect(drawImage).toHaveBeenCalledOnce()
+    expect(renderedComposition?.content.screenshotImage).toMatchObject({
+      width: 2_048,
+      height: 1_280,
+    })
   })
 })

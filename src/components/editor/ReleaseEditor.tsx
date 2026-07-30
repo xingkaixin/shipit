@@ -21,6 +21,7 @@ export function ReleaseEditor() {
     INITIAL_RELEASE_DRAFT
   )
   const logoState = useImageFile(draft.content.logoFile)
+  const screenshotState = useImageFile(draft.content.screenshotFile)
   const outputCapability = useOutputCapability(draft.output)
 
   const composition = React.useMemo<ReleaseComposition>(
@@ -31,6 +32,7 @@ export function ReleaseEditor() {
         version: draft.content.version,
         detail: draft.content.detail,
         logoImage: logoState.image,
+        screenshotImage: screenshotState.image,
       },
       style: draft.style,
       output: draft.output,
@@ -43,11 +45,13 @@ export function ReleaseEditor() {
       draft.style,
       locale,
       logoState.image,
+      screenshotState.image,
     ]
   )
   const canExport =
     draft.content.productName.trim().length > 0 &&
     isImageStateExportable(logoState) &&
+    isImageStateExportable(screenshotState) &&
     isOutputExportable(outputCapability)
 
   return (
@@ -59,6 +63,7 @@ export function ReleaseEditor() {
         draft={draft}
         composition={composition}
         logoState={logoState}
+        screenshotState={screenshotState}
         dispatch={dispatch}
       />
       <ReleaseStage
