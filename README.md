@@ -1,8 +1,8 @@
 # Shipit
 
-Shipit turns a product logo, name, version, and release details into a
-five-second celebration film. Preview rendering and MP4 export happen entirely
-in the browser.
+Shipit turns a product logo, optional screenshot, name, version, and release
+details into a five-second celebration film. Preview rendering and MP4 export
+happen entirely in the browser.
 
 Production: [shipit.xingkaixin.me](https://shipit.xingkaixin.me/)
 
@@ -13,6 +13,8 @@ Production: [shipit.xingkaixin.me](https://shipit.xingkaixin.me/)
 - Landscape and portrait compositions
 - 1080p and 4K output at 30 or 60 FPS
 - Optional logo framing, custom accent colors, and title fonts
+- Product screenshots with frameless, Chrome, MacBook, or iPhone presentation
+- Adjustable screenshot size, side tilt, shadow, and timed shimmer effects
 - Light, dark, or system interface, in English or Simplified Chinese
 - Local-only logo processing and video encoding
 
@@ -51,6 +53,8 @@ production bundle is written to `dist`.
   Use 1080p on mobile or memory-constrained devices.
 - Logos may be PNG, JPEG, WebP, or SVG files up to 10 MB, 8192 pixels per side,
   and 16 million total pixels.
+- Product screenshots accept the same formats and limits. They are optional,
+  and removing one restores the centered composition.
 - Uploaded assets, previews, and encoded videos remain in the current browser.
 
 ## Localization
