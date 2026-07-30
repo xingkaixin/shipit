@@ -84,6 +84,7 @@ export type ReleaseComposition = {
   content: Omit<ReleaseContentDraft, "logoFile" | "screenshotFile"> & {
     logoImage: ReleaseImage | null
     screenshotImage: ReleaseImage | null
+    productFrameImage: ReleaseImage | null
   }
   style: ReleaseStyle
   output: OutputSettings

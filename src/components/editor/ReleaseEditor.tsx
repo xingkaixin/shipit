@@ -4,6 +4,10 @@ import { ReleaseInspector } from "@/components/editor/ReleaseInspector"
 import { ReleaseStage } from "@/components/editor/ReleaseStage"
 import { isImageStateExportable, useImageFile } from "@/hooks/use-image-file"
 import {
+  productFrameImageFor,
+  useProductFrameAssets,
+} from "@/hooks/use-product-frame-assets"
+import {
   isOutputExportable,
   useOutputCapability,
 } from "@/hooks/use-output-capability"
@@ -22,6 +26,7 @@ export function ReleaseEditor() {
   )
   const logoState = useImageFile(draft.content.logoFile)
   const screenshotState = useImageFile(draft.content.screenshotFile)
+  const productFrameState = useProductFrameAssets()
   const outputCapability = useOutputCapability(draft.output)
 
   const composition = React.useMemo<ReleaseComposition>(
@@ -33,6 +38,10 @@ export function ReleaseEditor() {
         detail: draft.content.detail,
         logoImage: logoState.image,
         screenshotImage: screenshotState.image,
+        productFrameImage: productFrameImageFor(
+          productFrameState.images,
+          draft.style.productShot.frame
+        ),
       },
       style: draft.style,
       output: draft.output,
@@ -45,13 +54,19 @@ export function ReleaseEditor() {
       draft.style,
       locale,
       logoState.image,
+      productFrameState.images,
       screenshotState.image,
     ]
   )
+  const isProductFrameReady =
+    !screenshotState.image ||
+    draft.style.productShot.frame === "none" ||
+    productFrameState.status === "ready"
   const canExport =
     draft.content.productName.trim().length > 0 &&
     isImageStateExportable(logoState) &&
     isImageStateExportable(screenshotState) &&
+    isProductFrameReady &&
     isOutputExportable(outputCapability)
 
   return (

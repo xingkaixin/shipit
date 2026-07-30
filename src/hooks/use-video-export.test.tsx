@@ -23,6 +23,7 @@ const BASE_COMPOSITION: ReleaseComposition = {
     detail: { kind: "none" },
     logoImage: null,
     screenshotImage: null,
+    productFrameImage: null,
   },
   style: {
     backgroundId: "midnight-burst",

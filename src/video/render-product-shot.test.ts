@@ -24,6 +24,7 @@ describe("product shot geometry", () => {
       expect(geometry.outer.height).toBeLessThanOrEqual(AREA.maximumHeight)
       expect(geometry.screen.width).toBeGreaterThan(0)
       expect(geometry.screen.height).toBeGreaterThan(0)
+      expect(geometry.asset === null).toBe(frame === "none")
     }
   })
 
@@ -47,6 +48,24 @@ describe("product shot geometry", () => {
     )
 
     expect(geometry.screen.y).toBeGreaterThan(geometry.outer.y)
+    expect(geometry.asset?.x).toBeLessThan(geometry.outer.x)
+  })
+
+  it("uses frame geometry instead of uploaded image dimensions", () => {
+    const landscape = productShotGeometry(
+      { width: 1_440, height: 900 },
+      "macbook",
+      AREA,
+      1
+    )
+    const portrait = productShotGeometry(
+      { width: 900, height: 1_440 },
+      "macbook",
+      AREA,
+      1
+    )
+
+    expect(portrait).toEqual(landscape)
   })
 
   it("falls back to finite geometry for invalid dimensions and scale", () => {

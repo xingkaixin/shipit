@@ -28,6 +28,7 @@ export function BackgroundThumbnail({
         detail: { kind: "none" },
         logoImage: composition.content.logoImage,
         screenshotImage: composition.content.screenshotImage,
+        productFrameImage: composition.content.productFrameImage,
       },
       style: { ...composition.style, backgroundId },
       output: { aspectRatio: "landscape", resolution: "1080p", frameRate: 30 },
@@ -35,6 +36,7 @@ export function BackgroundThumbnail({
     [
       composition.content.logoImage,
       composition.content.productName,
+      composition.content.productFrameImage,
       composition.content.screenshotImage,
       composition.content.version,
       composition.locale,

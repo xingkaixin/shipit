@@ -277,10 +277,10 @@ function drawReleaseContent(
     drawProductShot({
       context,
       image: composition.content.screenshotImage,
+      frameImage: composition.content.productFrameImage,
       style: composition.style.productShot,
       area: plan.frameStyle.layout.productShotArea,
       palette: plan.frameStyle.palette,
-      accentColor: composition.style.accentColor,
       time,
     })
   }

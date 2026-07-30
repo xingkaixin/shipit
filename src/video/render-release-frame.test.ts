@@ -76,6 +76,14 @@ describe("renderReleaseFrame", () => {
         width: 1_440,
         height: 900,
       }
+      composition.content.productFrameImage =
+        frame === "none"
+          ? null
+          : {
+              source: {} as CanvasImageSource,
+              width: 1_440,
+              height: 900,
+            }
       composition.style.productShot.frame = frame
       composition.style.titleShimmer = true
 
@@ -121,6 +129,7 @@ function createComposition(
       detail: { kind: "install", value: "pnpm add shipit" },
       logoImage: null,
       screenshotImage: null,
+      productFrameImage: null,
     },
     style: {
       backgroundId,

@@ -1,7 +1,16 @@
 import { easeOutCubic, interpolate, progress } from "@/video/animation"
-import { drawImageCover, roundedRectangle } from "@/video/canvas-drawing"
-import { colorWithAlpha, mixHexColors } from "@/video/color"
+import {
+  drawImageCover,
+  roundedRectangle,
+  setHighQualityImageSmoothing,
+} from "@/video/canvas-drawing"
+import { colorWithAlpha } from "@/video/color"
 import type { ProductShotArea } from "@/video/release-layout"
+import {
+  productFrameDefinition,
+  type ProductFrameDefinition,
+  type ProductFrameRectangle,
+} from "@/video/product-frame-registry"
 import {
   PRODUCT_SHOT_SCALE_MAX,
   PRODUCT_SHOT_SCALE_MIN,
@@ -12,55 +21,65 @@ import {
 import type { PaletteDefinition } from "@/video/palette-registry"
 import { shimmerGradient } from "@/video/shimmer"
 
-type Rectangle = {
-  x: number
-  y: number
-  width: number
-  height: number
-}
+type Rectangle = ProductFrameRectangle
 
 export type ProductShotGeometry = {
   outer: Rectangle
+  asset: Rectangle | null
   screen: Rectangle
-  cornerRadius: number
+  screenCornerRadius: number
+  sourceScale: number
 }
 
 type DrawProductShotOptions = {
   context: CanvasRenderingContext2D
   image: ReleaseImage
+  frameImage: ReleaseImage | null
   style: ProductShotStyle
   area: ProductShotArea
   palette: PaletteDefinition
-  accentColor: string
   time: number
 }
 
 export function drawProductShot({
   context,
   image,
+  frameImage,
   style,
   area,
   palette,
-  accentColor,
   time,
 }: DrawProductShotOptions): void {
   const reveal = easeOutCubic(progress(time, 0.62, 0.86))
   const geometry = productShotGeometry(image, style.frame, area, style.scale)
+  const definition = productFrameDefinition(style.frame)
 
   context.save()
   context.globalAlpha = reveal
   context.translate(area.centerX, area.centerY + interpolate(54, 0, reveal))
   context.scale(interpolate(0.94, 1, reveal), interpolate(0.94, 1, reveal))
 
-  drawProductShadow(context, geometry, style.frame, palette)
-  drawFrame(context, geometry, style.frame, palette, accentColor)
-  drawScreenshot(context, image, geometry, style.frame)
-
-  if (style.shimmer) {
-    drawScreenshotShimmer(context, geometry, style.frame, time)
+  if (!definition) {
+    drawUnframedScreenshot(context, image, geometry, style, palette, time)
+    context.restore()
+    return
   }
 
-  drawFrameDetails(context, geometry, style.frame, palette)
+  if (frameImage && geometry.asset) {
+    drawFrameAsset(context, frameImage, geometry, palette, true)
+  }
+
+  drawScreenSurface(context, geometry, palette.surface)
+  drawScreenshot(context, image, geometry)
+
+  if (style.shimmer) {
+    drawScreenshotShimmer(context, geometry, time)
+  }
+
+  if (definition.assetLayer === "over-screen" && frameImage && geometry.asset) {
+    drawFrameAsset(context, frameImage, geometry, palette, false)
+  }
+
   context.restore()
 }
 
@@ -70,84 +89,90 @@ export function productShotGeometry(
   area: ProductShotArea,
   scale: number
 ): ProductShotGeometry {
-  const imageAspectRatio =
-    image.width > 0 && image.height > 0
-      ? clamp(image.width / image.height, 0.45, 2.4)
-      : 1
   const safeScale = Number.isFinite(scale)
     ? clamp(scale, PRODUCT_SHOT_SCALE_MIN, PRODUCT_SHOT_SCALE_MAX)
     : 1
   const maximumWidth = area.maximumWidth * safeScale
   const maximumHeight = area.maximumHeight * safeScale
-  const normalized = normalizedGeometry(imageAspectRatio, frame)
-  const fitScale = Math.min(
-    maximumWidth / normalized.outer.width,
-    maximumHeight / normalized.outer.height
-  )
+  const definition = productFrameDefinition(frame)
+
+  if (!definition) {
+    return unframedGeometry(image, maximumWidth, maximumHeight)
+  }
+
+  return framedGeometry(definition, maximumWidth, maximumHeight)
+}
+
+function unframedGeometry(
+  image: Pick<ReleaseImage, "height" | "width">,
+  maximumWidth: number,
+  maximumHeight: number
+): ProductShotGeometry {
+  const aspectRatio =
+    image.width > 0 && image.height > 0
+      ? clamp(image.width / image.height, 0.45, 2.4)
+      : 1
+  const fitScale = Math.min(maximumWidth / aspectRatio, maximumHeight)
+  const screen = centeredRectangle(aspectRatio * fitScale, fitScale)
 
   return {
-    outer: scaleRectangle(normalized.outer, fitScale),
-    screen: scaleRectangle(normalized.screen, fitScale),
-    cornerRadius: normalized.cornerRadius * fitScale,
+    outer: screen,
+    asset: null,
+    screen,
+    screenCornerRadius: fitScale * 0.045,
+    sourceScale: fitScale,
   }
 }
 
-function normalizedGeometry(
-  imageAspectRatio: number,
-  frame: ProductFrame
+function framedGeometry(
+  definition: ProductFrameDefinition,
+  maximumWidth: number,
+  maximumHeight: number
 ): ProductShotGeometry {
-  switch (frame) {
-    case "none": {
-      const screen = centeredRectangle(imageAspectRatio, 1)
-      return { outer: screen, screen, cornerRadius: 0.045 }
-    }
-    case "browser": {
-      const headerHeight = 0.11
-      const outer = centeredRectangle(imageAspectRatio, 1 + headerHeight)
-      return {
-        outer,
-        screen: {
-          x: outer.x,
-          y: outer.y + headerHeight,
-          width: imageAspectRatio,
-          height: 1,
-        },
-        cornerRadius: 0.045,
-      }
-    }
-    case "macbook": {
-      const bezel = 0.035
-      const topBezel = 0.04
-      const bottomBezel = 0.065
-      const baseHeight = 0.055
-      const outer = centeredRectangle(
-        imageAspectRatio + bezel * 2,
-        1 + topBezel + bottomBezel + baseHeight
-      )
-      return {
-        outer,
-        screen: {
-          x: -imageAspectRatio / 2,
-          y: outer.y + topBezel,
-          width: imageAspectRatio,
-          height: 1,
-        },
-        cornerRadius: 0.035,
-      }
-    }
-    case "iphone": {
-      const outer = centeredRectangle(0.49, 1)
-      return {
-        outer,
-        screen: {
-          x: outer.x + 0.022,
-          y: outer.y + 0.022,
-          width: outer.width - 0.044,
-          height: outer.height - 0.044,
-        },
-        cornerRadius: 0.085,
-      }
-    }
+  const sourceScale = Math.min(
+    maximumWidth / definition.bounds.width,
+    maximumHeight / definition.bounds.height
+  )
+  const outer = centeredRectangle(
+    definition.bounds.width * sourceScale,
+    definition.bounds.height * sourceScale
+  )
+
+  return {
+    outer,
+    asset: sourceRectangleToCanvas(
+      {
+        x: 0,
+        y: 0,
+        width: definition.source.width,
+        height: definition.source.height,
+      },
+      definition.bounds,
+      outer,
+      sourceScale
+    ),
+    screen: sourceRectangleToCanvas(
+      definition.screen,
+      definition.bounds,
+      outer,
+      sourceScale
+    ),
+    screenCornerRadius: definition.screenCornerRadius * sourceScale,
+    sourceScale,
+  }
+}
+
+function sourceRectangleToCanvas(
+  rectangle: Rectangle,
+  bounds: Rectangle,
+  outer: Rectangle,
+  scale: number
+): Rectangle {
+  return {
+    x: outer.x + (rectangle.x - bounds.x) * scale,
+    y: outer.y + (rectangle.y - bounds.y) * scale,
+    width: rectangle.width * scale,
+    height: rectangle.height * scale,
   }
 }
 
@@ -155,103 +180,90 @@ function centeredRectangle(width: number, height: number): Rectangle {
   return { x: -width / 2, y: -height / 2, width, height }
 }
 
-function scaleRectangle(rectangle: Rectangle, scale: number): Rectangle {
-  return {
-    x: rectangle.x * scale,
-    y: rectangle.y * scale,
-    width: rectangle.width * scale,
-    height: rectangle.height * scale,
-  }
-}
-
-function drawProductShadow(
+function drawUnframedScreenshot(
   context: CanvasRenderingContext2D,
+  image: ReleaseImage,
   geometry: ProductShotGeometry,
-  frame: ProductFrame,
-  palette: PaletteDefinition
+  style: ProductShotStyle,
+  palette: PaletteDefinition,
+  time: number
 ): void {
-  const { outer } = geometry
   context.save()
-  context.shadowColor = colorWithAlpha(palette.foreground, 0.28)
+  context.shadowColor = colorWithAlpha("#000000", 0.3)
   context.shadowBlur = 54
   context.shadowOffsetY = 28
+  drawScreenSurface(context, geometry, palette.surface)
+  context.restore()
+
+  drawScreenshot(context, image, geometry)
+
+  if (style.shimmer) {
+    drawScreenshotShimmer(context, geometry, time)
+  }
+
+  context.strokeStyle = colorWithAlpha(palette.foreground, 0.2)
+  context.lineWidth = Math.max(1.5, geometry.outer.width * 0.0025)
   roundedRectangle(
     context,
-    outer.x,
-    outer.y,
-    outer.width,
-    outer.height,
-    geometry.cornerRadius
+    geometry.outer.x,
+    geometry.outer.y,
+    geometry.outer.width,
+    geometry.outer.height,
+    geometry.screenCornerRadius
   )
-  context.fillStyle =
-    frame === "none"
-      ? colorWithAlpha(palette.surface, 0.98)
-      : deviceShellColor(palette)
-  context.fill()
+  context.stroke()
+}
+
+function drawFrameAsset(
+  context: CanvasRenderingContext2D,
+  image: ReleaseImage,
+  geometry: ProductShotGeometry,
+  palette: PaletteDefinition,
+  withShadow: boolean
+): void {
+  if (!geometry.asset) {
+    return
+  }
+
+  context.save()
+  if (withShadow) {
+    context.shadowColor = colorWithAlpha(palette.foreground, 0.3)
+    context.shadowBlur = Math.max(18, geometry.outer.width * 0.045)
+    context.shadowOffsetY = Math.max(12, geometry.outer.height * 0.035)
+  }
+  setHighQualityImageSmoothing(context)
+  context.drawImage(
+    image.source,
+    geometry.asset.x,
+    geometry.asset.y,
+    geometry.asset.width,
+    geometry.asset.height
+  )
   context.restore()
 }
 
-function drawFrame(
+function drawScreenSurface(
   context: CanvasRenderingContext2D,
   geometry: ProductShotGeometry,
-  frame: ProductFrame,
-  palette: PaletteDefinition,
-  accentColor: string
+  color: string
 ): void {
-  const { outer, screen } = geometry
-
+  const { screen } = geometry
   roundedRectangle(
     context,
-    outer.x,
-    outer.y,
-    outer.width,
-    outer.height,
-    geometry.cornerRadius
+    screen.x,
+    screen.y,
+    screen.width,
+    screen.height,
+    geometry.screenCornerRadius
   )
-  context.fillStyle =
-    frame === "none"
-      ? palette.surface
-      : frame === "browser"
-        ? mixHexColors(palette.surface, accentColor, 0.04)
-        : deviceShellColor(palette)
+  context.fillStyle = color
   context.fill()
-
-  if (frame === "browser") {
-    const headerHeight = screen.y - outer.y
-    const dotRadius = headerHeight * 0.09
-    const dotY = outer.y + headerHeight / 2
-
-    for (let index = 0; index < 3; index += 1) {
-      context.beginPath()
-      context.arc(
-        outer.x + headerHeight * (0.42 + index * 0.3),
-        dotY,
-        dotRadius,
-        0,
-        Math.PI * 2
-      )
-      context.fillStyle = colorWithAlpha(palette.foreground, 0.26)
-      context.fill()
-    }
-
-    roundedRectangle(
-      context,
-      outer.x + headerHeight * 1.55,
-      outer.y + headerHeight * 0.27,
-      outer.width - headerHeight * 1.9,
-      headerHeight * 0.46,
-      headerHeight * 0.23
-    )
-    context.fillStyle = colorWithAlpha(palette.foreground, 0.09)
-    context.fill()
-  }
 }
 
 function drawScreenshot(
   context: CanvasRenderingContext2D,
   image: ReleaseImage,
-  geometry: ProductShotGeometry,
-  frame: ProductFrame
+  geometry: ProductShotGeometry
 ): void {
   const { screen } = geometry
   context.save()
@@ -261,7 +273,7 @@ function drawScreenshot(
     screen.y,
     screen.width,
     screen.height,
-    screenCornerRadius(geometry, frame)
+    geometry.screenCornerRadius
   )
   context.clip()
   drawImageCover(
@@ -278,7 +290,6 @@ function drawScreenshot(
 function drawScreenshotShimmer(
   context: CanvasRenderingContext2D,
   geometry: ProductShotGeometry,
-  frame: ProductFrame,
   time: number
 ): void {
   const { screen } = geometry
@@ -294,102 +305,12 @@ function drawScreenshotShimmer(
     screen.y,
     screen.width,
     screen.height,
-    screenCornerRadius(geometry, frame)
+    geometry.screenCornerRadius
   )
   context.clip()
   context.fillStyle = gradient
   context.fillRect(screen.x, screen.y, screen.width, screen.height)
   context.restore()
-}
-
-function drawFrameDetails(
-  context: CanvasRenderingContext2D,
-  geometry: ProductShotGeometry,
-  frame: ProductFrame,
-  palette: PaletteDefinition
-): void {
-  const { outer, screen } = geometry
-
-  context.strokeStyle = colorWithAlpha(palette.foreground, 0.2)
-  context.lineWidth = Math.max(1.5, outer.width * 0.0025)
-  roundedRectangle(
-    context,
-    outer.x,
-    outer.y,
-    outer.width,
-    outer.height,
-    geometry.cornerRadius
-  )
-  context.stroke()
-
-  if (frame === "macbook") {
-    const baseTop = screen.y + screen.height + outer.height * 0.055
-    const baseHeight = outer.y + outer.height - baseTop
-    const baseWidth = outer.width * 1.09
-    roundedRectangle(
-      context,
-      -baseWidth / 2,
-      baseTop,
-      baseWidth,
-      baseHeight,
-      baseHeight * 0.42
-    )
-    context.fillStyle = mixHexColors(
-      deviceShellColor(palette),
-      palette.foreground,
-      0.1
-    )
-    context.fill()
-
-    context.beginPath()
-    context.arc(
-      0,
-      outer.y + (screen.y - outer.y) * 0.48,
-      Math.max(1.5, outer.width * 0.0035),
-      0,
-      Math.PI * 2
-    )
-    context.fillStyle = colorWithAlpha(palette.foreground, 0.38)
-    context.fill()
-  }
-
-  if (frame === "iphone") {
-    const islandWidth = screen.width * 0.31
-    const islandHeight = screen.height * 0.027
-    roundedRectangle(
-      context,
-      -islandWidth / 2,
-      screen.y + screen.height * 0.022,
-      islandWidth,
-      islandHeight,
-      islandHeight / 2
-    )
-    context.fillStyle = colorWithAlpha("#050608", 0.92)
-    context.fill()
-  }
-}
-
-function screenCornerRadius(
-  geometry: ProductShotGeometry,
-  frame: ProductFrame
-): number {
-  if (frame === "browser") {
-    return geometry.cornerRadius * 0.48
-  }
-
-  if (frame === "macbook") {
-    return geometry.cornerRadius * 0.42
-  }
-
-  if (frame === "iphone") {
-    return geometry.cornerRadius * 0.78
-  }
-
-  return geometry.cornerRadius
-}
-
-function deviceShellColor(palette: PaletteDefinition): string {
-  return mixHexColors(palette.surface, "#111318", 0.7)
 }
 
 function clamp(value: number, minimum: number, maximum: number): number {
