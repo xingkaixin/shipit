@@ -143,6 +143,51 @@ describe("renderReleaseFrame", () => {
     expect(renderedText).toContain("Shipit release")
     expect(renderedText).toContain("shipit.dev/releases")
   })
+
+  it("applies screenshot scale inside the Chrome frame", () => {
+    const screenshotSource = {} as CanvasImageSource
+    const frameSource = {} as CanvasImageSource
+    const defaultContext = createCanvasContext(1_920, 1_080)
+    const scaledContext = createCanvasContext(1_920, 1_080)
+    const defaultComposition = createComposition(
+      "midnight-burst",
+      "midnight",
+      "landscape"
+    )
+    const scaledComposition = createComposition(
+      "midnight-burst",
+      "midnight",
+      "landscape"
+    )
+
+    for (const composition of [defaultComposition, scaledComposition]) {
+      composition.content.screenshotImage = {
+        source: screenshotSource,
+        width: 1_440,
+        height: 900,
+      }
+      composition.content.productFrameImage = {
+        source: frameSource,
+        width: 1_536,
+        height: 895,
+      }
+    }
+    scaledComposition.style.productShot.screenshotScale = 0.5
+
+    renderReleaseFrame(defaultContext, defaultComposition, 2.62)
+    renderReleaseFrame(scaledContext, scaledComposition, 2.62)
+
+    const defaultScreenshot = defaultContext.drawImage.mock.calls.find(
+      ([source]) => source === screenshotSource
+    )
+    const scaledScreenshot = scaledContext.drawImage.mock.calls.find(
+      ([source]) => source === screenshotSource
+    )
+
+    expect(Number(scaledScreenshot?.[3])).toBeCloseTo(
+      Number(defaultScreenshot?.[3]) * 0.5
+    )
+  })
 })
 
 function createComposition(

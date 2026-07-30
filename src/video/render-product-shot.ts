@@ -341,9 +341,7 @@ function drawScreenshot(
 }
 
 function screenshotScaleFor(style: ProductShotStyle): number {
-  return style.frame === "macbook" || style.frame === "iphone"
-    ? style.screenshotScale
-    : 1
+  return style.frame === "none" ? 1 : style.screenshotScale
 }
 
 function drawBrowserChromeText(

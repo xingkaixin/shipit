@@ -205,7 +205,7 @@ export function ProductShotSettings({
 }
 
 function supportsScreenshotScale(frame: ProductFrame): boolean {
-  return frame === "macbook" || frame === "iphone"
+  return frame !== "none"
 }
 
 function screenshotFieldCopy(t: (key: MessageKey) => string): ImageFieldCopy {
