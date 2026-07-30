@@ -23,7 +23,7 @@ import {
   detailValue,
   VIDEO_DURATION_SECONDS,
   type ReleaseComposition,
-  type ReleaseLogoImage,
+  type ReleaseImage,
 } from "@/video/release-video"
 import { paletteById, type PaletteDefinition } from "@/video/palette-registry"
 import {
@@ -362,7 +362,7 @@ function drawLogoSurface(
 
 function drawImageContain(
   context: CanvasRenderingContext2D,
-  image: ReleaseLogoImage,
+  image: ReleaseImage,
   maximumSize: number
 ): void {
   const scale = Math.min(maximumSize / image.width, maximumSize / image.height)

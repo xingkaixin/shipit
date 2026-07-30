@@ -12,7 +12,7 @@ import { paletteNameKey } from "@/components/editor/PalettePicker"
 import { BackgroundPicker } from "@/components/editor/BackgroundPicker"
 import { ThemeSettings } from "@/components/editor/ThemeSettings"
 import { TypeSettings } from "@/components/editor/TypeSettings"
-import type { LogoImageState } from "@/hooks/use-logo-image"
+import type { ImageFileState } from "@/hooks/use-image-file"
 import { useI18n } from "@/i18n/i18n"
 import type { ReleaseDraftAction } from "@/state/release-draft-reducer"
 import { paletteById } from "@/video/palette-registry"
@@ -21,7 +21,7 @@ import type { ReleaseComposition, ReleaseDraft } from "@/video/release-video"
 type ReleaseInspectorProps = {
   draft: ReleaseDraft
   composition: ReleaseComposition
-  logoState: LogoImageState
+  logoState: ImageFileState
   dispatch: React.Dispatch<ReleaseDraftAction>
 }
 

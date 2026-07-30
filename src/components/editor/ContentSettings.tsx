@@ -5,7 +5,7 @@ import {
   TextFontIcon,
 } from "@hugeicons/core-free-icons"
 
-import { LogoField } from "@/components/editor/LogoField"
+import { ImageField, type ImageFieldCopy } from "@/components/editor/ImageField"
 import { Icon } from "@/components/ui/icon"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import type { LogoImageState } from "@/hooks/use-logo-image"
+import type { ImageFileState } from "@/hooks/use-image-file"
 import { useI18n } from "@/i18n/i18n"
 import type { MessageKey } from "@/i18n/messages"
 import type { ReleaseDraftAction } from "@/state/release-draft-reducer"
@@ -24,7 +24,7 @@ import { isDetailKind, type ReleaseDraft } from "@/video/release-video"
 
 type ContentSettingsProps = {
   draft: ReleaseDraft
-  logoState: LogoImageState
+  logoState: ImageFileState
   dispatch: React.Dispatch<ReleaseDraftAction>
 }
 
@@ -38,9 +38,12 @@ export function ContentSettings({
 
   return (
     <div className="space-y-4">
-      <LogoField
+      <ImageField
+        id="logo-upload"
+        name="productLogo"
         file={content.logoFile}
         state={logoState}
+        copy={logoFieldCopy(t)}
         onChange={(value) => {
           dispatch({ type: "set-logo-file", value })
         }}
@@ -141,6 +144,22 @@ export function ContentSettings({
       ) : null}
     </div>
   )
+}
+
+function logoFieldCopy(t: (key: MessageKey) => string): ImageFieldCopy {
+  return {
+    drop: t("content.logo.drop"),
+    dropActive: t("content.logo.dropActive"),
+    loading: t("content.logo.loading"),
+    remove: t("content.logo.remove"),
+    help: t("content.logo.help"),
+    errors: {
+      type: t("logo.error.type"),
+      bytes: t("logo.error.bytes"),
+      dimensions: t("logo.error.dimensions"),
+      decode: t("logo.error.decode"),
+    },
+  }
 }
 
 function detailKindLabel(

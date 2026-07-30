@@ -14,10 +14,7 @@ import {
 } from "@/video/output-settings"
 import { renderReleaseFrame } from "@/video/render-release-frame"
 import { ReleaseExportError } from "@/video/release-export-error"
-import type {
-  ReleaseComposition,
-  ReleaseLogoImage,
-} from "@/video/release-video"
+import type { ReleaseComposition, ReleaseImage } from "@/video/release-video"
 import { assertOutputEncodingSupport } from "@/video/video-encoding-support"
 
 type ExportReleaseVideoOptions = {
@@ -219,7 +216,7 @@ function snapshotComposition(composition: ReleaseComposition): {
   }
 }
 
-function snapshotLogo(image: ReleaseLogoImage | null): ReleaseLogoImage | null {
+function snapshotLogo(image: ReleaseImage | null): ReleaseImage | null {
   if (!image) {
     return null
   }

@@ -1,53 +1,53 @@
 import * as React from "react"
 
-import type { ReleaseLogoImage } from "@/video/release-video"
+import type { ReleaseImage } from "@/video/release-video"
 
-export const MAX_LOGO_BYTES = 10 * 1024 * 1024
-export const MAX_LOGO_EDGE = 8_192
-export const MAX_LOGO_PIXELS = 16_777_216
-export const ACCEPTED_LOGO_TYPES = [
+export const MAX_IMAGE_BYTES = 10 * 1024 * 1024
+export const MAX_IMAGE_EDGE = 8_192
+export const MAX_IMAGE_PIXELS = 16_777_216
+export const ACCEPTED_IMAGE_TYPES = [
   "image/png",
   "image/jpeg",
   "image/webp",
   "image/svg+xml",
 ] as const
 
-export type LogoImageState =
+export type ImageFileState =
   | { status: "empty"; image: null }
   | { status: "loading"; image: null }
-  | { status: "ready"; image: ReleaseLogoImage; previewUrl: string }
-  | { status: "failed"; image: null; error: LogoValidationError }
+  | { status: "ready"; image: ReleaseImage; previewUrl: string }
+  | { status: "failed"; image: null; error: ImageValidationError }
 
-export type LogoValidationError = "bytes" | "decode" | "dimensions" | "type"
+export type ImageValidationError = "bytes" | "decode" | "dimensions" | "type"
 
-export function isLogoStateExportable(state: LogoImageState): boolean {
+export function isImageStateExportable(state: ImageFileState): boolean {
   return state.status === "empty" || state.status === "ready"
 }
 
-export function logoFileValidationError(
+export function imageFileValidationError(
   file: File
-): LogoValidationError | null {
-  if (!(ACCEPTED_LOGO_TYPES as readonly string[]).includes(file.type)) {
+): ImageValidationError | null {
+  if (!(ACCEPTED_IMAGE_TYPES as readonly string[]).includes(file.type)) {
     return "type"
   }
 
-  if (file.size > MAX_LOGO_BYTES) {
+  if (file.size > MAX_IMAGE_BYTES) {
     return "bytes"
   }
 
   return null
 }
 
-export function logoDimensionValidationError(
+export function imageDimensionValidationError(
   width: number,
   height: number
-): LogoValidationError | null {
+): ImageValidationError | null {
   if (
     width <= 0 ||
     height <= 0 ||
-    width > MAX_LOGO_EDGE ||
-    height > MAX_LOGO_EDGE ||
-    width * height > MAX_LOGO_PIXELS
+    width > MAX_IMAGE_EDGE ||
+    height > MAX_IMAGE_EDGE ||
+    width * height > MAX_IMAGE_PIXELS
   ) {
     return "dimensions"
   }
@@ -55,8 +55,8 @@ export function logoDimensionValidationError(
   return null
 }
 
-export function useLogoImage(file: File | null): LogoImageState {
-  const [state, setState] = React.useState<LogoImageState>({
+export function useImageFile(file: File | null): ImageFileState {
+  const [state, setState] = React.useState<ImageFileState>({
     status: "empty",
     image: null,
   })
@@ -72,13 +72,13 @@ export function useLogoImage(file: File | null): LogoImageState {
     setState({ status: "loading", image: null })
 
     image.onload = () => {
-      const validationError = logoDimensionValidationError(
+      const validationError = imageDimensionValidationError(
         image.naturalWidth,
         image.naturalHeight
       )
 
       if (validationError) {
-        console.error("[logo] Image dimensions exceed limits", {
+        console.error("[image] Dimensions exceed limits", {
           fileName: file.name,
           width: image.naturalWidth,
           height: image.naturalHeight,
@@ -102,7 +102,7 @@ export function useLogoImage(file: File | null): LogoImageState {
       })
     }
     image.onerror = () => {
-      console.error("[logo] Failed to decode image", {
+      console.error("[image] Failed to decode file", {
         fileName: file.name,
         fileType: file.type,
       })

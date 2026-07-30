@@ -2,7 +2,7 @@ import * as React from "react"
 
 import { ReleaseInspector } from "@/components/editor/ReleaseInspector"
 import { ReleaseStage } from "@/components/editor/ReleaseStage"
-import { isLogoStateExportable, useLogoImage } from "@/hooks/use-logo-image"
+import { isImageStateExportable, useImageFile } from "@/hooks/use-image-file"
 import {
   isOutputExportable,
   useOutputCapability,
@@ -20,7 +20,7 @@ export function ReleaseEditor() {
     releaseDraftReducer,
     INITIAL_RELEASE_DRAFT
   )
-  const logoState = useLogoImage(draft.content.logoFile)
+  const logoState = useImageFile(draft.content.logoFile)
   const outputCapability = useOutputCapability(draft.output)
 
   const composition = React.useMemo<ReleaseComposition>(
@@ -47,7 +47,7 @@ export function ReleaseEditor() {
   )
   const canExport =
     draft.content.productName.trim().length > 0 &&
-    isLogoStateExportable(logoState) &&
+    isImageStateExportable(logoState) &&
     isOutputExportable(outputCapability)
 
   return (

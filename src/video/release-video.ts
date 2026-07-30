@@ -57,7 +57,7 @@ export type ReleaseDraft = {
   output: OutputSettings
 }
 
-export type ReleaseLogoImage = {
+export type ReleaseImage = {
   source: CanvasImageSource
   width: number
   height: number
@@ -66,7 +66,7 @@ export type ReleaseLogoImage = {
 export type ReleaseComposition = {
   locale: AppLocale
   content: Omit<ReleaseContentDraft, "logoFile"> & {
-    logoImage: ReleaseLogoImage | null
+    logoImage: ReleaseImage | null
   }
   style: ReleaseStyle
   output: OutputSettings

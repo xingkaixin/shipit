@@ -268,7 +268,7 @@ input[type="range"]::-moz-range-thumb {
 }
 
 /* Checkerboard so transparent logo previews stay readable in both themes. */
-.logo-preview-tile {
+.image-preview-tile {
   --logo-tile-square: color-mix(in oklch, var(--foreground) 7%, transparent);
   background-color: var(--card);
   background-image: conic-gradient(

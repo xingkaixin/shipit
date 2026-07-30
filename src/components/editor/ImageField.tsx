@@ -9,26 +9,42 @@ import {
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
 import {
-  ACCEPTED_LOGO_TYPES,
-  logoFileValidationError,
-  type LogoImageState,
-  type LogoValidationError,
-} from "@/hooks/use-logo-image"
+  ACCEPTED_IMAGE_TYPES,
+  imageFileValidationError,
+  type ImageFileState,
+  type ImageValidationError,
+} from "@/hooks/use-image-file"
 import { useFileDrop } from "@/hooks/use-file-drop"
-import { useI18n } from "@/i18n/i18n"
-import type { MessageKey } from "@/i18n/messages"
 import { cn } from "@/lib/utils"
 
-type LogoFieldProps = {
+export type ImageFieldCopy = {
+  drop: string
+  dropActive: string
+  loading: string
+  remove: string
+  help: string
+  errors: Record<ImageValidationError, string>
+}
+
+type ImageFieldProps = {
+  id: string
+  name: string
   file: File | null
-  state: LogoImageState
+  state: ImageFileState
+  copy: ImageFieldCopy
   onChange: (file: File | null) => void
 }
 
-export function LogoField({ file, state, onChange }: LogoFieldProps) {
-  const { t } = useI18n()
+export function ImageField({
+  id,
+  name,
+  file,
+  state,
+  copy,
+  onChange,
+}: ImageFieldProps) {
   const [rejectionError, setRejectionError] =
-    React.useState<LogoValidationError | null>(null)
+    React.useState<ImageValidationError | null>(null)
   const error =
     rejectionError || (state.status === "failed" ? state.error : null)
 
@@ -37,7 +53,7 @@ export function LogoField({ file, state, onChange }: LogoFieldProps) {
       return
     }
 
-    const validationError = logoFileValidationError(candidate)
+    const validationError = imageFileValidationError(candidate)
     setRejectionError(validationError)
 
     if (!validationError) {
@@ -52,7 +68,7 @@ export function LogoField({ file, state, onChange }: LogoFieldProps) {
     return (
       <div className="space-y-2">
         <div className="flex items-center gap-3 rounded-[10px] border border-border bg-card p-2">
-          <span className="logo-preview-tile flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-lg">
+          <span className="image-preview-tile flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-lg">
             {state.status === "ready" ? (
               <img
                 src={state.previewUrl}
@@ -73,14 +89,14 @@ export function LogoField({ file, state, onChange }: LogoFieldProps) {
             <span className="mt-0.5 block font-mono text-[11px] text-muted-foreground">
               {state.status === "ready"
                 ? `${state.image.width}×${state.image.height} · ${formatFileSize(file.size)}`
-                : t("content.logo.loading")}
+                : copy.loading}
             </span>
           </span>
           <Button
             type="button"
             variant="ghost"
             size="icon-sm"
-            aria-label={t("content.logo.remove")}
+            aria-label={copy.remove}
             onClick={() => {
               setRejectionError(null)
               onChange(null)
@@ -89,7 +105,7 @@ export function LogoField({ file, state, onChange }: LogoFieldProps) {
             <Icon icon={Delete02Icon} />
           </Button>
         </div>
-        {error ? <LogoError error={error} /> : null}
+        {error ? <ImageError message={copy.errors[error]} /> : null}
       </div>
     )
   }
@@ -98,7 +114,7 @@ export function LogoField({ file, state, onChange }: LogoFieldProps) {
     <div className="space-y-2">
       <label
         ref={zoneReference}
-        htmlFor="logo-upload"
+        htmlFor={id}
         className={cn(
           "flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-[10px] border border-dashed px-4 py-5 text-center transition-[border-color,background-color,transform] duration-150 ease-[var(--ease-out)] focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/20 active:scale-[0.99]",
           isDraggedOver
@@ -107,11 +123,11 @@ export function LogoField({ file, state, onChange }: LogoFieldProps) {
         )}
       >
         <input
-          id="logo-upload"
-          name="productLogo"
+          id={id}
+          name={name}
           type="file"
           className="sr-only"
-          accept={ACCEPTED_LOGO_TYPES.join(",")}
+          accept={ACCEPTED_IMAGE_TYPES.join(",")}
           onChange={(event) => {
             const selected = event.target.files?.[0] ?? null
             event.target.value = ""
@@ -124,29 +140,25 @@ export function LogoField({ file, state, onChange }: LogoFieldProps) {
           strokeWidth={1.6}
         />
         <span className="text-[13px] font-medium">
-          {isDraggedOver
-            ? t("content.logo.dropActive")
-            : t("content.logo.drop")}
+          {isDraggedOver ? copy.dropActive : copy.drop}
         </span>
         <span className="text-[11px] leading-4 text-muted-foreground">
-          {t("content.logo.help")}
+          {copy.help}
         </span>
       </label>
-      {error ? <LogoError error={error} /> : null}
+      {error ? <ImageError message={copy.errors[error]} /> : null}
     </div>
   )
 }
 
-function LogoError({ error }: { error: LogoValidationError }) {
-  const { t } = useI18n()
-
+function ImageError({ message }: { message: string }) {
   return (
     <p
       className="flex items-start gap-1.5 text-xs text-destructive"
       aria-live="polite"
     >
       <Icon icon={Alert02Icon} className="mt-px size-3.5 shrink-0" />
-      {t(logoErrorMessageKey(error))}
+      {message}
     </p>
   )
 }
@@ -156,8 +168,4 @@ function formatFileSize(bytes: number): string {
   return kilobytes < 1024
     ? `${Math.round(kilobytes)} KB`
     : `${(kilobytes / 1024).toFixed(1)} MB`
-}
-
-function logoErrorMessageKey(error: LogoValidationError): MessageKey {
-  return `logo.error.${error}`
 }
