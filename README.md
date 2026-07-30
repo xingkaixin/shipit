@@ -49,8 +49,8 @@ production bundle is written to `dist`.
   in-memory export.
 - 4K at 60 FPS processes roughly eight times as many pixels as 1080p at 30 FPS.
   Use 1080p on mobile or memory-constrained devices.
-- Logos may be PNG, JPEG, or WebP files up to 10 MB, 8192 pixels per side, and
-  16 million total pixels.
+- Logos may be PNG, JPEG, WebP, or SVG files up to 10 MB, 8192 pixels per side,
+  and 16 million total pixels.
 - Uploaded assets, previews, and encoded videos remain in the current browser.
 
 ## Localization

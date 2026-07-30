@@ -19,7 +19,8 @@ export const EN_MESSAGES = {
   "content.logo.dropActive": "Release to use this file",
   "content.logo.loading": "Reading the logo…",
   "content.logo.remove": "Remove logo",
-  "content.logo.help": "PNG, JPG, or WebP, up to 10 MB and 16 million pixels",
+  "content.logo.help":
+    "PNG, JPG, WebP, or SVG, up to 10 MB and 16 million pixels",
   "content.productName": "Product name",
   "content.productName.placeholder": "For example, Shipit…",
   "content.version": "Version",
@@ -33,7 +34,7 @@ export const EN_MESSAGES = {
   "content.detail.websitePlaceholder": "For example, shipit.dev…",
   "content.detail.installPlaceholder": "For example, pnpm add shipit…",
   "content.detail.customPlaceholder": "For example, Available now…",
-  "logo.error.type": "Choose a PNG, JPG, or WebP file",
+  "logo.error.type": "Choose a PNG, JPG, WebP, or SVG file",
   "logo.error.bytes": "The logo file must be 10 MB or smaller",
   "logo.error.dimensions":
     "Use a logo no larger than 8192 px per side and 16 million pixels",
@@ -140,7 +141,7 @@ export const ZH_CN_MESSAGES: Record<MessageKey, string> = {
   "content.logo.dropActive": "松开即可使用这个文件",
   "content.logo.loading": "正在读取 Logo…",
   "content.logo.remove": "移除 Logo",
-  "content.logo.help": "PNG、JPG 或 WebP，最大 10 MB，最多 1600 万像素",
+  "content.logo.help": "PNG、JPG、WebP 或 SVG，最大 10 MB，最多 1600 万像素",
   "content.productName": "产品名称",
   "content.productName.placeholder": "例如 Shipit…",
   "content.version": "版本",
@@ -154,7 +155,7 @@ export const ZH_CN_MESSAGES: Record<MessageKey, string> = {
   "content.detail.websitePlaceholder": "例如 shipit.dev…",
   "content.detail.installPlaceholder": "例如 pnpm add shipit…",
   "content.detail.customPlaceholder": "例如 Available now…",
-  "logo.error.type": "请选择 PNG、JPG 或 WebP 文件",
+  "logo.error.type": "请选择 PNG、JPG、WebP 或 SVG 文件",
   "logo.error.bytes": "Logo 文件不能超过 10 MB",
   "logo.error.dimensions":
     "Logo 尺寸过大，请使用不超过 8192 像素且低于 1600 万像素的图片",
