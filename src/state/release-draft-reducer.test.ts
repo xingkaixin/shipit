@@ -6,6 +6,10 @@ import {
 } from "@/state/release-draft-reducer"
 
 describe("releaseDraftReducer", () => {
+  it("starts product shots without tilt", () => {
+    expect(INITIAL_RELEASE_DRAFT.style.productShot.tilt).toBe(0)
+  })
+
   it("keeps the accent color when only the background changes", () => {
     const nextDraft = releaseDraftReducer(INITIAL_RELEASE_DRAFT, {
       type: "set-background",

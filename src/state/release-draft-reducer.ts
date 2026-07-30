@@ -46,7 +46,7 @@ export const INITIAL_RELEASE_DRAFT: ReleaseDraft = {
     productShot: {
       frame: "browser",
       scale: 1,
-      tilt: -4,
+      tilt: 0,
       shimmer: true,
     },
   },
