@@ -9,6 +9,7 @@ export const ACCEPTED_LOGO_TYPES = [
   "image/png",
   "image/jpeg",
   "image/webp",
+  "image/svg+xml",
 ] as const
 
 export type LogoImageState =

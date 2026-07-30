@@ -8,15 +8,20 @@ import {
 } from "@/hooks/use-logo-image"
 
 describe("logo validation", () => {
-  it("accepts supported images within the byte limit", () => {
-    const file = new File(["logo"], "logo.png", { type: "image/png" })
+  it.each([
+    ["logo.png", "image/png"],
+    ["logo.jpg", "image/jpeg"],
+    ["logo.webp", "image/webp"],
+    ["logo.svg", "image/svg+xml"],
+  ])("accepts %s within the byte limit", (name, type) => {
+    const file = new File(["logo"], name, { type })
 
     expect(logoFileValidationError(file)).toBeNull()
   })
 
-  it("rejects SVG and oversized files before decoding", () => {
-    const svg = new File(["<svg/>"], "logo.svg", {
-      type: "image/svg+xml",
+  it("rejects unsupported and oversized files before decoding", () => {
+    const unsupported = new File(["logo"], "logo.gif", {
+      type: "image/gif",
     })
     const oversized = new File(
       [new Uint8Array(MAX_LOGO_BYTES + 1)],
@@ -24,7 +29,7 @@ describe("logo validation", () => {
       { type: "image/png" }
     )
 
-    expect(logoFileValidationError(svg)).toBe("type")
+    expect(logoFileValidationError(unsupported)).toBe("type")
     expect(logoFileValidationError(oversized)).toBe("bytes")
   })
 
