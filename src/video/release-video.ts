@@ -34,13 +34,10 @@ export type ProductFrame = (typeof PRODUCT_FRAMES)[number]
 
 export const PRODUCT_SHOT_SCALE_MIN = 0.7
 export const PRODUCT_SHOT_SCALE_MAX = 1.2
-export const PRODUCT_SHOT_TILT_MIN = -12
-export const PRODUCT_SHOT_TILT_MAX = 12
 
 export type ProductShotStyle = {
   frame: ProductFrame
   scale: number
-  tilt: number
   shimmer: boolean
 }
 

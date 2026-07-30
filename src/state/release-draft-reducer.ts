@@ -10,8 +10,6 @@ import {
   type LogoTreatment,
   PRODUCT_SHOT_SCALE_MAX,
   PRODUCT_SHOT_SCALE_MIN,
-  PRODUCT_SHOT_TILT_MAX,
-  PRODUCT_SHOT_TILT_MIN,
   type ProductFrame,
   type ReleaseDraft,
 } from "@/video/release-video"
@@ -46,7 +44,6 @@ export const INITIAL_RELEASE_DRAFT: ReleaseDraft = {
     productShot: {
       frame: "browser",
       scale: 1,
-      tilt: 0,
       shimmer: true,
     },
   },
@@ -71,7 +68,6 @@ export type ReleaseDraftAction =
   | { type: "set-title-shimmer"; value: boolean }
   | { type: "set-product-frame"; value: ProductFrame }
   | { type: "set-product-shot-scale"; value: number }
-  | { type: "set-product-shot-tilt"; value: number }
   | { type: "set-product-shot-shimmer"; value: boolean }
   | { type: "set-title-font"; value: FontId }
   | { type: "use-custom-title-color"; value: boolean }
@@ -143,14 +139,6 @@ export function releaseDraftReducer(
           PRODUCT_SHOT_SCALE_MIN,
           PRODUCT_SHOT_SCALE_MAX
         ),
-      })
-    case "set-product-shot-tilt":
-      if (!Number.isFinite(action.value)) {
-        return draft
-      }
-
-      return withProductShot(draft, {
-        tilt: clamp(action.value, PRODUCT_SHOT_TILT_MIN, PRODUCT_SHOT_TILT_MAX),
       })
     case "set-product-shot-shimmer":
       return withProductShot(draft, { shimmer: action.value })

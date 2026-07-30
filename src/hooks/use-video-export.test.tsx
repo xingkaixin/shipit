@@ -35,7 +35,6 @@ const BASE_COMPOSITION: ReleaseComposition = {
     productShot: {
       frame: "browser",
       scale: 1,
-      tilt: -4,
       shimmer: true,
     },
   },

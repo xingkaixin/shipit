@@ -63,7 +63,7 @@ describe("renderReleaseFrame", () => {
     expect(context.measureText).toHaveBeenCalledTimes(firstFrameMeasurements)
   })
 
-  it("renders every product frame with tilt and shimmer", () => {
+  it("renders every product frame with shimmer", () => {
     for (const frame of ["none", "browser", "macbook", "iphone"] as const) {
       const context = createCanvasContext(1_920, 1_080)
       const composition = createComposition(
@@ -133,7 +133,6 @@ function createComposition(
       productShot: {
         frame: "browser",
         scale: 1,
-        tilt: -4,
         shimmer: true,
       },
     },

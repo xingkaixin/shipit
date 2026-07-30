@@ -46,16 +46,11 @@ export function drawProductShot({
 }: DrawProductShotOptions): void {
   const reveal = easeOutCubic(progress(time, 0.62, 0.86))
   const geometry = productShotGeometry(image, style.frame, area, style.scale)
-  const tiltRadians = (style.tilt * Math.PI) / 180
-  const shear = Math.tan(tiltRadians) * 0.34
-  const horizontalScale = 1 - Math.abs(style.tilt) * 0.006
 
   context.save()
   context.globalAlpha = reveal
   context.translate(area.centerX, area.centerY + interpolate(54, 0, reveal))
   context.scale(interpolate(0.94, 1, reveal), interpolate(0.94, 1, reveal))
-  context.transform(horizontalScale, shear, 0, 1, 0, 0)
-  context.rotate(tiltRadians * 0.12)
 
   drawProductShadow(context, geometry, style.frame, palette)
   drawFrame(context, geometry, style.frame, palette, accentColor)

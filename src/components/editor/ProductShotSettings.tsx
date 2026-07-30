@@ -20,8 +20,6 @@ import {
   PRODUCT_FRAMES,
   PRODUCT_SHOT_SCALE_MAX,
   PRODUCT_SHOT_SCALE_MIN,
-  PRODUCT_SHOT_TILT_MAX,
-  PRODUCT_SHOT_TILT_MIN,
   type ProductFrame,
   type ReleaseDraft,
 } from "@/video/release-video"
@@ -87,19 +85,6 @@ export function ProductShotSettings({
             step={0.05}
             onChange={(value) => {
               dispatch({ type: "set-product-shot-scale", value })
-            }}
-          />
-
-          <RangeField
-            id="product-shot-tilt"
-            label={t("productShot.tilt")}
-            valueLabel={`${productShot.tilt}°`}
-            value={productShot.tilt}
-            minimum={PRODUCT_SHOT_TILT_MIN}
-            maximum={PRODUCT_SHOT_TILT_MAX}
-            step={1}
-            onChange={(value) => {
-              dispatch({ type: "set-product-shot-tilt", value })
             }}
           />
 

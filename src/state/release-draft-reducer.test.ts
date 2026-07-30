@@ -6,10 +6,6 @@ import {
 } from "@/state/release-draft-reducer"
 
 describe("releaseDraftReducer", () => {
-  it("starts product shots without tilt", () => {
-    expect(INITIAL_RELEASE_DRAFT.style.productShot.tilt).toBe(0)
-  })
-
   it("keeps the accent color when only the background changes", () => {
     const nextDraft = releaseDraftReducer(INITIAL_RELEASE_DRAFT, {
       type: "set-background",
@@ -122,13 +118,8 @@ describe("releaseDraftReducer", () => {
       type: "set-product-shot-scale",
       value: 10,
     })
-    const overtilted = releaseDraftReducer(oversized, {
-      type: "set-product-shot-tilt",
-      value: -90,
-    })
 
-    expect(overtilted.style.productShot.scale).toBe(1.2)
-    expect(overtilted.style.productShot.tilt).toBe(-12)
+    expect(oversized.style.productShot.scale).toBe(1.2)
   })
 
   it("ignores non-finite product shot values", () => {
