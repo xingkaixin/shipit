@@ -8,6 +8,10 @@ import {
   detailValueForKind,
   type DetailKind,
   type LogoTreatment,
+  PRODUCT_SCREENSHOT_SCALE_MAX,
+  PRODUCT_SCREENSHOT_SCALE_MIN,
+  PRODUCT_SHADOW_STRENGTH_MAX,
+  PRODUCT_SHADOW_STRENGTH_MIN,
   PRODUCT_SHOT_SCALE_MAX,
   PRODUCT_SHOT_SCALE_MIN,
   type ProductFrame,
@@ -44,6 +48,13 @@ export const INITIAL_RELEASE_DRAFT: ReleaseDraft = {
     productShot: {
       frame: "browser",
       scale: 1,
+      screenshotScale: 1,
+      screenColor: "#FFFFFF",
+      shadowStrength: 0.65,
+      browser: {
+        tabTitle: "",
+        url: "",
+      },
       shimmer: true,
     },
   },
@@ -68,6 +79,11 @@ export type ReleaseDraftAction =
   | { type: "set-title-shimmer"; value: boolean }
   | { type: "set-product-frame"; value: ProductFrame }
   | { type: "set-product-shot-scale"; value: number }
+  | { type: "set-product-screenshot-scale"; value: number }
+  | { type: "set-product-screen-color"; value: string }
+  | { type: "set-product-shadow-strength"; value: number }
+  | { type: "set-browser-tab-title"; value: string }
+  | { type: "set-browser-url"; value: string }
   | { type: "set-product-shot-shimmer"; value: boolean }
   | { type: "set-title-font"; value: FontId }
   | { type: "use-custom-title-color"; value: boolean }
@@ -140,6 +156,36 @@ export function releaseDraftReducer(
           PRODUCT_SHOT_SCALE_MAX
         ),
       })
+    case "set-product-screenshot-scale":
+      if (!Number.isFinite(action.value)) {
+        return draft
+      }
+
+      return withProductShot(draft, {
+        screenshotScale: clamp(
+          action.value,
+          PRODUCT_SCREENSHOT_SCALE_MIN,
+          PRODUCT_SCREENSHOT_SCALE_MAX
+        ),
+      })
+    case "set-product-screen-color":
+      return withProductShot(draft, { screenColor: action.value })
+    case "set-product-shadow-strength":
+      if (!Number.isFinite(action.value)) {
+        return draft
+      }
+
+      return withProductShot(draft, {
+        shadowStrength: clamp(
+          action.value,
+          PRODUCT_SHADOW_STRENGTH_MIN,
+          PRODUCT_SHADOW_STRENGTH_MAX
+        ),
+      })
+    case "set-browser-tab-title":
+      return withBrowserFrame(draft, { tabTitle: action.value })
+    case "set-browser-url":
+      return withBrowserFrame(draft, { url: action.value })
     case "set-product-shot-shimmer":
       return withProductShot(draft, { shimmer: action.value })
     case "set-title-font":
@@ -181,6 +227,15 @@ function withProductShot(
 ): ReleaseDraft {
   return withStyle(draft, {
     productShot: { ...draft.style.productShot, ...productShot },
+  })
+}
+
+function withBrowserFrame(
+  draft: ReleaseDraft,
+  browser: Partial<ReleaseDraft["style"]["productShot"]["browser"]>
+): ReleaseDraft {
+  return withProductShot(draft, {
+    browser: { ...draft.style.productShot.browser, ...browser },
   })
 }
 

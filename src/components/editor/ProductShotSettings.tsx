@@ -8,9 +8,12 @@ import {
 } from "@hugeicons/core-free-icons"
 import type { HugeiconsIconProps } from "@hugeicons/react"
 
+import { ColorInput } from "@/components/editor/ColorInput"
 import { ImageField, type ImageFieldCopy } from "@/components/editor/ImageField"
 import { RangeField } from "@/components/editor/RangeField"
 import { Icon } from "@/components/ui/icon"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { OptionButton } from "@/components/ui/option-button"
 import type { ImageFileState } from "@/hooks/use-image-file"
 import { useI18n } from "@/i18n/i18n"
@@ -18,6 +21,10 @@ import type { MessageKey } from "@/i18n/messages"
 import type { ReleaseDraftAction } from "@/state/release-draft-reducer"
 import {
   PRODUCT_FRAMES,
+  PRODUCT_SCREENSHOT_SCALE_MAX,
+  PRODUCT_SCREENSHOT_SCALE_MIN,
+  PRODUCT_SHADOW_STRENGTH_MAX,
+  PRODUCT_SHADOW_STRENGTH_MIN,
   PRODUCT_SHOT_SCALE_MAX,
   PRODUCT_SHOT_SCALE_MIN,
   type ProductFrame,
@@ -75,6 +82,96 @@ export function ProductShotSettings({
             </div>
           </fieldset>
 
+          {productShot.frame === "browser" ? (
+            <div className="space-y-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="browser-tab-title">
+                  {t("productShot.browserTabTitle")}
+                </Label>
+                <Input
+                  id="browser-tab-title"
+                  name="browserTabTitle"
+                  value={productShot.browser.tabTitle}
+                  maxLength={48}
+                  autoComplete="off"
+                  placeholder={t("productShot.browserTabTitle.placeholder")}
+                  onChange={(event) => {
+                    dispatch({
+                      type: "set-browser-tab-title",
+                      value: event.target.value,
+                    })
+                  }}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="browser-url">
+                  {t("productShot.browserUrl")}
+                </Label>
+                <Input
+                  id="browser-url"
+                  name="browserUrl"
+                  value={productShot.browser.url}
+                  maxLength={120}
+                  autoComplete="off"
+                  spellCheck={false}
+                  placeholder={t("productShot.browserUrl.placeholder")}
+                  onChange={(event) => {
+                    dispatch({
+                      type: "set-browser-url",
+                      value: event.target.value,
+                    })
+                  }}
+                />
+              </div>
+            </div>
+          ) : null}
+
+          {supportsScreenshotScale(productShot.frame) ? (
+            <RangeField
+              id="product-screenshot-scale"
+              label={t("productShot.screenshotScale")}
+              valueLabel={`${Math.round(productShot.screenshotScale * 100)}%`}
+              value={productShot.screenshotScale}
+              minimum={PRODUCT_SCREENSHOT_SCALE_MIN}
+              maximum={PRODUCT_SCREENSHOT_SCALE_MAX}
+              step={0.05}
+              onChange={(value) => {
+                dispatch({ type: "set-product-screenshot-scale", value })
+              }}
+            />
+          ) : null}
+
+          {productShot.frame !== "none" ? (
+            <>
+              <div className="space-y-1.5">
+                <Label htmlFor="product-screen-color">
+                  {t("productShot.screenColor")}
+                </Label>
+                <ColorInput
+                  id="product-screen-color"
+                  label={t("productShot.screenColor")}
+                  value={productShot.screenColor}
+                  onChange={(value) => {
+                    dispatch({ type: "set-product-screen-color", value })
+                  }}
+                />
+              </div>
+
+              <RangeField
+                id="product-shadow-strength"
+                label={t("productShot.shadowStrength")}
+                valueLabel={`${Math.round(productShot.shadowStrength * 100)}%`}
+                value={productShot.shadowStrength}
+                minimum={PRODUCT_SHADOW_STRENGTH_MIN}
+                maximum={PRODUCT_SHADOW_STRENGTH_MAX}
+                step={0.05}
+                onChange={(value) => {
+                  dispatch({ type: "set-product-shadow-strength", value })
+                }}
+              />
+            </>
+          ) : null}
+
           <RangeField
             id="product-shot-scale"
             label={t("productShot.size")}
@@ -105,6 +202,10 @@ export function ProductShotSettings({
       ) : null}
     </div>
   )
+}
+
+function supportsScreenshotScale(frame: ProductFrame): boolean {
+  return frame === "macbook" || frame === "iphone"
 }
 
 function screenshotFieldCopy(t: (key: MessageKey) => string): ImageFieldCopy {

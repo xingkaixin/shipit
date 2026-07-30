@@ -114,6 +114,35 @@ describe("renderReleaseFrame", () => {
       staticContext.fillText.mock.calls.length + 1
     )
   })
+
+  it("renders custom Chrome tab and URL text", () => {
+    const context = createCanvasContext(1_920, 1_080)
+    const composition = createComposition(
+      "midnight-burst",
+      "midnight",
+      "landscape"
+    )
+    composition.content.screenshotImage = {
+      source: {} as CanvasImageSource,
+      width: 1_440,
+      height: 900,
+    }
+    composition.content.productFrameImage = {
+      source: {} as CanvasImageSource,
+      width: 1_536,
+      height: 895,
+    }
+    composition.style.productShot.browser = {
+      tabTitle: "Shipit release",
+      url: "shipit.dev/releases",
+    }
+
+    renderReleaseFrame(context, composition, 2.62)
+
+    const renderedText = context.fillText.mock.calls.map(([text]) => text)
+    expect(renderedText).toContain("Shipit release")
+    expect(renderedText).toContain("shipit.dev/releases")
+  })
 })
 
 function createComposition(
@@ -142,6 +171,10 @@ function createComposition(
       productShot: {
         frame: "browser",
         scale: 1,
+        screenshotScale: 1,
+        screenColor: "#FFFFFF",
+        shadowStrength: 0.65,
+        browser: { tabTitle: "", url: "" },
         shimmer: true,
       },
     },

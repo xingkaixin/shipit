@@ -34,10 +34,23 @@ export type ProductFrame = (typeof PRODUCT_FRAMES)[number]
 
 export const PRODUCT_SHOT_SCALE_MIN = 0.7
 export const PRODUCT_SHOT_SCALE_MAX = 1.2
+export const PRODUCT_SCREENSHOT_SCALE_MIN = 0.25
+export const PRODUCT_SCREENSHOT_SCALE_MAX = 1.5
+export const PRODUCT_SHADOW_STRENGTH_MIN = 0
+export const PRODUCT_SHADOW_STRENGTH_MAX = 1
+
+export type BrowserFrameStyle = {
+  tabTitle: string
+  url: string
+}
 
 export type ProductShotStyle = {
   frame: ProductFrame
   scale: number
+  screenshotScale: number
+  screenColor: string
+  shadowStrength: number
+  browser: BrowserFrameStyle
   shimmer: boolean
 }
 

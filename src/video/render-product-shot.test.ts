@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest"
 
-import { productShotGeometry } from "@/video/render-product-shot"
+import {
+  productScreenshotRectangle,
+  productShotGeometry,
+} from "@/video/render-product-shot"
 import { PRODUCT_FRAMES } from "@/video/release-video"
 
 const AREA = {
@@ -78,5 +81,20 @@ describe("product shot geometry", () => {
 
     expect(Number.isFinite(geometry.outer.width)).toBe(true)
     expect(Number.isFinite(geometry.outer.height)).toBe(true)
+  })
+
+  it("scales the complete screenshot instead of a pre-cropped slice", () => {
+    const screen = { x: 0, y: 0, width: 373, height: 809 }
+    const image = { width: 1_200, height: 630 }
+    const defaultRectangle = productScreenshotRectangle(image, screen, 1)
+    const zoomedOutRectangle = productScreenshotRectangle(image, screen, 0.25)
+
+    expect(defaultRectangle.width / defaultRectangle.height).toBeCloseTo(
+      image.width / image.height
+    )
+    expect(zoomedOutRectangle.width).toBeCloseTo(defaultRectangle.width * 0.25)
+    expect(zoomedOutRectangle.height).toBeCloseTo(
+      defaultRectangle.height * 0.25
+    )
   })
 })

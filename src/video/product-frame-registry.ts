@@ -25,6 +25,11 @@ export type ProductFrameDefinition = {
   assetLayer: "behind-screen" | "over-screen"
 }
 
+export const CHROME_FRAME_TEXT_LAYOUT = {
+  tabTitle: { x: 151, y: 57, width: 174, fontSize: 13 },
+  url: { x: 185, y: 92, width: 1_120, fontSize: 12 },
+} as const
+
 export const PRODUCT_FRAME_DEFINITIONS: Record<
   FramedProductFrame,
   ProductFrameDefinition

@@ -118,8 +118,18 @@ describe("releaseDraftReducer", () => {
       type: "set-product-shot-scale",
       value: 10,
     })
+    const undersizedScreenshot = releaseDraftReducer(oversized, {
+      type: "set-product-screenshot-scale",
+      value: 0,
+    })
+    const excessiveShadow = releaseDraftReducer(undersizedScreenshot, {
+      type: "set-product-shadow-strength",
+      value: 10,
+    })
 
-    expect(oversized.style.productShot.scale).toBe(1.2)
+    expect(excessiveShadow.style.productShot.scale).toBe(1.2)
+    expect(excessiveShadow.style.productShot.screenshotScale).toBe(0.25)
+    expect(excessiveShadow.style.productShot.shadowStrength).toBe(1)
   })
 
   it("ignores non-finite product shot values", () => {
@@ -129,5 +139,30 @@ describe("releaseDraftReducer", () => {
         value: Number.NaN,
       })
     ).toBe(INITIAL_RELEASE_DRAFT)
+  })
+
+  it("updates browser chrome without losing sibling values", () => {
+    const withTitle = releaseDraftReducer(INITIAL_RELEASE_DRAFT, {
+      type: "set-browser-tab-title",
+      value: "Shipit release",
+    })
+    const withUrl = releaseDraftReducer(withTitle, {
+      type: "set-browser-url",
+      value: "shipit.dev/releases",
+    })
+
+    expect(withUrl.style.productShot.browser).toEqual({
+      tabTitle: "Shipit release",
+      url: "shipit.dev/releases",
+    })
+  })
+
+  it("stores the product screen fill color", () => {
+    const nextDraft = releaseDraftReducer(INITIAL_RELEASE_DRAFT, {
+      type: "set-product-screen-color",
+      value: "#123456",
+    })
+
+    expect(nextDraft.style.productShot.screenColor).toBe("#123456")
   })
 })

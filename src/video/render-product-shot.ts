@@ -1,17 +1,21 @@
 import { easeOutCubic, interpolate, progress } from "@/video/animation"
 import {
-  drawImageCover,
   roundedRectangle,
   setHighQualityImageSmoothing,
 } from "@/video/canvas-drawing"
 import { colorWithAlpha } from "@/video/color"
-import type { ProductShotArea } from "@/video/release-layout"
 import {
+  CHROME_FRAME_TEXT_LAYOUT,
   productFrameDefinition,
   type ProductFrameDefinition,
   type ProductFrameRectangle,
 } from "@/video/product-frame-registry"
+import type { ProductShotArea } from "@/video/release-layout"
 import {
+  PRODUCT_SCREENSHOT_SCALE_MAX,
+  PRODUCT_SCREENSHOT_SCALE_MIN,
+  PRODUCT_SHADOW_STRENGTH_MAX,
+  PRODUCT_SHADOW_STRENGTH_MIN,
   PRODUCT_SHOT_SCALE_MAX,
   PRODUCT_SHOT_SCALE_MIN,
   type ProductFrame,
@@ -20,6 +24,9 @@ import {
 } from "@/video/release-video"
 import type { PaletteDefinition } from "@/video/palette-registry"
 import { shimmerGradient } from "@/video/shimmer"
+import { fitSingleLineText } from "@/video/text-layout"
+
+const BROWSER_FONT_FAMILY = 'Arial, "Helvetica Neue", sans-serif'
 
 type Rectangle = ProductFrameRectangle
 
@@ -65,19 +72,28 @@ export function drawProductShot({
     return
   }
 
-  if (frameImage && geometry.asset) {
-    drawFrameAsset(context, frameImage, geometry, palette, true)
+  if (frameImage) {
+    drawFrameAsset(context, frameImage, geometry, style.shadowStrength, true)
   }
 
-  drawScreenSurface(context, geometry, palette.surface)
-  drawScreenshot(context, image, geometry)
+  drawScreenSurface(context, geometry, style.screenColor)
+  const imageRectangle = drawScreenshot(
+    context,
+    image,
+    geometry,
+    screenshotScaleFor(style)
+  )
 
   if (style.shimmer) {
-    drawScreenshotShimmer(context, geometry, time)
+    drawScreenshotShimmer(context, geometry, imageRectangle, time)
   }
 
-  if (definition.assetLayer === "over-screen" && frameImage && geometry.asset) {
-    drawFrameAsset(context, frameImage, geometry, palette, false)
+  if (definition.assetLayer === "over-screen" && frameImage) {
+    drawFrameAsset(context, frameImage, geometry, style.shadowStrength, false)
+  }
+
+  if (style.frame === "browser") {
+    drawBrowserChromeText(context, geometry, style)
   }
 
   context.restore()
@@ -101,6 +117,30 @@ export function productShotGeometry(
   }
 
   return framedGeometry(definition, maximumWidth, maximumHeight)
+}
+
+export function productScreenshotRectangle(
+  image: Pick<ReleaseImage, "height" | "width">,
+  screen: Rectangle,
+  scale: number
+): Rectangle {
+  const safeImageWidth = image.width > 0 ? image.width : 1
+  const safeImageHeight = image.height > 0 ? image.height : 1
+  const safeScale = Number.isFinite(scale)
+    ? clamp(scale, PRODUCT_SCREENSHOT_SCALE_MIN, PRODUCT_SCREENSHOT_SCALE_MAX)
+    : 1
+  const coverScale =
+    Math.max(screen.width / safeImageWidth, screen.height / safeImageHeight) *
+    safeScale
+  const width = safeImageWidth * coverScale
+  const height = safeImageHeight * coverScale
+
+  return {
+    x: screen.x + (screen.width - width) / 2,
+    y: screen.y + (screen.height - height) / 2,
+    width,
+    height,
+  }
 }
 
 function unframedGeometry(
@@ -195,10 +235,10 @@ function drawUnframedScreenshot(
   drawScreenSurface(context, geometry, palette.surface)
   context.restore()
 
-  drawScreenshot(context, image, geometry)
+  const imageRectangle = drawScreenshot(context, image, geometry, 1)
 
   if (style.shimmer) {
-    drawScreenshotShimmer(context, geometry, time)
+    drawScreenshotShimmer(context, geometry, imageRectangle, time)
   }
 
   context.strokeStyle = colorWithAlpha(palette.foreground, 0.2)
@@ -218,18 +258,26 @@ function drawFrameAsset(
   context: CanvasRenderingContext2D,
   image: ReleaseImage,
   geometry: ProductShotGeometry,
-  palette: PaletteDefinition,
+  shadowStrength: number,
   withShadow: boolean
 ): void {
   if (!geometry.asset) {
     return
   }
 
+  const safeShadowStrength = Number.isFinite(shadowStrength)
+    ? clamp(
+        shadowStrength,
+        PRODUCT_SHADOW_STRENGTH_MIN,
+        PRODUCT_SHADOW_STRENGTH_MAX
+      )
+    : 0.65
+
   context.save()
-  if (withShadow) {
-    context.shadowColor = colorWithAlpha(palette.foreground, 0.3)
-    context.shadowBlur = Math.max(18, geometry.outer.width * 0.045)
-    context.shadowOffsetY = Math.max(12, geometry.outer.height * 0.035)
+  if (withShadow && safeShadowStrength > 0) {
+    context.shadowColor = colorWithAlpha("#000000", 0.48 * safeShadowStrength)
+    context.shadowBlur = geometry.outer.width * 0.06 * safeShadowStrength
+    context.shadowOffsetY = geometry.outer.height * 0.045 * safeShadowStrength
   }
   setHighQualityImageSmoothing(context)
   context.drawImage(
@@ -263,9 +311,12 @@ function drawScreenSurface(
 function drawScreenshot(
   context: CanvasRenderingContext2D,
   image: ReleaseImage,
-  geometry: ProductShotGeometry
-): void {
+  geometry: ProductShotGeometry,
+  scale: number
+): Rectangle {
   const { screen } = geometry
+  const imageRectangle = productScreenshotRectangle(image, screen, scale)
+
   context.save()
   roundedRectangle(
     context,
@@ -276,24 +327,85 @@ function drawScreenshot(
     geometry.screenCornerRadius
   )
   context.clip()
-  drawImageCover(
-    context,
-    image,
-    screen.x,
-    screen.y,
-    screen.width,
-    screen.height
+  setHighQualityImageSmoothing(context)
+  context.drawImage(
+    image.source,
+    imageRectangle.x,
+    imageRectangle.y,
+    imageRectangle.width,
+    imageRectangle.height
   )
   context.restore()
+
+  return imageRectangle
+}
+
+function screenshotScaleFor(style: ProductShotStyle): number {
+  return style.frame === "macbook" || style.frame === "iphone"
+    ? style.screenshotScale
+    : 1
+}
+
+function drawBrowserChromeText(
+  context: CanvasRenderingContext2D,
+  geometry: ProductShotGeometry,
+  style: ProductShotStyle
+): void {
+  if (!geometry.asset) {
+    return
+  }
+
+  const tabTitle = style.browser.tabTitle.trim()
+  const url = style.browser.url.trim()
+  if (!tabTitle && !url) {
+    return
+  }
+
+  context.save()
+  context.translate(geometry.asset.x, geometry.asset.y)
+  context.scale(geometry.sourceScale, geometry.sourceScale)
+  context.fillStyle = "#3D4043"
+  context.textAlign = "left"
+  context.textBaseline = "middle"
+
+  if (tabTitle) {
+    drawBrowserText(context, tabTitle, CHROME_FRAME_TEXT_LAYOUT.tabTitle, 500)
+  }
+
+  if (url) {
+    drawBrowserText(context, url, CHROME_FRAME_TEXT_LAYOUT.url, 400)
+  }
+
+  context.restore()
+}
+
+function drawBrowserText(
+  context: CanvasRenderingContext2D,
+  text: string,
+  layout: { x: number; y: number; width: number; fontSize: number },
+  fontWeight: number
+): void {
+  const fitted = fitSingleLineText(context, {
+    text,
+    maximumWidth: layout.width,
+    maximumFontSize: layout.fontSize,
+    minimumFontSize: layout.fontSize,
+    fontWeight,
+    fontFamily: BROWSER_FONT_FAMILY,
+  })
+  context.font = `${fontWeight} ${fitted.fontSize}px ${BROWSER_FONT_FAMILY}`
+  context.fillText(fitted.text, layout.x, layout.y)
 }
 
 function drawScreenshotShimmer(
   context: CanvasRenderingContext2D,
   geometry: ProductShotGeometry,
+  imageRectangle: Rectangle,
   time: number
 ): void {
   const { screen } = geometry
-  const gradient = shimmerGradient(context, screen, time, 2.05, 1.35)
+  const visibleImage = intersectRectangles(screen, imageRectangle)
+  const gradient = shimmerGradient(context, visibleImage, time, 2.05, 1.35)
   if (!gradient) {
     return
   }
@@ -309,8 +421,27 @@ function drawScreenshotShimmer(
   )
   context.clip()
   context.fillStyle = gradient
-  context.fillRect(screen.x, screen.y, screen.width, screen.height)
+  context.fillRect(
+    visibleImage.x,
+    visibleImage.y,
+    visibleImage.width,
+    visibleImage.height
+  )
   context.restore()
+}
+
+function intersectRectangles(first: Rectangle, second: Rectangle): Rectangle {
+  const x = Math.max(first.x, second.x)
+  const y = Math.max(first.y, second.y)
+  const right = Math.min(first.x + first.width, second.x + second.width)
+  const bottom = Math.min(first.y + first.height, second.y + second.height)
+
+  return {
+    x,
+    y,
+    width: Math.max(0, right - x),
+    height: Math.max(0, bottom - y),
+  }
 }
 
 function clamp(value: number, minimum: number, maximum: number): number {

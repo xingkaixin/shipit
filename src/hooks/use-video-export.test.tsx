@@ -36,6 +36,10 @@ const BASE_COMPOSITION: ReleaseComposition = {
     productShot: {
       frame: "browser",
       scale: 1,
+      screenshotScale: 1,
+      screenColor: "#FFFFFF",
+      shadowStrength: 0.65,
+      browser: { tabTitle: "", url: "" },
       shimmer: true,
     },
   },
