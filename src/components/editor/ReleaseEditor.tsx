@@ -12,18 +12,16 @@ import {
   useOutputCapability,
 } from "@/hooks/use-output-capability"
 import { useI18n } from "@/i18n/i18n"
-import {
-  INITIAL_RELEASE_DRAFT,
-  releaseDraftReducer,
-} from "@/state/release-draft-reducer"
-import type { ReleaseComposition } from "@/video/release-video"
+import { type ReleaseDraftAction } from "@/state/release-draft-reducer"
+import type { ReleaseComposition, ReleaseDraft } from "@/video/release-video"
 
-export function ReleaseEditor() {
+type ReleaseEditorProps = {
+  draft: ReleaseDraft
+  dispatch: React.Dispatch<ReleaseDraftAction>
+}
+
+export function ReleaseEditor({ draft, dispatch }: ReleaseEditorProps) {
   const { locale } = useI18n()
-  const [draft, dispatch] = React.useReducer(
-    releaseDraftReducer,
-    INITIAL_RELEASE_DRAFT
-  )
   const logoState = useImageFile(draft.content.logoFile)
   const screenshotState = useImageFile(draft.content.screenshotFile)
   const productFrameState = useProductFrameAssets()

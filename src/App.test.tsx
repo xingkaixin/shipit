@@ -73,6 +73,23 @@ describe("App", () => {
     ).toBeTruthy()
   })
 
+  it("offers a local project manager", () => {
+    renderApp()
+
+    fireEvent.click(
+      screen.getByRole("button", { name: EN_MESSAGES["projects.open"] })
+    )
+
+    expect(
+      screen.getByRole("dialog", {
+        name: EN_MESSAGES["projects.dialogTitle"],
+      })
+    ).toBeTruthy()
+    expect(
+      screen.getByRole("button", { name: EN_MESSAGES["projects.save"] })
+    ).toBeTruthy()
+  })
+
   it("applies the resolved appearance to the document element", () => {
     vi.spyOn(window, "matchMedia").mockImplementation(
       (query) =>

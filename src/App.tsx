@@ -1,14 +1,36 @@
+import * as React from "react"
 import { ComputerIcon, Moon02Icon, Sun03Icon } from "@hugeicons/core-free-icons"
 
+import { ProjectManager } from "@/components/projects/ProjectManager"
 import { ReleaseEditor } from "@/components/editor/ReleaseEditor"
 import { SegmentedControl } from "@/components/ui/segmented-control"
 import { useAppearance, type Appearance } from "@/hooks/use-appearance"
 import { useI18n, type AppLocale } from "@/i18n/i18n"
+import {
+  INITIAL_RELEASE_DRAFT,
+  releaseDraftReducer,
+} from "@/state/release-draft-reducer"
+import type { ProjectSummary } from "@/storage/project-store"
+import type { ReleaseDraft } from "@/video/release-video"
 import shipitLogo from "../assets/shipit-logo-header.png"
 
 export function App() {
   const { locale, setLocale, t } = useI18n()
   const { appearance, setAppearance } = useAppearance()
+  const [draft, dispatch] = React.useReducer(
+    releaseDraftReducer,
+    INITIAL_RELEASE_DRAFT
+  )
+  const [activeProject, setActiveProject] =
+    React.useState<ProjectSummary | null>(null)
+
+  function handleProjectLoaded(
+    nextDraft: ReleaseDraft,
+    project: ProjectSummary
+  ) {
+    dispatch({ type: "load-draft", value: nextDraft })
+    setActiveProject(project)
+  }
 
   return (
     <div className="flex min-h-svh flex-col bg-workspace desk:h-svh desk:overflow-hidden">
@@ -43,11 +65,22 @@ export function App() {
           </div>
         </div>
         <div className="flex shrink-0 items-center gap-2">
+          <ProjectManager
+            draft={draft}
+            activeProject={activeProject}
+            onProjectSaved={setActiveProject}
+            onProjectLoaded={handleProjectLoaded}
+            onProjectDeleted={(projectId) => {
+              setActiveProject((current) =>
+                current?.id === projectId ? null : current
+              )
+            }}
+          />
           <AppearanceControl value={appearance} onChange={setAppearance} />
           <LanguageControl value={locale} onChange={setLocale} />
         </div>
       </header>
-      <ReleaseEditor />
+      <ReleaseEditor draft={draft} dispatch={dispatch} />
     </div>
   )
 }

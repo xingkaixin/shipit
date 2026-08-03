@@ -66,6 +66,7 @@ export const INITIAL_RELEASE_DRAFT: ReleaseDraft = {
 }
 
 export type ReleaseDraftAction =
+  | { type: "load-draft"; value: ReleaseDraft }
   | { type: "set-product-name"; value: string }
   | { type: "set-version"; value: string }
   | { type: "set-detail-kind"; value: DetailKind }
@@ -97,6 +98,8 @@ export function releaseDraftReducer(
   action: ReleaseDraftAction
 ): ReleaseDraft {
   switch (action.type) {
+    case "load-draft":
+      return action.value
     case "set-product-name":
       return withContent(draft, { productName: action.value })
     case "set-version":
