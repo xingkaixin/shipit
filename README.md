@@ -16,6 +16,7 @@ Production: [shipit.xingkaixin.me](https://shipit.xingkaixin.me/)
 - Product screenshots with frameless, Chrome, MacBook, or iPhone presentation
 - Adjustable screenshot size, side tilt, shadow, and timed shimmer effects
 - Light, dark, or system interface, in English or Simplified Chinese
+- Save named projects, including uploaded images, in browser storage
 - Local-only logo processing and video encoding
 
 ## Requirements
@@ -56,6 +57,8 @@ production bundle is written to `dist`.
 - Product screenshots accept the same formats and limits. They are optional,
   and removing one restores the centered composition.
 - Uploaded assets, previews, and encoded videos remain in the current browser.
+- Saved projects use IndexedDB on this browser and remain available after a new
+  app version is deployed. They are not synced between browsers or devices.
 
 ## Localization
 
