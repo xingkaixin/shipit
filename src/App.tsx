@@ -2,6 +2,7 @@ import * as React from "react"
 
 import { ReleaseEditor } from "@/components/editor/ReleaseEditor"
 import { WorkbenchHeader } from "@/components/editor/WorkbenchHeader"
+import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts"
 import { useReleaseComposition } from "@/hooks/use-release-composition"
 import { useVideoExport } from "@/hooks/use-video-export"
 import { useI18n } from "@/i18n/i18n"
@@ -36,8 +37,12 @@ export function App() {
   }
 
   function startExport() {
-    void exportVideo()
+    if (release.canExport && exportState.status !== "exporting") {
+      void exportVideo()
+    }
   }
+
+  useKeyboardShortcuts({ "mod+Enter": startExport })
 
   return (
     <div className="flex min-h-svh flex-col bg-workspace desk:h-svh desk:overflow-hidden">

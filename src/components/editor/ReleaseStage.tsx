@@ -16,6 +16,10 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import {
+  isAppleKeyboard,
+  useKeyboardShortcuts,
+} from "@/hooks/use-keyboard-shortcuts"
 import type { OutputCapabilityState } from "@/hooks/use-output-capability"
 import type { VideoExportState } from "@/hooks/use-video-export"
 import { useI18n } from "@/i18n/i18n"
@@ -169,6 +173,8 @@ export function ReleaseStage({
 
     setIsPlaying((currentValue) => !currentValue)
   }
+
+  useKeyboardShortcuts({ Space: togglePlayback })
 
   function restartPlayback() {
     currentTimeReference.current = 0
@@ -327,6 +333,7 @@ export function ReleaseStage({
               {composition.output.frameRate} FPS
             </span>
           </div>
+          <ShortcutHints />
         </div>
       </div>
 
@@ -336,6 +343,29 @@ export function ReleaseStage({
         exportState={exportState}
       />
     </section>
+  )
+}
+
+/** The three shortcuts wired up in App, ReleaseEditor and this stage. */
+function ShortcutHints() {
+  const { t } = useI18n()
+  const hints = [
+    ["Space", t("shortcut.play")],
+    ["1 — 5", t("shortcut.panels")],
+    [isAppleKeyboard() ? "⌘ ↵" : "Ctrl ↵", t("shortcut.export")],
+  ]
+
+  return (
+    <ul className="hidden flex-wrap items-center gap-x-4 gap-y-1.5 px-1.5 pt-1 pb-1 text-[11px] text-stage-foreground/40 lg:flex">
+      {hints.map(([keys, label]) => (
+        <li key={keys} className="flex items-center gap-1.5">
+          <kbd className="flex h-[18px] items-center rounded-[5px] bg-stage-foreground/8 px-1.5 font-mono text-[10px] text-stage-foreground/70">
+            {keys}
+          </kbd>
+          {label}
+        </li>
+      ))}
+    </ul>
   )
 }
 

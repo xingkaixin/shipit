@@ -3,7 +3,11 @@ import * as React from "react"
 import { InspectorRail } from "@/components/editor/InspectorRail"
 import { ReleaseInspector } from "@/components/editor/ReleaseInspector"
 import { ReleaseStage } from "@/components/editor/ReleaseStage"
-import type { InspectorPanelId } from "@/components/editor/inspector-panels"
+import {
+  INSPECTOR_PANELS,
+  type InspectorPanelId,
+} from "@/components/editor/inspector-panels"
+import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts"
 import type { ReleaseCompositionState } from "@/hooks/use-release-composition"
 import type { VideoExportState } from "@/hooks/use-video-export"
 import { type ReleaseDraftAction } from "@/state/release-draft-reducer"
@@ -26,6 +30,15 @@ export function ReleaseEditor({
 }: ReleaseEditorProps) {
   const [activePanel, setActivePanel] =
     React.useState<InspectorPanelId>("content")
+
+  useKeyboardShortcuts(
+    Object.fromEntries(
+      INSPECTOR_PANELS.map((panel, index) => [
+        String(index + 1),
+        () => setActivePanel(panel.id),
+      ])
+    )
+  )
 
   return (
     <main
