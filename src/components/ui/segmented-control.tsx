@@ -35,10 +35,14 @@ export function SegmentedControl<TValue extends string>({
     <fieldset
       aria-label={label}
       className={cn(
-        "relative isolate inline-flex items-center rounded-full bg-muted p-0.5 ring-1 ring-foreground/6 ring-inset",
+        "relative isolate inline-grid items-center rounded-full bg-muted p-0.5 ring-1 ring-foreground/6 ring-inset",
         isCompact ? "h-7" : "h-9",
         className
       )}
+      /* Equal columns, because the sliding indicator assumes equal widths. */
+      style={{
+        gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))`,
+      }}
     >
       {selectedIndex >= 0 ? (
         <span
@@ -61,7 +65,7 @@ export function SegmentedControl<TValue extends string>({
             aria-label={visibleText === option.label ? undefined : option.label}
             title={visibleText === option.label ? undefined : option.label}
             className={cn(
-              "flex flex-1 items-center justify-center gap-1.5 rounded-full text-[11px] font-semibold whitespace-nowrap transition-colors duration-150 outline-none focus-visible:ring-3 focus-visible:ring-ring/30",
+              "flex w-full items-center justify-center gap-1.5 rounded-full text-[11px] font-semibold whitespace-nowrap transition-colors duration-150 outline-none focus-visible:ring-3 focus-visible:ring-ring/30",
               isCompact ? "h-6 px-3.5" : "h-8 px-4",
               option.value === value
                 ? "text-foreground"
