@@ -19,6 +19,7 @@
   --font-heading: "Space Grotesk Variable", sans-serif;
   --font-sans: "Geist Variable", sans-serif;
   --color-brand-foreground: var(--brand-foreground);
+  --color-brand-strong: var(--brand-strong);
   --color-brand: var(--brand);
   --color-stage-foreground: var(--stage-foreground);
   --color-stage-muted: var(--stage-muted);
@@ -86,6 +87,8 @@
   --ring: #84c900;
   --brand: #a8f400;
   --brand-foreground: #151a12;
+  /* Brand lime is unreadable as text on light surfaces; this is its text-safe twin. */
+  --brand-strong: #4d7a00;
   --workspace: #f4f6f2;
   --stage: #171a18;
   --stage-muted: #aab2ab;
@@ -136,6 +139,7 @@
   --border: #303630;
   --input: #394039;
   --ring: #a8f400;
+  --brand-strong: #a8f400;
   --workspace: #0e110f;
   --stage: #080b09;
   --stage-muted: #9da69e;

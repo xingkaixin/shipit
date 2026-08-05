@@ -41,8 +41,24 @@ afterEach(() => {
 })
 
 describe("App", () => {
-  it("offers every background and color theme in one inspector", () => {
+  it("shows one inspector panel at a time and switches from the rail", () => {
     renderApp()
+
+    const rail = screen.getByRole("navigation", {
+      name: EN_MESSAGES["inspector.rail"],
+    })
+
+    expect(
+      screen.queryByRole("button", {
+        name: new RegExp(`^${BACKGROUND_REGISTRY[0].name}\\.`),
+      })
+    ).toBeNull()
+
+    fireEvent.click(
+      within(rail).getByRole("button", {
+        name: EN_MESSAGES["inspector.background.short"],
+      })
+    )
 
     for (const background of BACKGROUND_REGISTRY) {
       expect(
@@ -51,6 +67,12 @@ describe("App", () => {
         })
       ).toBeTruthy()
     }
+
+    fireEvent.click(
+      within(rail).getByRole("button", {
+        name: EN_MESSAGES["inspector.theme.short"],
+      })
+    )
 
     for (const palette of PALETTE_REGISTRY) {
       expect(

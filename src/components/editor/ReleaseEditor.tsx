@@ -1,6 +1,8 @@
 import * as React from "react"
 
+import { InspectorRail } from "@/components/editor/InspectorRail"
 import { ReleaseInspector } from "@/components/editor/ReleaseInspector"
+import type { InspectorPanelId } from "@/components/editor/inspector-panels"
 import { ReleaseStage } from "@/components/editor/ReleaseStage"
 import { isImageStateExportable, useImageFile } from "@/hooks/use-image-file"
 import {
@@ -22,6 +24,8 @@ type ReleaseEditorProps = {
 
 export function ReleaseEditor({ draft, dispatch }: ReleaseEditorProps) {
   const { locale } = useI18n()
+  const [activePanel, setActivePanel] =
+    React.useState<InspectorPanelId>("content")
   const logoState = useImageFile(draft.content.logoFile)
   const screenshotState = useImageFile(draft.content.screenshotFile)
   const productFrameState = useProductFrameAssets()
@@ -70,9 +74,11 @@ export function ReleaseEditor({ draft, dispatch }: ReleaseEditorProps) {
   return (
     <main
       id="release-editor"
-      className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[22rem_minmax(0,1fr)] desk:overflow-hidden"
+      className="flex min-h-0 flex-1 flex-col lg:flex-row desk:overflow-hidden"
     >
+      <InspectorRail activePanel={activePanel} onSelect={setActivePanel} />
       <ReleaseInspector
+        activePanel={activePanel}
         draft={draft}
         composition={composition}
         logoState={logoState}
