@@ -7,7 +7,7 @@ export type Appearance = (typeof APPEARANCES)[number]
 export const APPEARANCE_STORAGE_KEY = "shipit-appearance"
 
 /** Kept in sync with --workspace in index.css. */
-const BROWSER_CHROME_COLOR = { light: "#f4f6f2", dark: "#0e110f" } as const
+const BROWSER_CHROME_COLOR = { light: "#f4f6f2", dark: "#0a0b0a" } as const
 
 export function resolveAppearance(
   appearance: Appearance,

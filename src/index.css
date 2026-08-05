@@ -11,7 +11,7 @@
 /*
  * The editor is a fixed, self-scrolling shell only when the viewport can hold
  * it. Shorter windows scroll the page instead, so clipping never hides the
- * export bar and the shell never outgrows the document.
+ * transport controls and the shell never outgrows the document.
  */
 @custom-variant desk (@media (width >= 64rem) and (height >= 42.5rem));
 
@@ -113,35 +113,35 @@
   /*
    * Everything stacked above and below the landscape canvas at lg, so the
    * stage can size itself from the remaining viewport height:
-   * header 3.5 + output toolbar 4 + stage padding 4 + card padding 1
-   * + transport 3.25 + export bar 4 + hairline borders.
+   * header 3.25 + output bar 2.75 + stage padding 4 + card padding 1
+   * + transport 3 + shortcut hints 1.75 + hairline borders.
    */
-  --stage-chrome: 20rem;
+  --stage-chrome: 16rem;
 }
 
 .dark {
   color-scheme: dark;
-  --background: #121512;
-  --foreground: #f2f5f0;
-  --card: #181c18;
-  --card-foreground: #f2f5f0;
-  --popover: #1c201c;
-  --popover-foreground: #f2f5f0;
-  --primary: #f2f5f0;
+  --background: #101210;
+  --foreground: #eef1ea;
+  --card: #161915;
+  --card-foreground: #eef1ea;
+  --popover: #1a1e19;
+  --popover-foreground: #eef1ea;
+  --primary: #eef1ea;
   --primary-foreground: #171a18;
-  --secondary: #252a25;
-  --secondary-foreground: #f2f5f0;
-  --muted: #222722;
-  --muted-foreground: #a3aba3;
+  --secondary: #2b322a;
+  --secondary-foreground: #eef1ea;
+  --muted: #1a1e18;
+  --muted-foreground: #8e968a;
   --accent: oklch(0.269 0 0);
   --accent-foreground: #f2f5f0;
   --destructive: oklch(0.704 0.191 22.216);
-  --border: #303630;
-  --input: #394039;
+  --border: #23281f;
+  --input: #2b312a;
   --ring: #a8f400;
   --brand-strong: #a8f400;
-  --workspace: #0e110f;
-  --stage: #080b09;
+  --workspace: #0a0b0a;
+  --stage: #070907;
   --stage-muted: #9da69e;
   --stage-foreground: #f5f7f4;
   --chart-1: oklch(0.87 0 0);
@@ -149,13 +149,13 @@
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --sidebar: #181c18;
-  --sidebar-foreground: #f2f5f0;
-  --sidebar-primary: #f2f5f0;
+  --sidebar: #101210;
+  --sidebar-foreground: #eef1ea;
+  --sidebar-primary: #eef1ea;
   --sidebar-primary-foreground: #171a18;
-  --sidebar-accent: #252a25;
-  --sidebar-accent-foreground: #f2f5f0;
-  --sidebar-border: #303630;
+  --sidebar-accent: #2b322a;
+  --sidebar-accent-foreground: #eef1ea;
+  --sidebar-border: #23281f;
   --sidebar-ring: #a8f400;
 }
 
