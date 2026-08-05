@@ -1,10 +1,7 @@
 import * as React from "react"
 
 import { isImageStateExportable, useImageFile } from "@/hooks/use-image-file"
-import {
-  productFrameImageFor,
-  useProductFrameAssets,
-} from "@/hooks/use-product-frame-assets"
+import { useProductFrameAsset } from "@/hooks/use-product-frame-assets"
 import {
   isOutputExportable,
   useOutputCapability,
@@ -27,7 +24,10 @@ export function useReleaseComposition(
   const { locale } = useI18n()
   const logoState = useImageFile(draft.content.logoFile)
   const screenshotState = useImageFile(draft.content.screenshotFile)
-  const productFrameState = useProductFrameAssets()
+  // A frame is only ever drawn behind a screenshot, so nothing loads without one.
+  const productFrameState = useProductFrameAsset(
+    screenshotState.image ? draft.style.productShot.frame : "none"
+  )
   const capability = useOutputCapability(draft.output)
 
   const composition = React.useMemo<ReleaseComposition>(
@@ -39,10 +39,7 @@ export function useReleaseComposition(
         detail: draft.content.detail,
         logoImage: logoState.image,
         screenshotImage: screenshotState.image,
-        productFrameImage: productFrameImageFor(
-          productFrameState.images,
-          draft.style.productShot.frame
-        ),
+        productFrameImage: productFrameState.image,
       },
       style: draft.style,
       output: draft.output,
@@ -55,15 +52,12 @@ export function useReleaseComposition(
       draft.style,
       locale,
       logoState.image,
-      productFrameState.images,
+      productFrameState.image,
       screenshotState.image,
     ]
   )
 
-  const isProductFrameReady =
-    !screenshotState.image ||
-    draft.style.productShot.frame === "none" ||
-    productFrameState.status === "ready"
+  const isProductFrameReady = productFrameState.status === "ready"
 
   return {
     composition,
