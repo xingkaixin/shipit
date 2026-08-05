@@ -147,13 +147,16 @@ export function ProjectManager({
     <>
       <Button
         type="button"
-        variant="outline"
+        variant="ghost"
         size="sm"
+        className="min-w-0 font-medium text-muted-foreground hover:text-foreground"
         aria-label={t("projects.open")}
         onClick={openManager}
       >
         <Icon icon={FolderOpenIcon} data-icon="inline-start" />
-        <span className="hidden sm:inline">{t("projects.title")}</span>
+        <span className="hidden max-w-40 truncate text-foreground sm:inline">
+          {activeProject?.name ?? t("projects.unsaved")}
+        </span>
       </Button>
 
       {isOpen ? (

@@ -12,6 +12,7 @@ export const EN_MESSAGES = {
   "language.english": "English",
   "language.chinese": "中文",
   "projects.title": "Projects",
+  "projects.unsaved": "Unsaved draft",
   "projects.open": "Open saved projects",
   "projects.dialogTitle": "Saved projects",
   "projects.description":
@@ -199,6 +200,7 @@ export const ZH_CN_MESSAGES: Record<MessageKey, string> = {
   "language.english": "English",
   "language.chinese": "中文",
   "projects.title": "项目",
+  "projects.unsaved": "未保存草稿",
   "projects.open": "打开已保存项目",
   "projects.dialogTitle": "已保存项目",
   "projects.description":

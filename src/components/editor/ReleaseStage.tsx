@@ -3,7 +3,6 @@ import {
   Alert02Icon,
   CheckmarkCircle02Icon,
   CircleArrowReload01Icon,
-  Download04Icon,
   Loading03Icon,
   PauseIcon,
   PlayIcon,
@@ -18,12 +17,12 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import type { OutputCapabilityState } from "@/hooks/use-output-capability"
-import { useVideoExport, type VideoExportState } from "@/hooks/use-video-export"
+import type { VideoExportState } from "@/hooks/use-video-export"
 import { useI18n } from "@/i18n/i18n"
 import { cn } from "@/lib/utils"
 import type { ReleaseDraftAction } from "@/state/release-draft-reducer"
 import { fontById } from "@/video/font-registry"
-import { outputDimensions, PREVIEW_DIMENSIONS } from "@/video/output-settings"
+import { PREVIEW_DIMENSIONS } from "@/video/output-settings"
 import { renderReleaseFrame } from "@/video/render-release-frame"
 import {
   VIDEO_DURATION_SECONDS,
@@ -35,14 +34,16 @@ const PROGRESS_UPDATE_INTERVAL_MS = 80
 type ReleaseStageProps = {
   composition: ReleaseComposition
   capability: OutputCapabilityState
-  canExport: boolean
+  exportState: VideoExportState
+  onCancelExport: () => void
   dispatch: React.Dispatch<ReleaseDraftAction>
 }
 
 export function ReleaseStage({
   composition,
   capability,
-  canExport,
+  exportState,
+  onCancelExport,
   dispatch,
 }: ReleaseStageProps) {
   const { t } = useI18n()
@@ -52,11 +53,6 @@ export function ReleaseStage({
   const currentTimeReference = React.useRef(0)
   const loopStartedAtReference = React.useRef(performance.now())
   const [isPlaying, setIsPlaying] = React.useState(shouldAutoplayPreview)
-  const {
-    state: exportState,
-    exportVideo,
-    cancelExport,
-  } = useVideoExport(composition)
   const isLandscape = composition.output.aspectRatio === "landscape"
   const previewDimensions = PREVIEW_DIMENSIONS[composition.output.aspectRatio]
   const drawFrame = React.useCallback(
@@ -190,7 +186,7 @@ export function ReleaseStage({
   }
 
   return (
-    <section className="order-first flex min-h-0 flex-col bg-workspace lg:order-none">
+    <section className="order-first flex min-h-0 flex-1 flex-col bg-workspace lg:order-none lg:min-w-0">
       <h2 className="sr-only">{t("preview.title")}</h2>
 
       <OutputToolbar
@@ -258,7 +254,7 @@ export function ReleaseStage({
                     variant="outline"
                     size="sm"
                     className="mt-4 w-full border-stage-foreground/15 bg-transparent text-stage-foreground hover:bg-stage-foreground/10 hover:text-stage-foreground"
-                    onClick={cancelExport}
+                    onClick={onCancelExport}
                   >
                     {t("preview.cancelExport")}
                   </Button>
@@ -332,81 +328,46 @@ export function ReleaseStage({
         </div>
       </div>
 
-      <ExportBar
+      <StageStatus
         composition={composition}
         capability={capability}
-        canExport={canExport}
         exportState={exportState}
-        onExport={() => {
-          void exportVideo()
-        }}
       />
     </section>
   )
 }
 
-type ExportBarProps = {
+type StageStatusProps = {
   composition: ReleaseComposition
   capability: OutputCapabilityState
-  canExport: boolean
   exportState: VideoExportState
-  onExport: () => void
 }
 
-function ExportBar({
+function StageStatus({
   composition,
   capability,
-  canExport,
   exportState,
-  onExport,
-}: ExportBarProps) {
+}: StageStatusProps) {
   const { t } = useI18n()
   const { output } = composition
-  const dimensions = outputDimensions(output.aspectRatio, output.resolution)
   const warning = exportWarningKey(capability, output)
 
+  if (
+    !warning &&
+    exportState.status !== "completed" &&
+    exportState.status !== "failed"
+  ) {
+    return null
+  }
+
   return (
-    <div className="shrink-0 border-t bg-background px-4 py-3 sm:px-6">
+    <div className="shrink-0 border-t bg-background px-4 py-2.5 sm:px-6">
       {warning ? (
-        <p className="mb-3 rounded-[10px] border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-[11px] leading-4 text-amber-800 dark:text-amber-300">
+        <p className="mb-2 rounded-[10px] border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-[11px] leading-4 text-amber-800 dark:text-amber-300">
           {t(warning)}
         </p>
       ) : null}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="min-w-0">
-          <ExportFeedback state={exportState} />
-          <p className="mt-0.5 font-mono text-[11px] text-muted-foreground tabular-nums">
-            {t("output.summary", {
-              seconds: VIDEO_DURATION_SECONDS,
-              width: dimensions.width,
-              height: dimensions.height,
-              frameRate: output.frameRate,
-            })}
-          </p>
-        </div>
-        <Button
-          type="button"
-          size="lg"
-          className="w-full shrink-0 bg-brand text-brand-foreground shadow-none hover:bg-brand/90 sm:w-auto sm:min-w-40"
-          disabled={!canExport || exportState.status === "exporting"}
-          onClick={onExport}
-        >
-          <Icon
-            icon={
-              exportState.status === "exporting"
-                ? Loading03Icon
-                : Download04Icon
-            }
-            className={
-              exportState.status === "exporting" ? "animate-spin" : undefined
-            }
-            data-icon="inline-start"
-          />
-          {exportState.status === "exporting"
-            ? t("preview.exporting")
-            : t("preview.export")}
-        </Button>
-      </div>
+      <ExportFeedback state={exportState} />
     </div>
   )
 }
@@ -438,7 +399,7 @@ function ExportFeedback({ state }: { state: VideoExportState }) {
     )
   }
 
-  return <p className="text-sm font-semibold">{t("preview.localOnly")}</p>
+  return null
 }
 
 function exportWarningKey(
