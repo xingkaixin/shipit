@@ -3,6 +3,7 @@ import {
   Alert02Icon,
   InformationCircleIcon,
   Loading03Icon,
+  SquareLock02Icon,
 } from "@hugeicons/core-free-icons"
 
 import { Icon } from "@/components/ui/icon"
@@ -16,7 +17,10 @@ import {
   isResolution,
   outputDimensions,
 } from "@/video/output-settings"
-import type { OutputSettings } from "@/video/release-video"
+import {
+  VIDEO_DURATION_SECONDS,
+  type OutputSettings,
+} from "@/video/release-video"
 
 type OutputToolbarProps = {
   output: OutputSettings
@@ -33,8 +37,9 @@ export function OutputToolbar({
   const dimensions = outputDimensions(output.aspectRatio, output.resolution)
 
   return (
-    <div className="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-2 border-b bg-background/70 px-4 py-3.5 sm:px-6">
+    <div className="flex shrink-0 flex-wrap items-center gap-x-2 gap-y-2 border-b bg-background px-4 py-2 sm:px-5">
       <SegmentedControl
+        size="sm"
         label={t("output.aspect.title")}
         value={output.aspectRatio}
         options={[
@@ -56,6 +61,7 @@ export function OutputToolbar({
         }}
       />
       <SegmentedControl
+        size="sm"
         label={t("output.resolution.title")}
         value={output.resolution}
         options={[
@@ -69,6 +75,7 @@ export function OutputToolbar({
         }}
       />
       <SegmentedControl
+        size="sm"
         label={t("output.frameRate.title")}
         value={String(output.frameRate)}
         options={[
@@ -82,10 +89,15 @@ export function OutputToolbar({
           }
         }}
       />
-      <div className="ml-auto flex items-center gap-3">
+      <div className="ml-auto flex items-center gap-3.5">
         <CapabilityNotice state={capability} />
+        <span className="hidden items-center gap-1.5 text-[11px] text-muted-foreground md:flex">
+          <Icon icon={SquareLock02Icon} className="size-3.5 shrink-0" />
+          {t("preview.localOnly")}
+        </span>
         <span className="font-mono text-[11px] text-muted-foreground tabular-nums">
-          {dimensions.width}×{dimensions.height}
+          {dimensions.width}×{dimensions.height} ·{" "}
+          {VIDEO_DURATION_SECONDS.toFixed(1)}s
         </span>
       </div>
     </div>

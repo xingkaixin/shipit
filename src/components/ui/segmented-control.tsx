@@ -16,6 +16,7 @@ type SegmentedControlProps<TValue extends string> = {
   value: TValue
   options: readonly SegmentedOption<TValue>[]
   onChange: (value: TValue) => void
+  size?: "default" | "sm"
   className?: string
 }
 
@@ -24,15 +25,18 @@ export function SegmentedControl<TValue extends string>({
   value,
   options,
   onChange,
+  size = "default",
   className,
 }: SegmentedControlProps<TValue>) {
   const selectedIndex = options.findIndex((option) => option.value === value)
+  const isCompact = size === "sm"
 
   return (
     <fieldset
       aria-label={label}
       className={cn(
-        "relative isolate inline-flex h-9 items-center rounded-full bg-muted p-0.5 ring-1 ring-foreground/6 ring-inset",
+        "relative isolate inline-flex items-center rounded-full bg-muted p-0.5 ring-1 ring-foreground/6 ring-inset",
+        isCompact ? "h-7" : "h-9",
         className
       )}
     >
@@ -57,7 +61,8 @@ export function SegmentedControl<TValue extends string>({
             aria-label={visibleText === option.label ? undefined : option.label}
             title={visibleText === option.label ? undefined : option.label}
             className={cn(
-              "flex h-8 flex-1 items-center justify-center gap-1.5 rounded-full px-3.5 text-[11px] font-semibold whitespace-nowrap transition-colors duration-150 outline-none focus-visible:ring-3 focus-visible:ring-ring/30",
+              "flex flex-1 items-center justify-center gap-1.5 rounded-full text-[11px] font-semibold whitespace-nowrap transition-colors duration-150 outline-none focus-visible:ring-3 focus-visible:ring-ring/30",
+              isCompact ? "h-6 px-2.5" : "h-8 px-3.5",
               option.value === value
                 ? "text-foreground"
                 : "text-muted-foreground hover:text-foreground"

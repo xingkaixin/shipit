@@ -263,15 +263,14 @@ export function ReleaseStage({
             ) : null}
           </figure>
 
-          <div className="flex items-center gap-2 px-1 py-1.5 pt-2.5">
+          <div className="flex items-center gap-2.5 px-1.5 py-1.5 pt-2.5">
             <Tooltip>
               <TooltipTrigger
                 render={
                   <Button
                     type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="border border-stage-foreground/10 bg-stage-foreground/[0.055] text-stage-foreground hover:bg-stage-foreground/12 hover:text-stage-foreground"
+                    size="icon-lg"
+                    className="size-8.5 rounded-full bg-brand text-brand-foreground shadow-none hover:bg-brand/90 sm:size-8.5"
                     aria-label={
                       isPlaying
                         ? t("preview.pausePreview")
@@ -294,8 +293,8 @@ export function ReleaseStage({
                   <Button
                     type="button"
                     variant="ghost"
-                    size="icon"
-                    className="border border-stage-foreground/10 bg-stage-foreground/[0.055] text-stage-foreground hover:bg-stage-foreground/12 hover:text-stage-foreground"
+                    size="icon-lg"
+                    className="size-8.5 rounded-full border border-stage-foreground/12 bg-stage-foreground/[0.055] text-stage-foreground hover:bg-stage-foreground/12 hover:text-stage-foreground sm:size-8.5"
                     aria-label={t("preview.restart")}
                     onClick={restartPlayback}
                   />
@@ -306,6 +305,12 @@ export function ReleaseStage({
               <TooltipContent>{t("preview.restart")}</TooltipContent>
             </Tooltip>
 
+            <span
+              ref={timeLabelReference}
+              className="w-[74px] font-mono text-[11px] text-stage-foreground/55 tabular-nums"
+            >
+              0.0 / {VIDEO_DURATION_SECONDS.toFixed(1)}s
+            </span>
             <input
               ref={timelineReference}
               type="range"
@@ -318,11 +323,8 @@ export function ReleaseStage({
               defaultValue={0}
               onChange={seekVideo}
             />
-            <span
-              ref={timeLabelReference}
-              className="w-[76px] text-right font-mono text-[11px] text-stage-foreground/55 tabular-nums"
-            >
-              0.0 / {VIDEO_DURATION_SECONDS.toFixed(1)}s
+            <span className="font-mono text-[11px] text-stage-foreground/40 tabular-nums">
+              {composition.output.frameRate} FPS
             </span>
           </div>
         </div>
