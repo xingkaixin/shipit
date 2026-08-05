@@ -90,10 +90,9 @@
   /* Brand lime is unreadable as text on light surfaces; this is its text-safe twin. */
   --brand-strong: #4d7a00;
   --workspace: #f4f6f2;
-  /* The player stays a dark theatre in both themes, just less absolute here. */
-  --stage: #262b27;
-  --stage-muted: #aab2ab;
-  --stage-foreground: #f5f7f4;
+  --stage: #fdfefb;
+  --stage-muted: #6b736d;
+  --stage-foreground: #1b1f1c;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -114,10 +113,10 @@
   /*
    * Everything stacked above and below the landscape canvas at lg, so the
    * stage can size itself from the remaining viewport height:
-   * header 3.25 + output bar 2.75 + stage padding 4 + card padding 1
+   * header 3.25 + output bar 2.75 + stage padding 2.5 + card padding 1
    * + transport 3 + shortcut hints 1.75 + hairline borders.
    */
-  --stage-chrome: 16rem;
+  --stage-chrome: 14.5rem;
 }
 
 .dark {

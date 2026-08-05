@@ -201,12 +201,12 @@ export function ReleaseStage({
         dispatch={dispatch}
       />
 
-      <div className="flex min-h-0 flex-1 items-center justify-center p-4 sm:p-6 lg:p-8">
+      <div className="flex min-h-0 flex-1 items-center justify-center p-3 sm:p-4 lg:p-5">
         <div
           className={cn(
-            "preview-stage flex max-w-full min-w-0 flex-col rounded-[22px] bg-stage p-2 text-stage-foreground shadow-[0_24px_70px_color-mix(in_oklch,var(--stage),transparent_72%),inset_0_1px_0_color-mix(in_oklch,var(--stage-foreground),transparent_90%)] ring-1 ring-stage-foreground/8",
+            "preview-stage flex max-w-full min-w-0 flex-col rounded-[22px] bg-stage p-2 text-stage-foreground shadow-[0_20px_60px_color-mix(in_oklch,var(--foreground),transparent_88%)] ring-1 ring-stage-foreground/10",
             isLandscape
-              ? "w-full max-w-5xl desk:w-[min(100%,calc((100svh-var(--stage-chrome))*16/9))]"
+              ? "w-full desk:w-[min(100%,calc((100svh-var(--stage-chrome))*16/9))]"
               : "w-fit max-w-full"
           )}
         >
@@ -215,7 +215,7 @@ export function ReleaseStage({
               "relative mx-auto overflow-hidden rounded-[16px] bg-[#0b0e0c] ring-1 ring-stage-foreground/8",
               isLandscape
                 ? "aspect-video w-full"
-                : "aspect-[9/16] h-[min(56vh,620px)] max-h-full max-w-full"
+                : "aspect-[9/16] h-[min(56vh,620px)] max-h-full max-w-full desk:h-[calc(100svh-var(--stage-chrome))]"
             )}
             aria-label={t("preview.figureLabel", {
               product:
@@ -234,7 +234,7 @@ export function ReleaseStage({
                 className="export-overlay absolute inset-0 flex items-center justify-center bg-stage/80 p-4"
                 aria-live="polite"
               >
-                <div className="w-full max-w-72 rounded-2xl border border-stage-foreground/12 bg-[#202420] p-5 text-stage-foreground shadow-[0_18px_50px_color-mix(in_oklch,var(--stage),transparent_28%)] transition-transform duration-200 ease-[var(--ease-out)]">
+                <div className="w-full max-w-72 rounded-2xl border bg-popover p-5 text-popover-foreground shadow-[0_18px_50px_color-mix(in_oklch,var(--foreground),transparent_72%)] transition-transform duration-200 ease-[var(--ease-out)]">
                   <div className="mb-3 flex items-center gap-2">
                     <Icon
                       icon={Loading03Icon}
@@ -243,11 +243,11 @@ export function ReleaseStage({
                     <span className="text-sm font-semibold">
                       {t("preview.generating")}
                     </span>
-                    <span className="ml-auto font-mono text-xs text-stage-foreground/60 tabular-nums">
+                    <span className="ml-auto font-mono text-xs text-muted-foreground tabular-nums">
                       {Math.round(exportState.progress * 100)}%
                     </span>
                   </div>
-                  <div className="h-1.5 overflow-hidden rounded-full bg-stage-foreground/12">
+                  <div className="h-1.5 overflow-hidden rounded-full bg-foreground/12">
                     <div
                       className="h-full origin-left rounded-full bg-brand transition-transform duration-150 ease-linear"
                       style={{
@@ -259,7 +259,7 @@ export function ReleaseStage({
                     type="button"
                     variant="outline"
                     size="sm"
-                    className="mt-4 w-full border-stage-foreground/15 bg-transparent text-stage-foreground hover:bg-stage-foreground/10 hover:text-stage-foreground"
+                    className="mt-4 w-full"
                     onClick={onCancelExport}
                   >
                     {t("preview.cancelExport")}
