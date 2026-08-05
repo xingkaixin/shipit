@@ -62,7 +62,7 @@ export function SegmentedControl<TValue extends string>({
             title={visibleText === option.label ? undefined : option.label}
             className={cn(
               "flex flex-1 items-center justify-center gap-1.5 rounded-full text-[11px] font-semibold whitespace-nowrap transition-colors duration-150 outline-none focus-visible:ring-3 focus-visible:ring-ring/30",
-              isCompact ? "h-6 px-2.5" : "h-8 px-3.5",
+              isCompact ? "h-6 px-3.5" : "h-8 px-4",
               option.value === value
                 ? "text-foreground"
                 : "text-muted-foreground hover:text-foreground"
