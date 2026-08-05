@@ -11,8 +11,13 @@ import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import {
+  useProjectAutosave,
+  type AutosaveStatus,
+} from "@/hooks/use-project-autosave"
 import { useProjectStorage } from "@/hooks/use-project-storage"
 import { useI18n } from "@/i18n/i18n"
+import { cn } from "@/lib/utils"
 import type { ProjectSummary } from "@/storage/project-store"
 import type { ReleaseDraft } from "@/video/release-video"
 
@@ -38,6 +43,12 @@ export function ProjectManager({
   const [busyAction, setBusyAction] = React.useState<string | null>(null)
   const [error, setError] = React.useState<string | null>(null)
   const [notice, setNotice] = React.useState<string | null>(null)
+  const autosaveStatus = useProjectAutosave({
+    project: activeProject,
+    draft,
+    save: storage.save,
+    onSaved: onProjectSaved,
+  })
 
   function openManager() {
     setProjectName(activeProject?.name ?? defaultProjectName(draft))
@@ -158,6 +169,7 @@ export function ProjectManager({
           {activeProject?.name ?? t("projects.unsaved")}
         </span>
       </Button>
+      <AutosaveBadge status={autosaveStatus} />
 
       {isOpen ? (
         <div
@@ -345,6 +357,42 @@ export function ProjectManager({
       ) : null}
     </>
   )
+}
+
+function AutosaveBadge({ status }: { status: AutosaveStatus }) {
+  const { t } = useI18n()
+
+  if (status === "off") {
+    return null
+  }
+
+  return (
+    <span
+      className="hidden items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-[11px] text-muted-foreground md:inline-flex"
+      aria-live="polite"
+    >
+      <span
+        aria-hidden="true"
+        className={cn(
+          "size-1.5 rounded-full",
+          status === "failed" ? "bg-destructive" : "bg-brand",
+          status === "saving" && "animate-pulse"
+        )}
+      />
+      {t(autosaveMessageKey(status))}
+    </span>
+  )
+}
+
+function autosaveMessageKey(status: Exclude<AutosaveStatus, "off">) {
+  switch (status) {
+    case "saving":
+      return "projects.saving" as const
+    case "saved":
+      return "projects.autosaved" as const
+    case "failed":
+      return "projects.autosaveFailed" as const
+  }
 }
 
 function defaultProjectName(draft: ReleaseDraft): string {
