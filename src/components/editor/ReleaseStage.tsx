@@ -333,7 +333,7 @@ export function ReleaseStage({
               {composition.output.frameRate} FPS
             </span>
           </div>
-          <ShortcutHints />
+          <ShortcutHints isPlaying={isPlaying} />
         </div>
       </div>
 
@@ -347,10 +347,10 @@ export function ReleaseStage({
 }
 
 /** The three shortcuts wired up in App, ReleaseEditor and this stage. */
-function ShortcutHints() {
+function ShortcutHints({ isPlaying }: { isPlaying: boolean }) {
   const { t } = useI18n()
   const hints = [
-    ["Space", t("shortcut.play")],
+    ["Space", isPlaying ? t("preview.pause") : t("preview.play")],
     ["1 — 5", t("shortcut.panels")],
     [isAppleKeyboard() ? "⌘ ↵" : "Ctrl ↵", t("shortcut.export")],
   ]

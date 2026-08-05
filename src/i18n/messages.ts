@@ -161,7 +161,6 @@ export const EN_MESSAGES = {
   "output.warning.maximum":
     "4K 60 FPS processes about 8× as many pixels as 1080p 30 FPS, so export time and memory use will increase significantly.",
   "output.summary": "{seconds} sec / {width}×{height} / {frameRate} FPS",
-  "shortcut.play": "Play",
   "shortcut.panels": "Switch panels",
   "shortcut.export": "Export",
   "preview.title": "Film preview",
@@ -350,7 +349,6 @@ export const ZH_CN_MESSAGES: Record<MessageKey, string> = {
   "output.warning.maximum":
     "4K 60 FPS 的像素处理量约为 1080p 30 FPS 的 8 倍，导出时间与内存占用会明显增加。",
   "output.summary": "{seconds} 秒 / {width}×{height} / {frameRate} FPS",
-  "shortcut.play": "播放",
   "shortcut.panels": "切换面板",
   "shortcut.export": "导出",
   "preview.title": "影片预览",

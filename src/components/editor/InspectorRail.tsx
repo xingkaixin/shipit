@@ -52,6 +52,15 @@ export function InspectorRail({ activePanel, onSelect }: InspectorRailProps) {
             >
               {t(panelShortKey(panel.id))}
             </span>
+            <span
+              aria-hidden="true"
+              className={cn(
+                "absolute top-1 right-1.5 hidden font-mono text-[9px] leading-none lg:block",
+                isActive ? "text-brand-strong/70" : "text-muted-foreground/50"
+              )}
+            >
+              {index + 1}
+            </span>
             {isActive ? (
               <span
                 aria-hidden="true"
