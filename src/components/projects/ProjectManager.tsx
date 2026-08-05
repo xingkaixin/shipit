@@ -185,7 +185,8 @@ export function ProjectManager({
             open
             aria-modal="true"
             aria-labelledby="projects-dialog-title"
-            className="max-h-[min(720px,calc(100svh-2rem))] w-full max-w-xl overflow-y-auto rounded-2xl border bg-background p-5 shadow-[0_24px_80px_color-mix(in_oklch,var(--foreground),transparent_78%)] sm:p-6"
+            /* Static, because the UA's absolute dialog escapes the centering flexbox. */
+            className="static max-h-[min(720px,calc(100svh-2rem))] w-full max-w-xl overflow-y-auto rounded-2xl border bg-background p-5 shadow-[0_24px_80px_color-mix(in_oklch,var(--foreground),transparent_78%)] sm:p-6"
           >
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -305,6 +306,7 @@ export function ProjectManager({
                       key={project.id}
                       className="flex items-center gap-3 rounded-xl border bg-card px-3 py-2.5"
                     >
+                      <ProjectLogo project={project} />
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-medium">
                           {project.name}
@@ -356,6 +358,34 @@ export function ProjectManager({
         </div>
       ) : null}
     </>
+  )
+}
+
+/** Projects without a logo fall back to their initial, so the row never shifts. */
+function ProjectLogo({ project }: { project: ProjectSummary }) {
+  const [source, setSource] = React.useState<string | null>(null)
+
+  React.useEffect(() => {
+    if (!project.logo) {
+      setSource(null)
+      return undefined
+    }
+
+    const objectUrl = URL.createObjectURL(project.logo)
+    setSource(objectUrl)
+    return () => URL.revokeObjectURL(objectUrl)
+  }, [project.logo])
+
+  return (
+    <span className="image-preview-tile flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-[10px] ring-1 ring-foreground/8">
+      {source ? (
+        <img src={source} alt="" className="size-8 object-contain" />
+      ) : (
+        <span className="text-sm font-semibold text-muted-foreground uppercase">
+          {Array.from(project.name)[0] ?? "?"}
+        </span>
+      )}
+    </span>
   )
 }
 
