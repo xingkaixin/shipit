@@ -57,7 +57,10 @@ type StoredProject = {
 export type ProjectSummary = Pick<
   StoredProject,
   "id" | "name" | "createdAt" | "updatedAt"
->
+> & {
+  /** The saved logo, so the list can show what each project looks like. */
+  logo: Blob | null
+}
 
 export type SaveProjectInput = {
   id: string | null
@@ -106,7 +109,13 @@ export async function saveProject(
         updatedAt: now,
         draft,
       } satisfies StoredProject)
-      setResult({ id, name, createdAt: now, updatedAt: now })
+      setResult({
+        id,
+        name,
+        createdAt: now,
+        updatedAt: now,
+        logo: logoOf(draft),
+      })
       return
     }
 
@@ -127,6 +136,7 @@ export async function saveProject(
         name,
         createdAt: project.createdAt,
         updatedAt: project.updatedAt,
+        logo: logoOf(draft),
       })
     }
   })
@@ -352,7 +362,18 @@ function projectSummaryFrom(value: unknown): ProjectSummary | null {
     return null
   }
 
-  return { id, name, createdAt, updatedAt }
+  return {
+    id,
+    name,
+    createdAt,
+    updatedAt,
+    logo: logoOf(asRecord(source.draft)),
+  }
+}
+
+function logoOf(draft: unknown): Blob | null {
+  const logo = asRecord(asRecord(asRecord(draft).content).logoFile)
+  return logo.blob instanceof Blob ? logo.blob : null
 }
 
 function projectNameFor(name: string, draft: ReleaseDraft): string {
