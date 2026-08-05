@@ -376,15 +376,19 @@ function ProjectLogo({ project }: { project: ProjectSummary }) {
     return () => URL.revokeObjectURL(objectUrl)
   }, [project.logo])
 
+  if (source) {
+    return (
+      <img
+        src={source}
+        alt=""
+        className="size-10 shrink-0 rounded-[10px] object-contain"
+      />
+    )
+  }
+
   return (
-    <span className="image-preview-tile flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-[10px] ring-1 ring-foreground/8">
-      {source ? (
-        <img src={source} alt="" className="size-8 object-contain" />
-      ) : (
-        <span className="text-sm font-semibold text-muted-foreground uppercase">
-          {Array.from(project.name)[0] ?? "?"}
-        </span>
-      )}
+    <span className="flex size-10 shrink-0 items-center justify-center rounded-[10px] bg-muted text-sm font-semibold text-muted-foreground uppercase">
+      {Array.from(project.name)[0] ?? "?"}
     </span>
   )
 }

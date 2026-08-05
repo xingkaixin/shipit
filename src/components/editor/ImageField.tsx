@@ -68,7 +68,7 @@ export function ImageField({
     return (
       <div className="space-y-2">
         <div className="flex items-center gap-3 rounded-[10px] border border-border bg-card p-2">
-          <span className="image-preview-tile flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-lg">
+          <span className="flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-lg">
             {state.status === "ready" ? (
               <img
                 src={state.previewUrl}

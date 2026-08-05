@@ -301,16 +301,3 @@ input[name="videoTime"]::-moz-range-thumb {
     transition-duration: 0.01ms !important;
   }
 }
-
-/* Checkerboard so transparent logo previews stay readable in both themes. */
-.image-preview-tile {
-  --logo-tile-square: color-mix(in oklch, var(--foreground) 7%, transparent);
-  background-color: var(--card);
-  background-image: conic-gradient(
-    var(--logo-tile-square) 25%,
-    transparent 0 50%,
-    var(--logo-tile-square) 0 75%,
-    transparent 0
-  );
-  background-size: 10px 10px;
-}
