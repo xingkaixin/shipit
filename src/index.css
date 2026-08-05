@@ -90,7 +90,8 @@
   /* Brand lime is unreadable as text on light surfaces; this is its text-safe twin. */
   --brand-strong: #4d7a00;
   --workspace: #f4f6f2;
-  --stage: #171a18;
+  /* The player stays a dark theatre in both themes, just less absolute here. */
+  --stage: #262b27;
   --stage-muted: #aab2ab;
   --stage-foreground: #f5f7f4;
   --chart-1: oklch(0.87 0 0);
