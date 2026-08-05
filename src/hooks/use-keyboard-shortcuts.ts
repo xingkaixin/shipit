@@ -15,10 +15,7 @@ export function useKeyboardShortcuts(shortcuts: ShortcutMap): void {
     const runShortcut = (event: KeyboardEvent) => {
       const combo = comboOf(event)
       const handler = shortcutsReference.current[combo]
-      if (
-        !handler ||
-        (!combo.startsWith("mod+") && ownsKeyboard(event.target))
-      ) {
+      if (!handler || ownsKey(event.target, combo)) {
         return
       }
 
@@ -40,16 +37,24 @@ function comboOf(event: KeyboardEvent): string {
   return event.metaKey || event.ctrlKey ? `mod+${key}` : key
 }
 
-/** Focused controls answer plain keys themselves: Space clicks, digits type. */
-function ownsKeyboard(target: EventTarget | null): boolean {
-  if (!(target instanceof HTMLElement)) {
+/**
+ * A focused control answers some keys itself: fields swallow every plain key,
+ * while buttons and links only claim Space and Enter.
+ */
+function ownsKey(target: EventTarget | null, combo: string): boolean {
+  if (combo.startsWith("mod+") || !(target instanceof HTMLElement)) {
     return false
   }
 
-  return (
+  if (
     target.isContentEditable ||
-    target.closest(
-      "input, textarea, select, button, a[href], [role='button'], [role='slider'], [contenteditable='true']"
-    ) !== null
+    target.closest("input, textarea, select, [contenteditable='true']")
+  ) {
+    return true
+  }
+
+  return (
+    (combo === "Space" || combo === "Enter") &&
+    target.closest("button, a[href], [role='button']") !== null
   )
 }
