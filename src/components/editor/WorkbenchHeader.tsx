@@ -93,6 +93,7 @@ export function WorkbenchHeader({
           onChange={setLocale}
           options={[
             { value: "zh-CN", label: t("language.chinese"), text: "中" },
+            { value: "ja", label: t("language.japanese"), text: "日" },
             { value: "en", label: t("language.english"), text: "EN" },
           ]}
         />
