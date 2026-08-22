@@ -1,6 +1,11 @@
 import * as React from "react"
 
-import { EN_MESSAGES, type MessageKey, ZH_CN_MESSAGES } from "@/i18n/messages"
+import {
+  EN_MESSAGES,
+  JA_MESSAGES,
+  type MessageKey,
+  ZH_CN_MESSAGES,
+} from "@/i18n/messages"
 
 type LocaleDefinition = {
   messages: Record<MessageKey, string>
@@ -10,6 +15,7 @@ type LocaleDefinition = {
 const LOCALES = {
   en: { messages: EN_MESSAGES, ogLocale: "en_US" },
   "zh-CN": { messages: ZH_CN_MESSAGES, ogLocale: "zh_CN" },
+  ja: { messages: JA_MESSAGES, ogLocale: "ja_JP" },
 } as const satisfies Record<string, LocaleDefinition>
 
 export const APP_LOCALES = Object.keys(LOCALES) as readonly AppLocale[]
