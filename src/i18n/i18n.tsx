@@ -2,15 +2,22 @@ import * as React from "react"
 
 import { EN_MESSAGES, type MessageKey, ZH_CN_MESSAGES } from "@/i18n/messages"
 
-export const APP_LOCALES = ["en", "zh-CN"] as const
-export type AppLocale = (typeof APP_LOCALES)[number]
+type LocaleDefinition = {
+  messages: Record<MessageKey, string>
+  ogLocale: string
+}
+
+const LOCALES = {
+  en: { messages: EN_MESSAGES, ogLocale: "en_US" },
+  "zh-CN": { messages: ZH_CN_MESSAGES, ogLocale: "zh_CN" },
+} as const satisfies Record<string, LocaleDefinition>
+
+export const APP_LOCALES = Object.keys(LOCALES) as readonly AppLocale[]
+export type AppLocale = keyof typeof LOCALES
 export type TranslationVariables = Record<string, number | string>
 
 const LOCALE_STORAGE_KEY = "shipit-locale"
-const MESSAGES: Record<AppLocale, Record<MessageKey, string>> = {
-  en: EN_MESSAGES,
-  "zh-CN": ZH_CN_MESSAGES,
-}
+const FALLBACK_LOCALE: AppLocale = "en"
 
 type I18nContextValue = {
   locale: AppLocale
@@ -19,9 +26,9 @@ type I18nContextValue = {
 }
 
 const DEFAULT_CONTEXT: I18nContextValue = {
-  locale: "en",
+  locale: FALLBACK_LOCALE,
   setLocale: () => undefined,
-  t: (key, variables) => translate("en", key, variables),
+  t: (key, variables) => translate(FALLBACK_LOCALE, key, variables),
 }
 
 const I18nContext = React.createContext<I18nContextValue>(DEFAULT_CONTEXT)
@@ -43,10 +50,7 @@ export function I18nProvider({ children }: React.PropsWithChildren) {
     updateMetaContent('meta[name="description"]', description)
     updateMetaContent('meta[property="og:title"]', title)
     updateMetaContent('meta[property="og:description"]', description)
-    updateMetaContent(
-      'meta[property="og:locale"]',
-      locale === "zh-CN" ? "zh_CN" : "en_US"
-    )
+    updateMetaContent('meta[property="og:locale"]', LOCALES[locale].ogLocale)
     updateMetaContent('meta[name="twitter:title"]', title)
     updateMetaContent('meta[name="twitter:description"]', description)
     storeLocale(locale)
@@ -73,7 +77,7 @@ export function translate(
   key: MessageKey,
   variables: TranslationVariables = {}
 ): string {
-  return MESSAGES[locale][key].replace(
+  return LOCALES[locale].messages[key].replace(
     /\{(\w+)\}/g,
     (placeholder, variable: string) =>
       variable in variables ? String(variables[variable]) : placeholder
@@ -81,14 +85,27 @@ export function translate(
 }
 
 export function localeFromLanguages(languages: readonly string[]): AppLocale {
-  return languages.some((language) => language.toLowerCase().startsWith("zh"))
-    ? "zh-CN"
-    : "en"
+  for (const language of languages) {
+    const matched = APP_LOCALES.find(
+      (locale) => languageTag(locale) === languageTag(language)
+    )
+    if (matched) {
+      return matched
+    }
+  }
+
+  return FALLBACK_LOCALE
+}
+
+function languageTag(language: string): string {
+  return language.toLowerCase().split("-")[0]
 }
 
 function detectInitialLocale(): AppLocale {
-  const storedLocale = readStoredLocale()
-  if (storedLocale === "en" || storedLocale === "zh-CN") {
+  const storedLocale = APP_LOCALES.find(
+    (locale) => locale === readStoredLocale()
+  )
+  if (storedLocale) {
     return storedLocale
   }
 
