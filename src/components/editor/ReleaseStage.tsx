@@ -201,7 +201,7 @@ export function ReleaseStage({
         dispatch={dispatch}
       />
 
-      <div className="flex min-h-0 flex-1 items-center justify-center p-3 sm:p-4 lg:p-5">
+      <div className="preview-workspace flex min-h-0 flex-1 items-center justify-center p-3 sm:p-4 lg:p-5">
         <div
           className={cn(
             "preview-stage flex max-w-full min-w-0 flex-col rounded-[22px] bg-stage p-2 text-stage-foreground shadow-[0_20px_60px_color-mix(in_oklch,var(--foreground),transparent_88%)] ring-1 ring-stage-foreground/10",

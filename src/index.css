@@ -261,6 +261,24 @@ input[name="videoTime"]::-moz-range-thumb {
   scrollbar-width: thin;
 }
 
+.preview-workspace {
+  background-image: url("./assets/workspace/release-studio-light.webp");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.dark .preview-workspace {
+  background-image: url("./assets/workspace/release-studio-dark.webp");
+}
+
+@media (forced-colors: active) {
+  .preview-workspace,
+  .dark .preview-workspace {
+    background-image: none;
+  }
+}
+
 .preview-stage,
 .export-overlay {
   opacity: 1;
