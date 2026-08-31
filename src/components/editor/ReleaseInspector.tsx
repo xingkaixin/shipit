@@ -43,7 +43,7 @@ export function ReleaseInspector({
         <h2 className="truncate font-heading text-[13px] leading-none font-semibold tracking-[-0.01em]">
           {t(panelTitleKey(activePanel))}
         </h2>
-        <span className="shrink-0 font-mono text-[10px] tracking-[0.04em] text-muted-foreground/80">
+        <span className="shrink-0 font-mono text-[10px] tracking-[0.04em] text-muted-foreground">
           {activePanel === "theme"
             ? t(paletteNameKey(palette.id))
             : t(`inspector.${activePanel}.meta`, {

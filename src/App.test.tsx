@@ -99,7 +99,9 @@ describe("App", () => {
     renderApp()
 
     fireEvent.click(
-      screen.getByRole("button", { name: EN_MESSAGES["projects.open"] })
+      screen.getByRole("button", {
+        name: `${EN_MESSAGES["projects.open"]}: ${EN_MESSAGES["projects.unsaved"]}`,
+      })
     )
 
     expect(

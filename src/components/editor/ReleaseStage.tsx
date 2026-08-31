@@ -313,7 +313,7 @@ export function ReleaseStage({
 
             <span
               ref={timeLabelReference}
-              className="w-[74px] font-mono text-[11px] text-stage-foreground/55 tabular-nums"
+              className="w-[74px] font-mono text-[11px] text-stage-muted tabular-nums"
             >
               0.0 / {VIDEO_DURATION_SECONDS.toFixed(1)}s
             </span>
@@ -329,7 +329,7 @@ export function ReleaseStage({
               defaultValue={0}
               onChange={seekVideo}
             />
-            <span className="font-mono text-[11px] text-stage-foreground/40 tabular-nums">
+            <span className="font-mono text-[11px] text-stage-muted tabular-nums">
               {composition.output.frameRate} FPS
             </span>
           </div>
@@ -356,7 +356,7 @@ function ShortcutHints({ isPlaying }: { isPlaying: boolean }) {
   ]
 
   return (
-    <ul className="hidden flex-wrap items-center gap-x-4 gap-y-1.5 px-1.5 pt-1 pb-1 text-[11px] text-stage-foreground/40 lg:flex">
+    <ul className="hidden flex-wrap items-center gap-x-4 gap-y-1.5 px-1.5 pt-1 pb-1 text-[11px] text-stage-muted lg:flex">
       {hints.map(([keys, label]) => (
         <li key={keys} className="flex items-center gap-1.5">
           <kbd className="flex h-[18px] items-center rounded-[5px] bg-stage-foreground/8 px-1.5 font-mono text-[10px] text-stage-foreground/70">

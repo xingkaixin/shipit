@@ -37,6 +37,7 @@ export function ProjectManager({
   onProjectDeleted,
 }: ProjectManagerProps) {
   const { locale, t } = useI18n()
+  const projectLabel = activeProject?.name ?? t("projects.unsaved")
   const storage = useProjectStorage()
   const [isOpen, setIsOpen] = React.useState(false)
   const [projectName, setProjectName] = React.useState("")
@@ -161,12 +162,12 @@ export function ProjectManager({
         variant="ghost"
         size="sm"
         className="min-w-0 font-medium text-muted-foreground hover:text-foreground"
-        aria-label={t("projects.open")}
+        aria-label={`${t("projects.open")}: ${projectLabel}`}
         onClick={openManager}
       >
         <Icon icon={FolderOpenIcon} data-icon="inline-start" />
         <span className="hidden max-w-40 truncate text-foreground sm:inline">
-          {activeProject?.name ?? t("projects.unsaved")}
+          {projectLabel}
         </span>
       </Button>
       <AutosaveBadge status={autosaveStatus} />

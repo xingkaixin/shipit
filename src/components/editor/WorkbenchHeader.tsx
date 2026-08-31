@@ -112,7 +112,7 @@ export function WorkbenchHeader({
             className={isExporting ? "animate-spin" : undefined}
             data-icon="inline-start"
           />
-          <span className="hidden sm:inline">
+          <span className="sr-only sm:not-sr-only">
             {isExporting ? t("preview.exporting") : t("preview.export")}
           </span>
         </Button>

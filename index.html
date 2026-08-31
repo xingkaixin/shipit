@@ -5,6 +5,36 @@
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="canonical" href="https://shipit.xingkaixin.me/" />
     <meta name="theme-color" content="#f4f6f2" />
+    <link
+      rel="preload"
+      href="/node_modules/@fontsource-variable/geist/files/geist-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/node_modules/@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      id="workspace-background-light"
+      rel="preload"
+      href="/src/assets/workspace/release-studio-light.webp"
+      as="image"
+      fetchpriority="high"
+      media="not all"
+    />
+    <link
+      id="workspace-background-dark"
+      rel="preload"
+      href="/src/assets/workspace/release-studio-dark.webp"
+      as="image"
+      fetchpriority="high"
+      media="not all"
+    />
     <!-- Resolves the saved appearance before first paint. Mirrors resolveAppearance in use-appearance.ts. -->
     <script>
       try {
@@ -20,6 +50,11 @@
       } catch (error) {
         document.documentElement.classList.add("light")
       }
+      document.getElementById(
+        document.documentElement.classList.contains("dark")
+          ? "workspace-background-dark"
+          : "workspace-background-light"
+      ).media = "all"
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="application-name" content="Shipit" />
