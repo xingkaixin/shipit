@@ -110,3 +110,6 @@ pnpm deploy:cf
 The command creates a production build and uploads `dist` to the `shipit`
 Cloudflare Pages project. Wrangler uses `wrangler.jsonc` as the source of truth
 for the Pages configuration.
+
+Cloudflare Web Analytics is enabled in the Pages project and injected during
+deployment. Keep its beacon out of `index.html` to avoid loading it twice.
