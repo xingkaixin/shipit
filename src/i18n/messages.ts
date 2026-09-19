@@ -34,7 +34,7 @@ export const EN_MESSAGES = {
     "The editor requires JavaScript. You can still watch the example and read the guide below.",
 
   "app.description":
-    "Create polished 5-second product release videos from your logo, name, version, domain, or install command. Preview and export MP4 entirely in your browser.",
+    "Create free 5-second product release videos from your logo and screenshots. Customize the look, preview, and export 1080p or 4K MP4 locally in your browser.",
   "app.title": "Free Release Video Maker for Product Launches | Shipit",
   "app.skipToEditor": "Skip to editor",
   "app.subtitle": "Release film maker",
@@ -260,7 +260,7 @@ export const ZH_CN_MESSAGES: Record<MessageKey, string> = {
   "guide.nojs": "编辑器需要 JavaScript。你仍可观看下方示例并阅读使用说明。",
 
   "app.description":
-    "使用 Logo、产品名称、版本、域名或安装命令，制作精美的 5 秒产品发布庆祝视频。所有预览和 MP4 导出均在浏览器本地完成。",
+    "使用 Logo 和产品截图，免费制作 5 秒产品发布视频。自定义样式、实时预览，在浏览器本地导出 1080p 或 4K MP4。",
   "app.title": "免费产品发布视频制作器｜Shipit",
   "app.skipToEditor": "跳到编辑器",
   "app.subtitle": "发布短片制作器",
@@ -481,7 +481,7 @@ export const JA_MESSAGES: Record<MessageKey, string> = {
     "エディターにはJavaScriptが必要です。下の作例と使い方はそのままご覧いただけます。",
 
   "app.description":
-    "ロゴ・製品名・バージョン・ドメイン・インストールコマンドから、洗練された5秒のリリース動画を作成。プレビューからMP4書き出しまで、すべてブラウザー内で完結します。",
+    "ロゴとスクリーンショットから5秒の製品リリース動画を無料で作成。見た目を調整し、プレビューして、1080pまたは4KのMP4をブラウザー内で書き出せます。",
   "app.title": "製品リリース動画を無料で作成 | Shipit",
   "app.skipToEditor": "エディターへスキップ",
   "app.subtitle": "リリース動画メーカー",

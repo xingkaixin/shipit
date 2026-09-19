@@ -15,7 +15,7 @@ Production: [shipit.xingkaixin.me](https://shipit.xingkaixin.me/)
 - Optional logo framing, custom accent colors, and title fonts
 - Product screenshots with frameless, Chrome, MacBook, or iPhone presentation
 - Adjustable screenshot size, side tilt, shadow, and timed shimmer effects
-- Light, dark, or system interface, in English or Simplified Chinese
+- Light, dark, or system interface, in English, Simplified Chinese, or Japanese
 - Save named projects, including uploaded images, in browser storage
 - Local-only logo processing and video encoding
 
@@ -62,13 +62,23 @@ production bundle is written to `dist`.
 
 ## Localization
 
-Shipit supports English and Simplified Chinese. It uses the saved language
+Shipit supports English, Simplified Chinese, and Japanese. It uses the saved language
 preference when available, then falls back to the browser language. Interface
 messages are defined in `src/i18n/messages.ts`.
 
 The interface appearance follows the same pattern: the saved choice wins, and
 `system` tracks `prefers-color-scheme`. Both preferences persist in
 `localStorage`.
+
+## Product guide
+
+The homepage includes a static product guide in `index.html`, with a real
+five-second export and poster in `public/examples/`. The video loads on demand.
+The guide remains readable without JavaScript; the editor requires JavaScript.
+
+Guide text uses `data-guide-message` keys from `src/i18n/messages.ts` so it follows
+the editor language. Keep the static English text and English messages in sync.
+When product capabilities change, update the guide, metadata, and `public/llms.txt`.
 
 ## Themes and templates
 
@@ -80,7 +90,7 @@ A film is composed from two independent registries:
 | `src/video/palette-registry.ts`    | Background, foreground, surface, and accents  |
 
 Any color theme renders with any background. To add a theme, append an
-entry to `PALETTE_REGISTRY` and a matching `palette.<id>` message in both
+entry to `PALETTE_REGISTRY` and a matching `palette.<id>` message in all
 locales; the pickers, the accent swatches, and the confetti pick it up
 automatically. Backgrounds work the same way: add a `BackgroundPattern`, draw
 it in `src/video/background-patterns.ts`, and register it.

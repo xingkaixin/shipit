@@ -1,7 +1,7 @@
 # Shipit
 
 > Shipit is a free browser-based release video maker that turns a product logo,
-> name, version, domain, or install command into a five-second celebration film.
+> optional screenshot, name, version, and release details into a five-second celebration film.
 
 Canonical URL: https://shipit.xingkaixin.me/
 
@@ -9,8 +9,9 @@ Canonical URL: https://shipit.xingkaixin.me/
 
 - Creates landscape and portrait product release videos.
 - Exports 1080p or 4K MP4 files at 30 or 60 FPS.
-- Provides five motion templates with light and dark palettes.
-- Supports English and Simplified Chinese.
+- Provides independently selectable backgrounds and color themes.
+- Frames product screenshots in a browser, MacBook, or iPhone, or without a frame.
+- Supports English, Simplified Chinese, and Japanese.
 - Processes uploaded assets and encodes video locally in the browser.
 
 ## Browser requirements
@@ -22,3 +23,12 @@ MP4 export requires a modern browser with H.264 WebCodecs encoding support.
 
 Uploaded logos, previews, and encoded videos remain in the user's browser and
 are not uploaded to Shipit or Cloudflare.
+
+## Usage and example
+
+[Product guide and real export example](https://shipit.xingkaixin.me/#product-guide)
+explains how to add assets, choose a style, and export an MP4.
+
+Output support depends on the browser and device. Shipit checks the selected
+configuration at runtime; use 1080p on mobile or memory-constrained devices.
+Saved projects stay in the current browser and do not sync between devices.
