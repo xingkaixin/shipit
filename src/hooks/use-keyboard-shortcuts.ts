@@ -48,7 +48,7 @@ function ownsKey(target: EventTarget | null, combo: string): boolean {
 
   if (
     target.isContentEditable ||
-    target.closest("input, textarea, select, [contenteditable='true']")
+    target.closest("input, textarea, select, video, [contenteditable='true']")
   ) {
     return true
   }

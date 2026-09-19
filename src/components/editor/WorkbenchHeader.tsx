@@ -55,12 +55,12 @@ export function WorkbenchHeader({
             fetchPriority="high"
           />
         </span>
-        <h1
+        <span
           className="font-heading text-sm leading-none font-semibold tracking-[-0.02em]"
           translate="no"
         >
           Shipit
-        </h1>
+        </span>
         <span aria-hidden="true" className="h-4.5 w-px shrink-0 bg-border" />
         <ProjectManager
           draft={draft}

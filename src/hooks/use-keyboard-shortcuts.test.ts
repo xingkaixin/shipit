@@ -45,6 +45,17 @@ describe("useKeyboardShortcuts", () => {
     expect(openPanel).toHaveBeenCalledOnce()
   })
 
+  it("leaves playback keys to the example video", () => {
+    const play = vi.fn<() => void>()
+    renderHook(() => useKeyboardShortcuts({ Space: play }))
+    const video = document.createElement("video")
+    document.body.append(video)
+
+    pressKey("Space", video)
+
+    expect(play).not.toHaveBeenCalled()
+  })
+
   it("keeps plain keys inside fields but allows modifier combos", () => {
     const openPanel = vi.fn<() => void>()
     const exportVideo = vi.fn<() => void>()

@@ -37,6 +37,7 @@
     />
     <!-- Resolves the saved appearance before first paint. Mirrors resolveAppearance in use-appearance.ts. -->
     <script>
+      document.documentElement.classList.add("js")
       try {
         var savedAppearance = localStorage.getItem("shipit-appearance")
         var isDark =
@@ -140,6 +141,190 @@
   </head>
   <body>
     <div id="root"></div>
+    <noscript
+      ><p class="px-5 py-4">
+        The editor requires JavaScript. You can still watch the example and read
+        the guide below.
+      </p></noscript
+    >
+    <section
+      id="product-guide"
+      aria-labelledby="guide-title"
+      class="border-t bg-background px-5 py-14 sm:px-8 sm:py-20"
+    >
+      <div class="mx-auto max-w-5xl">
+        <div class="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
+          <div>
+            <p
+              data-guide-message="guide.example"
+              class="mb-3 text-sm font-medium text-brand-strong"
+            >
+              Made with Shipit
+            </p>
+            <h1
+              id="guide-title"
+              data-guide-message="guide.title"
+              class="font-heading text-3xl leading-tight font-semibold tracking-tight sm:text-4xl"
+            >
+              Create a 5-second product release video
+            </h1>
+            <p
+              data-guide-message="guide.intro"
+              class="mt-5 text-base leading-relaxed text-muted-foreground"
+            >
+              Shipit is a free video maker for product launches and version
+              updates. Add your logo, an optional screenshot, and release
+              details. Preview the animation and export an MP4 entirely in your
+              browser.
+            </p>
+            <a
+              href="#release-editor"
+              class="mt-6 inline-flex min-h-11 items-center rounded-lg bg-brand px-5 py-2 text-sm font-semibold text-brand-foreground"
+              ><span data-guide-message="guide.start"
+                >Create your release video</span
+              ></a
+            >
+          </div>
+          <figure class="min-w-0">
+            <video
+              controls
+              playsinline
+              preload="none"
+              width="1920"
+              height="1080"
+              poster="/examples/shipit-release.webp"
+              class="aspect-video w-full rounded-xl bg-black"
+              aria-describedby="example-caption"
+            >
+              <source src="/examples/shipit-release.mp4" type="video/mp4" />
+            </video>
+            <figcaption
+              id="example-caption"
+              data-guide-message="guide.caption"
+              class="mt-3 text-sm text-muted-foreground"
+            >
+              A real Shipit export · 5 seconds · 1080p · no audio
+            </figcaption>
+          </figure>
+        </div>
+        <div class="mt-14 border-t pt-10">
+          <h2
+            data-guide-message="guide.steps"
+            class="font-heading text-xl font-semibold"
+          >
+            From product assets to a release video
+          </h2>
+          <ol class="mt-6 grid gap-8 md:grid-cols-3">
+            <li>
+              <h3 data-guide-message="guide.assets.title" class="font-medium">
+                1. Add your product
+              </h3>
+              <p
+                data-guide-message="guide.assets.text"
+                class="mt-2 text-sm leading-relaxed text-muted-foreground"
+              >
+                Enter a name and version, then add a logo and optional
+                screenshot. Include a website, install command, or short release
+                message.
+              </p>
+            </li>
+            <li>
+              <h3 data-guide-message="guide.style.title" class="font-medium">
+                2. Choose the look
+              </h3>
+              <p
+                data-guide-message="guide.style.text"
+                class="mt-2 text-sm leading-relaxed text-muted-foreground"
+              >
+                Pick a background, color theme, and font. Frame screenshots in a
+                browser, MacBook, or iPhone, or leave them unframed. Preview
+                before exporting.
+              </p>
+            </li>
+            <li>
+              <h3 data-guide-message="guide.export.title" class="font-medium">
+                3. Export an MP4
+              </h3>
+              <p
+                data-guide-message="guide.export.text"
+                class="mt-2 text-sm leading-relaxed text-muted-foreground"
+              >
+                Choose landscape or portrait, 1080p or 4K, and 30 or 60 FPS.
+                Download a five-second video to share with your release
+                announcement.
+              </p>
+            </li>
+          </ol>
+        </div>
+        <div class="mt-12 border-t pt-10">
+          <h2
+            data-guide-message="guide.requirements"
+            class="font-heading text-xl font-semibold"
+          >
+            Before you export
+          </h2>
+          <div class="mt-6 grid gap-8 sm:grid-cols-2">
+            <div>
+              <h3 data-guide-message="guide.browser.title" class="font-medium">
+                Browser support
+              </h3>
+              <p
+                data-guide-message="guide.browser.text"
+                class="mt-2 text-sm leading-relaxed text-muted-foreground"
+              >
+                MP4 export requires H.264 encoding through WebCodecs. Shipit
+                checks support for your selected output settings. Available
+                resolutions depend on your browser and device; try 1080p if 4K
+                is unavailable.
+              </p>
+            </div>
+            <div>
+              <h3
+                data-guide-message="guide.performance.title"
+                class="font-medium"
+              >
+                Choosing a resolution
+              </h3>
+              <p
+                data-guide-message="guide.performance.text"
+                class="mt-2 text-sm leading-relaxed text-muted-foreground"
+              >
+                4K at 60 FPS processes about eight times as many pixels as 1080p
+                at 30 FPS. Start with 1080p on mobile or low-memory devices. A
+                preview does not guarantee that every export setting is
+                supported.
+              </p>
+            </div>
+            <div>
+              <h3 data-guide-message="guide.privacy.title" class="font-medium">
+                Your assets stay local
+              </h3>
+              <p
+                data-guide-message="guide.privacy.text"
+                class="mt-2 text-sm leading-relaxed text-muted-foreground"
+              >
+                Uploaded images, previews, and video encoding stay in your
+                browser. Saved projects are stored on this browser and are not
+                synced between devices.
+              </p>
+            </div>
+            <div>
+              <h3 data-guide-message="guide.formats.title" class="font-medium">
+                Image formats
+              </h3>
+              <p
+                data-guide-message="guide.formats.text"
+                class="mt-2 text-sm leading-relaxed text-muted-foreground"
+              >
+                Logos and screenshots accept PNG, JPEG, WebP, or SVG, up to 10
+                MB, 8192 pixels per side, and 16 million pixels in total.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

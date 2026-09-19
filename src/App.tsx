@@ -66,6 +66,15 @@ export function App() {
         exportState={exportState}
         onExport={startExport}
       />
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b bg-background px-3 py-2 text-xs sm:px-4">
+        <p className="text-muted-foreground">{t("guide.summary")}</p>
+        <a
+          href="#product-guide"
+          className="inline-flex min-h-6 items-center font-medium underline underline-offset-4"
+        >
+          {t("guide.link")}
+        </a>
+      </div>
       <ReleaseEditor
         draft={draft}
         release={release}

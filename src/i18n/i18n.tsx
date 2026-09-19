@@ -59,6 +59,14 @@ export function I18nProvider({ children }: React.PropsWithChildren) {
     updateMetaContent('meta[property="og:locale"]', LOCALES[locale].ogLocale)
     updateMetaContent('meta[name="twitter:title"]', title)
     updateMetaContent('meta[name="twitter:description"]', description)
+    document
+      .querySelectorAll<HTMLElement>("[data-guide-message]")
+      .forEach((element) => {
+        const key = element.dataset.guideMessage
+        if (key && key in EN_MESSAGES) {
+          element.textContent = translateCurrentLocale(key as MessageKey)
+        }
+      })
     storeLocale(locale)
   }, [locale, translateCurrentLocale])
 

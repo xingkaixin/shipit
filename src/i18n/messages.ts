@@ -1,4 +1,38 @@
 export const EN_MESSAGES = {
+  "guide.summary": "Logo and screenshots → a 5-second MP4, made locally.",
+  "guide.link": "Guide & example",
+  "guide.title": "Create a 5-second product release video",
+  "guide.intro":
+    "Shipit is a free video maker for product launches and version updates. Add your logo, an optional screenshot, and release details. Preview the animation and export an MP4 entirely in your browser.",
+  "guide.example": "Made with Shipit",
+  "guide.caption": "A real Shipit export · 5 seconds · 1080p · no audio",
+  "guide.start": "Create your release video",
+  "guide.steps": "From product assets to a release video",
+  "guide.assets.title": "1. Add your product",
+  "guide.assets.text":
+    "Enter a name and version, then add a logo and optional screenshot. Include a website, install command, or short release message.",
+  "guide.style.title": "2. Choose the look",
+  "guide.style.text":
+    "Pick a background, color theme, and font. Frame screenshots in a browser, MacBook, or iPhone, or leave them unframed. Preview before exporting.",
+  "guide.export.title": "3. Export an MP4",
+  "guide.export.text":
+    "Choose landscape or portrait, 1080p or 4K, and 30 or 60 FPS. Download a five-second video to share with your release announcement.",
+  "guide.requirements": "Before you export",
+  "guide.browser.title": "Browser support",
+  "guide.browser.text":
+    "MP4 export requires H.264 encoding through WebCodecs. Shipit checks support for your selected output settings. Available resolutions depend on your browser and device; try 1080p if 4K is unavailable.",
+  "guide.performance.title": "Choosing a resolution",
+  "guide.performance.text":
+    "4K at 60 FPS processes about eight times as many pixels as 1080p at 30 FPS. Start with 1080p on mobile or low-memory devices. A preview does not guarantee that every export setting is supported.",
+  "guide.privacy.title": "Your assets stay local",
+  "guide.privacy.text":
+    "Uploaded images, previews, and video encoding stay in your browser. Saved projects are stored on this browser and are not synced between devices.",
+  "guide.formats.title": "Image formats",
+  "guide.formats.text":
+    "Logos and screenshots accept PNG, JPEG, WebP, or SVG, up to 10 MB, 8192 pixels per side, and 16 million pixels in total.",
+  "guide.nojs":
+    "The editor requires JavaScript. You can still watch the example and read the guide below.",
+
   "app.description":
     "Create polished 5-second product release videos from your logo, name, version, domain, or install command. Preview and export MP4 entirely in your browser.",
   "app.title": "Free Release Video Maker for Product Launches | Shipit",
@@ -192,6 +226,39 @@ export const EN_MESSAGES = {
 export type MessageKey = keyof typeof EN_MESSAGES
 
 export const ZH_CN_MESSAGES: Record<MessageKey, string> = {
+  "guide.summary": "用 Logo 和截图制作 5 秒 MP4，全程本地处理。",
+  "guide.link": "使用说明与示例",
+  "guide.title": "制作 5 秒产品发布视频",
+  "guide.intro":
+    "Shipit 是免费的产品发布视频制作工具，适合新产品上线和版本更新。添加 Logo、可选的产品截图和发布信息，即可在浏览器中预览动画并本地导出 MP4。",
+  "guide.example": "用 Shipit 制作",
+  "guide.caption": "Shipit 实际导出 · 5 秒 · 1080p · 无音频",
+  "guide.start": "制作你的发布视频",
+  "guide.steps": "从产品素材到发布视频",
+  "guide.assets.title": "1. 添加产品素材",
+  "guide.assets.text":
+    "输入产品名称和版本，添加 Logo 和可选截图。还可以展示网站、安装命令或简短的发布信息。",
+  "guide.style.title": "2. 调整画面样式",
+  "guide.style.text":
+    "选择背景、配色和字体。截图可以搭配浏览器、MacBook 或 iPhone 外框，也可以不加外框。导出前可直接预览。",
+  "guide.export.title": "3. 导出 MP4",
+  "guide.export.text":
+    "选择横屏或竖屏、1080p 或 4K，以及 30 或 60 FPS。下载 5 秒视频，用于产品发布和版本更新公告。",
+  "guide.requirements": "导出前须知",
+  "guide.browser.title": "浏览器支持",
+  "guide.browser.text":
+    "MP4 导出需要浏览器通过 WebCodecs 编码 H.264。Shipit 会检查所选输出设置是否受支持。可用分辨率取决于浏览器和设备；4K 不可用时，可尝试 1080p。",
+  "guide.performance.title": "分辨率选择",
+  "guide.performance.text":
+    "4K 60 FPS 的像素处理量约为 1080p 30 FPS 的 8 倍。手机或低内存设备建议先选 1080p。能正常预览不代表所有导出设置都受支持。",
+  "guide.privacy.title": "素材保留在本地",
+  "guide.privacy.text":
+    "上传的图片、预览和视频编码都在浏览器内处理。已保存项目存储在当前浏览器中，不会在设备之间同步。",
+  "guide.formats.title": "图片格式",
+  "guide.formats.text":
+    "Logo 和截图支持 PNG、JPEG、WebP 或 SVG。单张不超过 10 MB、单边不超过 8192 像素，总像素不超过 1600 万。",
+  "guide.nojs": "编辑器需要 JavaScript。你仍可观看下方示例并阅读使用说明。",
+
   "app.description":
     "使用 Logo、产品名称、版本、域名或安装命令，制作精美的 5 秒产品发布庆祝视频。所有预览和 MP4 导出均在浏览器本地完成。",
   "app.title": "免费产品发布视频制作器｜Shipit",
@@ -379,6 +446,40 @@ export const ZH_CN_MESSAGES: Record<MessageKey, string> = {
 }
 
 export const JA_MESSAGES: Record<MessageKey, string> = {
+  "guide.summary": "ロゴとスクリーンショットから5秒のMP4をローカルで作成。",
+  "guide.link": "使い方と作例",
+  "guide.title": "5秒の製品リリース動画を作成",
+  "guide.intro":
+    "Shipitは、新製品の公開やバージョン更新に使える無料の動画作成ツールです。ロゴ、任意のスクリーンショット、リリース情報を追加し、ブラウザー内でアニメーションを確認してMP4を書き出せます。",
+  "guide.example": "Shipitで作成",
+  "guide.caption": "Shipitの実際の書き出し · 5秒 · 1080p · 音声なし",
+  "guide.start": "リリース動画を作成",
+  "guide.steps": "製品の素材からリリース動画へ",
+  "guide.assets.title": "1. 製品の素材を追加",
+  "guide.assets.text":
+    "製品名とバージョンを入力し、ロゴや任意のスクリーンショットを追加します。Webサイト、インストールコマンド、短いリリースメッセージも表示できます。",
+  "guide.style.title": "2. 見た目を調整",
+  "guide.style.text":
+    "背景、配色、フォントを選びます。スクリーンショットにはブラウザー、MacBook、iPhoneのフレームを付けるか、フレームなしで表示できます。書き出す前にプレビューできます。",
+  "guide.export.title": "3. MP4を書き出し",
+  "guide.export.text":
+    "横向きまたは縦向き、1080pまたは4K、30または60 FPSを選びます。5秒の動画をダウンロードして、リリースのお知らせに使えます。",
+  "guide.requirements": "書き出す前に",
+  "guide.browser.title": "ブラウザーの対応",
+  "guide.browser.text":
+    "MP4の書き出しにはWebCodecs経由のH.264エンコードが必要です。Shipitは選択した出力設定への対応を確認します。利用できる解像度はブラウザーや端末によって異なります。4Kが使えない場合は1080pをお試しください。",
+  "guide.performance.title": "解像度の選択",
+  "guide.performance.text":
+    "4K 60 FPSのピクセル処理量は1080p 30 FPSの約8倍です。モバイルやメモリーの少ない端末では1080pからお試しください。プレビューが表示されても、すべての出力設定に対応するとは限りません。",
+  "guide.privacy.title": "素材はローカルに保存",
+  "guide.privacy.text":
+    "画像、プレビュー、動画のエンコードはブラウザー内で処理されます。保存したプロジェクトは現在のブラウザーに保存され、端末間では同期されません。",
+  "guide.formats.title": "画像形式",
+  "guide.formats.text":
+    "ロゴとスクリーンショットはPNG、JPEG、WebP、SVGに対応しています。1枚あたり10 MB、各辺8192ピクセル、合計1600万ピクセルが上限です。",
+  "guide.nojs":
+    "エディターにはJavaScriptが必要です。下の作例と使い方はそのままご覧いただけます。",
+
   "app.description":
     "ロゴ・製品名・バージョン・ドメイン・インストールコマンドから、洗練された5秒のリリース動画を作成。プレビューからMP4書き出しまで、すべてブラウザー内で完結します。",
   "app.title": "製品リリース動画を無料で作成 | Shipit",
