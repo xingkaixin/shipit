@@ -19,7 +19,7 @@ export function InspectorRail({ activePanel, onSelect }: InspectorRailProps) {
   return (
     <nav
       aria-label={t("inspector.rail")}
-      className="flex shrink-0 items-center gap-1 overflow-x-auto border-b bg-background px-2 py-1.5 lg:w-16 lg:flex-col lg:overflow-visible lg:border-r lg:border-b-0 lg:px-0 lg:py-2.5"
+      className="flex shrink-0 items-center gap-1 overflow-x-auto border-b bg-background px-2 py-1.5 wide:w-16 wide:flex-col wide:overflow-visible wide:border-r wide:border-b-0 wide:px-0 wide:py-2.5"
     >
       {INSPECTOR_PANELS.map((panel, index) => {
         const isActive = panel.id === activePanel
@@ -32,7 +32,7 @@ export function InspectorRail({ activePanel, onSelect }: InspectorRailProps) {
             aria-pressed={isActive}
             title={`${title} · ${index + 1}`}
             className={cn(
-              "relative flex h-12 shrink-0 flex-col items-center justify-center gap-[3px] rounded-[11px] px-3 transition-colors duration-150 outline-none focus-visible:ring-3 focus-visible:ring-ring/30 lg:h-[50px] lg:w-12 lg:px-0",
+              "relative flex h-12 shrink-0 flex-col items-center justify-center gap-[3px] rounded-[11px] px-3 transition-colors duration-150 outline-none focus-visible:ring-3 focus-visible:ring-ring/30 wide:h-[50px] wide:w-12 wide:px-0",
               isActive
                 ? "bg-brand/12 text-brand-strong"
                 : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -55,7 +55,7 @@ export function InspectorRail({ activePanel, onSelect }: InspectorRailProps) {
             <span
               aria-hidden="true"
               className={cn(
-                "absolute top-1 right-1.5 hidden font-mono text-[9px] leading-none lg:block",
+                "absolute top-1 right-1.5 hidden font-mono text-[9px] leading-none wide:block",
                 isActive ? "text-brand-strong/70" : "text-muted-foreground/50"
               )}
             >
@@ -64,7 +64,7 @@ export function InspectorRail({ activePanel, onSelect }: InspectorRailProps) {
             {isActive ? (
               <span
                 aria-hidden="true"
-                className="absolute inset-x-3 -bottom-1.5 h-[3px] rounded-t-[3px] bg-brand lg:inset-x-auto lg:inset-y-3 lg:bottom-auto lg:-left-2 lg:h-auto lg:w-[3px] lg:rounded-[0_3px_3px_0]"
+                className="absolute inset-x-3 -bottom-1.5 h-[3px] rounded-t-[3px] bg-brand wide:inset-x-auto wide:inset-y-3 wide:bottom-auto wide:-left-2 wide:h-auto wide:w-[3px] wide:rounded-[0_3px_3px_0]"
               />
             ) : null}
           </button>

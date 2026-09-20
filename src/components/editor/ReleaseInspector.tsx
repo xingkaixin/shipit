@@ -38,20 +38,28 @@ export function ReleaseInspector({
   const palette = paletteById(draft.style.paletteId)
 
   return (
-    <aside className="flex min-h-0 flex-col border-b bg-background lg:w-[19.75rem] lg:shrink-0 lg:border-r lg:border-b-0 xl:w-[21.5rem]">
-      <div className="flex h-[2.875rem] shrink-0 items-center justify-between gap-2 border-b border-border/70 px-4">
-        <h2 className="truncate font-heading text-[13px] leading-none font-semibold tracking-[-0.01em]">
-          {t(panelTitleKey(activePanel))}
-        </h2>
-        <span className="shrink-0 font-mono text-[10px] tracking-[0.04em] text-muted-foreground">
-          {activePanel === "theme"
-            ? t(paletteNameKey(palette.id))
-            : t(`inspector.${activePanel}.meta`, {
-                count: BACKGROUND_REGISTRY.length,
-              })}
-        </span>
+    <aside className="flex min-h-0 flex-col border-b bg-background wide:w-[19.75rem] wide:shrink-0 wide:border-r wide:border-b-0 xl:w-[21.5rem]">
+      <div className="sticky top-0 z-10 flex min-h-[2.875rem] shrink-0 items-center justify-between gap-3 border-b border-border/70 bg-background px-4 wide:static">
+        <div className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-x-2 gap-y-1 py-2">
+          <h2 className="truncate font-heading text-[13px] leading-none font-semibold tracking-[-0.01em]">
+            {t(panelTitleKey(activePanel))}
+          </h2>
+          <span className="font-mono text-[10px] tracking-[0.04em] text-muted-foreground">
+            {activePanel === "theme"
+              ? t(paletteNameKey(palette.id))
+              : t(`inspector.${activePanel}.meta`, {
+                  count: BACKGROUND_REGISTRY.length,
+                })}
+          </span>
+        </div>
+        <a
+          href="#film-preview"
+          className="inline-flex min-h-11 shrink-0 items-center text-xs font-medium underline underline-offset-4 focus-visible:rounded-sm focus-visible:ring-3 focus-visible:ring-ring/30 focus-visible:outline-none wide:hidden"
+        >
+          {t("preview.backToPreview")}
+        </a>
       </div>
-      <div className="min-h-0 flex-1 scrollbar-thin overscroll-contain p-4 lg:overflow-y-auto">
+      <div className="min-h-0 flex-1 scrollbar-thin overscroll-contain p-4 wide:overflow-y-auto">
         {activePanel === "content" ? (
           <ContentSettings
             draft={draft}

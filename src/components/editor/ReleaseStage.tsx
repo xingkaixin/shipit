@@ -192,7 +192,12 @@ export function ReleaseStage({
   }
 
   return (
-    <section className="order-first flex min-h-0 flex-1 flex-col bg-workspace lg:order-none lg:min-w-0">
+    <section
+      id="film-preview"
+      tabIndex={-1}
+      aria-label={t("preview.title")}
+      className="order-first flex min-h-0 flex-1 scroll-mt-2 flex-col bg-workspace wide:order-none wide:min-w-0"
+    >
       <h2 className="sr-only">{t("preview.title")}</h2>
 
       <OutputToolbar
@@ -201,21 +206,21 @@ export function ReleaseStage({
         dispatch={dispatch}
       />
 
-      <div className="preview-workspace flex min-h-0 flex-1 items-center justify-center p-3 sm:p-4 lg:p-5">
+      <div className="preview-workspace flex min-h-0 flex-1 items-start justify-center p-3 sm:p-4 lg:p-5 desk:items-center">
         <div
           className={cn(
-            "preview-stage flex max-w-full min-w-0 flex-col rounded-[22px] bg-stage p-2 text-stage-foreground shadow-[0_20px_60px_color-mix(in_oklch,var(--foreground),transparent_88%)] ring-1 ring-stage-foreground/10",
+            "preview-stage flex max-w-full min-w-[min(100%,20rem)] flex-col rounded-[22px] bg-stage p-2 text-stage-foreground shadow-[0_20px_60px_color-mix(in_oklch,var(--foreground),transparent_88%)] ring-1 ring-stage-foreground/10",
             isLandscape
-              ? "w-full desk:w-[min(100%,calc((100svh-var(--stage-chrome))*16/9))]"
-              : "w-fit max-w-full"
+              ? "w-[min(100%,calc(var(--preview-height)*16/9+1rem))]"
+              : "w-[min(100%,calc(min(56svh,620px,var(--preview-height))*9/16+1rem))]"
           )}
         >
           <figure
             className={cn(
               "relative mx-auto overflow-hidden rounded-[16px] bg-[#0b0e0c] ring-1 ring-stage-foreground/8",
               isLandscape
-                ? "aspect-video w-full"
-                : "aspect-[9/16] h-[min(56vh,620px)] max-h-full max-w-full desk:h-[calc(100svh-var(--stage-chrome))]"
+                ? "aspect-video w-[min(100%,calc(var(--preview-height)*16/9))]"
+                : "aspect-[9/16] w-[min(100%,calc(min(56svh,620px,var(--preview-height))*9/16))]"
             )}
             aria-label={t("preview.figureLabel", {
               product:

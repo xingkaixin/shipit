@@ -9,13 +9,13 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * The editor is a fixed, self-scrolling shell only when the viewport can hold
- * it. Shorter windows scroll the page instead, so clipping never hides the
- * transport controls and the shell never outgrows the document.
+ * Allow room for the rail, inspector and preview before placing them side by
+ * side. Short windows keep page scrolling so the controls remain reachable.
  */
-@custom-variant desk (@media (width >= 64rem) and (height >= 42.5rem));
+@custom-variant desk (@media (width >= 56rem) and (height >= 32rem));
 
 @theme inline {
+  --breakpoint-wide: 56rem;
   --font-heading: "Space Grotesk Variable", sans-serif;
   --font-sans: "Geist Variable", sans-serif;
   --color-brand-foreground: var(--brand-foreground);
@@ -109,14 +109,6 @@
   --sidebar-ring: #84c900;
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-
-  /*
-   * Everything stacked above and below the landscape canvas at lg, so the
-   * stage can size itself from the remaining viewport height:
-   * header 3.25 + output bar 2.75 + stage padding 2.5 + card padding 1
-   * + transport 3 + shortcut hints 1.75 + hairline borders.
-   */
-  --stage-chrome: 14.5rem;
 }
 
 .dark {
@@ -266,10 +258,18 @@ input[name="videoTime"]::-moz-range-thumb {
 }
 
 .preview-workspace {
+  /* Leave room for the header, guide, wrapped output toolbar and playback controls. */
+  --preview-height: max(10rem, calc(100svh - 18rem));
   background-image: url("./assets/workspace/release-studio-light.webp");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+
+  @variant desk {
+    container-type: size;
+    /* The workspace already excludes the toolbars; only card controls need space. */
+    --preview-height: max(0px, calc(100cqh - 6rem));
+  }
 }
 
 .dark .preview-workspace {

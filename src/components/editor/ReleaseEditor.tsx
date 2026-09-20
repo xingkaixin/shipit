@@ -43,7 +43,7 @@ export function ReleaseEditor({
   return (
     <main
       id="release-editor"
-      className="flex min-h-0 flex-1 flex-col lg:flex-row desk:overflow-hidden"
+      className="flex min-h-0 flex-1 flex-col wide:flex-row desk:overflow-hidden"
     >
       <InspectorRail activePanel={activePanel} onSelect={setActivePanel} />
       <ReleaseInspector
