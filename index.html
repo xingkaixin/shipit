@@ -4,6 +4,22 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="canonical" href="https://shipit.xingkaixin.me/" />
+    <link rel="alternate" hreflang="en" href="https://shipit.xingkaixin.me/" />
+    <link
+      rel="alternate"
+      hreflang="zh-CN"
+      href="https://shipit.xingkaixin.me/zh-cn/"
+    />
+    <link
+      rel="alternate"
+      hreflang="ja"
+      href="https://shipit.xingkaixin.me/ja/"
+    />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href="https://shipit.xingkaixin.me/"
+    />
     <meta name="theme-color" content="#f4f6f2" />
     <link
       rel="preload"
@@ -143,7 +159,7 @@
   <body>
     <div id="root"></div>
     <noscript
-      ><p class="px-5 py-4">
+      ><p data-guide-message="guide.nojs" class="px-5 py-4">
         The editor requires JavaScript. You can still watch the example and read
         the guide below.
       </p></noscript
@@ -323,6 +339,75 @@
             </div>
           </div>
         </div>
+        <div class="mt-12 border-t pt-10">
+          <h2
+            data-guide-message="guide.faq"
+            class="font-heading text-xl font-semibold"
+          >
+            Release video questions
+          </h2>
+          <div class="mt-6 grid gap-8 sm:grid-cols-2">
+            <div>
+              <h3 data-guide-message="guide.free.title" class="font-medium">
+                Is Shipit free to use?
+              </h3>
+              <p
+                data-guide-message="guide.free.text"
+                class="mt-2 text-sm leading-relaxed text-muted-foreground"
+              >
+                Yes. Create and download release videos without an account,
+                subscription, or watermark. Your logo and screenshots are
+                processed locally in your browser.
+              </p>
+            </div>
+            <div>
+              <h3 data-guide-message="guide.use.title" class="font-medium">
+                What kind of product video can I make?
+              </h3>
+              <p
+                data-guide-message="guide.use.text"
+                class="mt-2 text-sm leading-relaxed text-muted-foreground"
+              >
+                Make a five-second announcement for an app launch, a software
+                release, or a new version. Combine a logo, product screenshot,
+                and release details in a silent MP4. Shipit does not record
+                screen walkthroughs or add audio.
+              </p>
+            </div>
+          </div>
+        </div>
+        <footer
+          class="mt-12 flex flex-wrap items-center justify-between gap-4 border-t pt-6 text-sm text-muted-foreground"
+        >
+          <nav aria-label="Languages" class="flex flex-wrap gap-5">
+            <a
+              href="/"
+              lang="en"
+              hreflang="en"
+              class="underline underline-offset-4"
+              >English</a
+            >
+            <a
+              href="/zh-cn/"
+              lang="zh-CN"
+              hreflang="zh-CN"
+              class="underline underline-offset-4"
+              >中文</a
+            >
+            <a
+              href="/ja/"
+              lang="ja"
+              hreflang="ja"
+              class="underline underline-offset-4"
+              >日本語</a
+            >
+          </nav>
+          <a
+            href="https://github.com/xingkaixin/shipit"
+            class="underline underline-offset-4"
+            >Shipit · GitHub</a
+          >
+        </footer>
       </div>
     </section>
 

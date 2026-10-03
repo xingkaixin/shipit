@@ -1,4 +1,11 @@
 export const EN_MESSAGES = {
+  "guide.faq": "Release video questions",
+  "guide.free.title": "Is Shipit free to use?",
+  "guide.free.text":
+    "Yes. Create and download release videos without an account, subscription, or watermark. Your logo and screenshots are processed locally in your browser.",
+  "guide.use.title": "What kind of product video can I make?",
+  "guide.use.text":
+    "Make a five-second announcement for an app launch, a software release, or a new version. Combine a logo, product screenshot, and release details in a silent MP4. Shipit does not record screen walkthroughs or add audio.",
   "guide.summary": "Logo and screenshots → a 5-second MP4, made locally.",
   "guide.link": "Guide & example",
   "guide.title": "Create a 5-second product release video",
@@ -227,6 +234,13 @@ export const EN_MESSAGES = {
 export type MessageKey = keyof typeof EN_MESSAGES
 
 export const ZH_CN_MESSAGES: Record<MessageKey, string> = {
+  "guide.faq": "发布视频常见问题",
+  "guide.free.title": "Shipit 可以免费使用吗？",
+  "guide.free.text":
+    "可以。无需注册或订阅，即可制作和下载无水印的发布视频。Logo 和产品截图都在浏览器中本地处理。",
+  "guide.use.title": "可以制作哪种产品视频？",
+  "guide.use.text":
+    "适合为应用上线、软件发布或版本更新制作 5 秒预告。把 Logo、产品截图和发布信息组合成无音频 MP4。Shipit 不提供屏幕操作录制或添加音频功能。",
   "guide.summary": "用 Logo 和截图制作 5 秒 MP4，全程本地处理。",
   "guide.link": "使用说明与示例",
   "guide.title": "制作 5 秒产品发布视频",
@@ -448,6 +462,13 @@ export const ZH_CN_MESSAGES: Record<MessageKey, string> = {
 }
 
 export const JA_MESSAGES: Record<MessageKey, string> = {
+  "guide.faq": "リリース動画についての質問",
+  "guide.free.title": "Shipitは無料で使えますか？",
+  "guide.free.text":
+    "はい。アカウント登録やサブスクリプションなしで、透かしのないリリース動画を作成・ダウンロードできます。ロゴとスクリーンショットはブラウザー内で処理されます。",
+  "guide.use.title": "どのような製品動画を作れますか？",
+  "guide.use.text":
+    "アプリの公開、ソフトウェアのリリース、バージョン更新を知らせる5秒の動画を作成できます。ロゴ、製品のスクリーンショット、リリース情報を音声なしのMP4にまとめます。画面操作の録画や音声の追加には対応していません。",
   "guide.summary": "ロゴとスクリーンショットから5秒のMP4をローカルで作成。",
   "guide.link": "使い方と作例",
   "guide.title": "5秒の製品リリース動画を作成",

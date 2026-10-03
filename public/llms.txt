@@ -5,6 +5,10 @@
 
 Canonical URL: https://shipit.xingkaixin.me/
 
+Languages: [English](https://shipit.xingkaixin.me/),
+[简体中文](https://shipit.xingkaixin.me/zh-cn/),
+[日本語](https://shipit.xingkaixin.me/ja/).
+
 ## Capabilities
 
 - Creates landscape and portrait product release videos.
@@ -13,6 +17,8 @@ Canonical URL: https://shipit.xingkaixin.me/
 - Frames product screenshots in a browser, MacBook, or iPhone, or without a frame.
 - Supports English, Simplified Chinese, and Japanese.
 - Processes uploaded assets and encodes video locally in the browser.
+- Requires no account or subscription and adds no watermark.
+- Produces silent five-second announcements, not screen recordings or narrated demos.
 
 ## Browser requirements
 

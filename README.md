@@ -62,13 +62,14 @@ production bundle is written to `dist`.
 
 ## Localization
 
-Shipit supports English, Simplified Chinese, and Japanese. It uses the saved language
-preference when available, then falls back to the browser language. Interface
-messages are defined in `src/i18n/messages.ts`.
+Shipit serves English at `/`, Simplified Chinese at `/zh-cn/`, and Japanese at
+`/ja/`. The URL determines the language, so search engines and shared links see
+the same content. The editor language switch updates the URL without reloading
+or losing the current draft. Interface messages are defined in
+`src/i18n/messages.ts`.
 
-The interface appearance follows the same pattern: the saved choice wins, and
-`system` tracks `prefers-color-scheme`. Both preferences persist in
-`localStorage`.
+The interface appearance uses the saved choice, and `system` tracks
+`prefers-color-scheme`. The appearance preference persists in `localStorage`.
 
 ## Product guide
 
@@ -77,8 +78,14 @@ five-second export and poster in `public/examples/`. The video loads on demand.
 The guide remains readable without JavaScript; the editor requires JavaScript.
 
 Guide text uses `data-guide-message` keys from `src/i18n/messages.ts` so it follows
-the editor language. Keep the static English text and English messages in sync.
+the editor language. After Vite builds, `scripts/build-locales.ts` generates all
+three static pages from the same HTML template and messages. Keep the English
+template and messages in sync for development; production text comes from the
+messages. Canonical URLs and reciprocal hreflang links identify each version.
 When product capabilities change, update the guide, metadata, and `public/llms.txt`.
+Update sitemap `lastmod` only for substantive page changes, not every deployment.
+The top-level `404.html` disables Cloudflare Pages' implicit SPA fallback, so
+unknown addresses return a real 404.
 
 ## Themes and templates
 

@@ -28,6 +28,7 @@ function renderApp() {
 
 beforeEach(() => {
   window.localStorage.clear()
+  window.history.replaceState(null, "", "/")
   document.documentElement.className = ""
   Object.defineProperty(document, "fonts", {
     configurable: true,
@@ -41,6 +42,33 @@ afterEach(() => {
 })
 
 describe("App", () => {
+  it("switches language URLs without losing the current draft", () => {
+    window.history.replaceState(null, "", "/?utm_source=example#release-editor")
+    renderApp()
+    fireEvent.change(
+      screen.getByLabelText(EN_MESSAGES["content.productName"]),
+      {
+        target: { value: "My release" },
+      }
+    )
+    fireEvent.click(screen.getByRole("button", { name: "日本語" }))
+
+    expect(window.location.pathname).toBe("/ja/")
+    expect(window.location.search).toBe("?utm_source=example")
+    expect(window.location.hash).toBe("#release-editor")
+    expect(document.documentElement.lang).toBe("ja")
+    expect(screen.getByDisplayValue("My release")).toBeTruthy()
+  })
+
+  it("honors the requested language even with an old saved preference", () => {
+    window.localStorage.setItem("shipit-locale", "en")
+    window.history.replaceState(null, "", "/zh-cn/")
+    renderApp()
+
+    expect(document.documentElement.lang).toBe("zh-CN")
+    expect(screen.getByRole("button", { name: /导出 MP4/ })).toBeTruthy()
+  })
+
   it("shows one inspector panel at a time and switches from the rail", () => {
     renderApp()
 
