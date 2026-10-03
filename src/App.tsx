@@ -70,6 +70,7 @@ export function App() {
         <p className="text-muted-foreground">{t("guide.summary")}</p>
         <a
           href="#product-guide"
+          data-umami-event="guide-open"
           className="inline-flex min-h-6 items-center font-medium underline underline-offset-4"
         >
           {t("guide.link")}

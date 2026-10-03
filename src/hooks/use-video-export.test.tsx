@@ -5,10 +5,13 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 
 import { useVideoExport } from "@/hooks/use-video-export"
 import type { ReleaseComposition } from "@/video/release-video"
+import type { ExportedReleaseVideo } from "@/video/export-release-video"
 
 const { exportReleaseVideoMock } = vi.hoisted(() => ({
   exportReleaseVideoMock:
-    vi.fn<(options: { signal?: AbortSignal }) => Promise<never>>(),
+    vi.fn<
+      (options: { signal?: AbortSignal }) => Promise<ExportedReleaseVideo>
+    >(),
 }))
 
 vi.mock("@/video/export-release-video", () => ({
@@ -52,9 +55,41 @@ const BASE_COMPOSITION: ReleaseComposition = {
 
 afterEach(() => {
   exportReleaseVideoMock.mockReset()
+  delete window.umami
+  vi.restoreAllMocks()
 })
 
 describe("useVideoExport", () => {
+  it("still downloads successfully when analytics fails", async () => {
+    window.umami = {
+      track: vi.fn<() => void>(() => {
+        throw new Error("Tracker blocked")
+      }),
+    }
+    const download = vi
+      .spyOn(HTMLAnchorElement.prototype, "click")
+      .mockImplementation(() => {})
+    vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:release")
+    exportReleaseVideoMock.mockResolvedValue({
+      video: new Blob(),
+      cleanup: async () => {},
+    })
+    const { result } = renderHook(() => useVideoExport(BASE_COMPOSITION))
+
+    await act(async () => {
+      await result.current.exportVideo()
+    })
+
+    expect(result.current.state.status).toBe("completed")
+    expect(download).toHaveBeenCalledOnce()
+    expect(window.umami.track).toHaveBeenCalledWith("export-complete", {
+      aspectRatio: "landscape",
+      resolution: "1080p",
+      frameRate: 30,
+      locale: "en",
+    })
+  })
+
   it("cancels an in-flight export when the composition changes", async () => {
     let receivedSignal: AbortSignal | undefined
     exportReleaseVideoMock.mockImplementation(

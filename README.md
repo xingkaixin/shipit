@@ -87,6 +87,26 @@ Update sitemap `lastmod` only for substantive page changes, not every deployment
 The top-level `404.html` disables Cloudflare Pages' implicit SPA fallback, so
 unknown addresses return a real 404.
 
+## Analytics
+
+Umami tracks only `shipit.xingkaixin.me`; local development and Pages previews
+are excluded. Hash navigation does not create separate page paths. Events:
+
+| Event              | Meaning                                              |
+| ------------------ | ---------------------------------------------------- |
+| `guide-open`       | Opens the product guide from the editor              |
+| `guide-start`      | Returns to the editor from the guide                 |
+| `export-start`     | Starts an export after validation                    |
+| `export-complete`  | Encodes the MP4 and triggers its browser download    |
+| `export-failed`    | Export fails, with a fixed error code                |
+| `export-cancelled` | Export is cancelled, including configuration changes |
+
+Export events include only aspect ratio, resolution, frame rate, and language;
+they never include product text, filenames, images, or generated videos. Tracker
+failures do not block exports. The Umami goal **MP4 export completed** matches
+`export-complete`. Filter it by search channel/referrer to measure useful traffic.
+UTM parameters are captured by Umami automatically for tagged campaign links.
+
 ## Themes and templates
 
 A film is composed from two independent registries:

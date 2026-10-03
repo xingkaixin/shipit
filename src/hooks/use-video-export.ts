@@ -1,5 +1,6 @@
 import * as React from "react"
 
+import { trackExport } from "@/lib/analytics"
 import { useI18n } from "@/i18n/i18n"
 import type { MessageKey } from "@/i18n/messages"
 import {
@@ -64,12 +65,17 @@ export function useVideoExport(composition: ReleaseComposition) {
 
     isExportingReference.current = true
     const exportedComposition = currentCompositionReference.current
+    const eventData = {
+      ...exportedComposition.output,
+      locale: exportedComposition.locale,
+    }
     const abortController = new AbortController()
     abortControllerReference.current = abortController
     exportedCompositionReference.current = exportedComposition
     let lastProgressUpdate = 0
 
     setState({ status: "exporting", progress: 0 })
+    trackExport("export-start", eventData)
 
     try {
       const { exportReleaseVideo } =
@@ -98,6 +104,7 @@ export function useVideoExport(composition: ReleaseComposition) {
         currentCompositionReference.current !== exportedComposition
       ) {
         await result.cleanup()
+        trackExport("export-cancelled", eventData)
         if (isMountedReference.current) {
           setState({ status: "idle" })
         }
@@ -110,8 +117,10 @@ export function useVideoExport(composition: ReleaseComposition) {
         result.cleanup
       )
       setState({ status: "completed" })
+      trackExport("export-complete", eventData)
     } catch (error) {
       if (isAbortError(error)) {
+        trackExport("export-cancelled", eventData)
         if (isMountedReference.current) {
           setState({ status: "idle" })
         }
@@ -119,6 +128,10 @@ export function useVideoExport(composition: ReleaseComposition) {
       }
 
       console.error("[video-export] Export failed", error)
+      trackExport("export-failed", {
+        ...eventData,
+        code: error instanceof ReleaseExportError ? error.code : "unknown",
+      })
 
       if (currentCompositionReference.current !== exportedComposition) {
         if (isMountedReference.current) {
