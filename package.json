@@ -8,7 +8,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build && node scripts/build-locales.ts",
     "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test",
-    "deploy:cf": "pnpm build && wrangler pages deploy dist --project-name shipit --branch main",
+    "deploy:cf": "pnpm build && node scripts/build-cloudflare.ts && cf deploy --prebuilt",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "lint": "oxlint --react-plugin --jsx-a11y-plugin --vitest-plugin --deny-warnings .",
@@ -46,7 +46,6 @@
     "shadcn": "^4.21.0",
     "typescript": "~7.0.2",
     "vite": "^8.3.0",
-    "vitest": "5.0.0",
-    "wrangler": "4.131.0"
+    "vitest": "5.0.0"
   }
 }
