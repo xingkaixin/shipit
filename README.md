@@ -22,7 +22,7 @@ Production: [shipit.xingkaixin.me](https://shipit.xingkaixin.me/)
 ## Requirements
 
 - Node.js 24
-- pnpm 11.17.0
+- pnpm 12.3.4
 - A browser with H.264 WebCodecs encoding support for MP4 export
 
 ## Development
@@ -84,12 +84,11 @@ template and messages in sync for development; production text comes from the
 messages. Canonical URLs and reciprocal hreflang links identify each version.
 When product capabilities change, update the guide, metadata, and `public/llms.txt`.
 Update sitemap `lastmod` only for substantive page changes, not every deployment.
-The top-level `404.html` disables Cloudflare Pages' implicit SPA fallback, so
-unknown addresses return a real 404.
+Workers serves the top-level `404.html` for unknown addresses with a real 404 status.
 
 ## Analytics
 
-Umami tracks only `shipit.xingkaixin.me`; local development and Pages previews
+Umami tracks only `shipit.xingkaixin.me`; local development and Worker previews
 are excluded. Hash navigation does not create separate page paths. Events:
 
 | Event              | Meaning                                              |
@@ -122,31 +121,25 @@ locales; the pickers, the accent swatches, and the confetti pick it up
 automatically. Backgrounds work the same way: add a `BackgroundPattern`, draw
 it in `src/video/background-patterns.ts`, and register it.
 
-## Cloudflare Pages
+## Cloudflare Workers
 
-The application is a static Vite site and can be deployed directly to
-Cloudflare Pages with the following settings:
+The static Vite site is hosted by the `shipit` Worker at
+`shipit.xingkaixin.me`. `cloudflare.config.ts` defines the Worker name, custom
+domain, and static asset routing. Unknown paths return `404.html`; the three
+language pages and `public/_headers` are preserved.
 
-| Setting                | Value        |
-| ---------------------- | ------------ |
-| Framework preset       | React (Vite) |
-| Build command          | `pnpm build` |
-| Build output directory | `dist`       |
-| Node.js version        | `24.18.0`    |
-| pnpm version           | `11.17.0`    |
-
-Set `NODE_VERSION` and `PNPM_VERSION` in the Pages build environment to keep
-Cloudflare aligned with local development and CI.
-
-For a direct production deployment from an authenticated local environment:
+Use the system `cf` CLI installed globally through mise and already authenticated
+with Cloudflare. Neither `cf` nor Wrangler is a project dependency. This deployment
+flow is verified with `cf` 1.0.0-beta.12.
 
 ```bash
 pnpm deploy:cf
 ```
 
-The command creates a production build and uploads `dist` to the `shipit`
-Cloudflare Pages project. Wrangler uses `wrangler.jsonc` as the source of truth
-for the Pages configuration.
+The command builds the site, packages `dist` into the CLI's v0 Build Output
+under `.cloudflare/output/v0`, and runs `cf deploy --prebuilt`. The small
+`scripts/build-cloudflare.ts` packaging step avoids installing a Cloudflare build
+plugin for this static site. The output format is currently beta; validate it
+with `cf deploy --prebuilt --dry-run` after upgrading the global CLI.
 
-Cloudflare Web Analytics is enabled in the Pages project and injected during
-deployment. Keep its beacon out of `index.html` to avoid loading it twice.
+Cloudflare Web Analytics is disabled. Umami is the only site analytics tracker.
