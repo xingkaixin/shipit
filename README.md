@@ -125,7 +125,8 @@ it in `src/video/background-patterns.ts`, and register it.
 
 The static Vite site is hosted by the `shipit` Worker at
 `shipit.xingkaixin.me`. `cloudflare.config.ts` defines the Worker name, custom
-domain, and static asset routing. Unknown paths return `404.html`; the three
+domain, and static asset routing. `workers.dev` and preview URLs are disabled;
+only the custom domain serves the site. The old Pages project has been removed. Unknown paths return `404.html`; the three
 language pages and `public/_headers` are preserved.
 
 Use the system `cf` CLI installed globally through mise and already authenticated

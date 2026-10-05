@@ -6,6 +6,8 @@ export default {
       htmlHandling: "auto-trailing-slash",
       notFoundHandling: "404-page",
     },
+    workersDev: false,
+    previewUrls: false,
     domains: ["shipit.xingkaixin.me"],
   },
 }
